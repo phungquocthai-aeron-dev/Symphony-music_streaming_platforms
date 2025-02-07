@@ -1,0 +1,58 @@
+----- TẠO REPOSITORY
+
+ssh-keygen -t ed25519 -C "phungquocthai0027@gmail.com"
+
+
+git --list (kiểm tra danh sách đối tượng trong hệ thống)
+git config --global user.name "nhập tên" (tạo một đối tượng liên kết với tài khoản trên GitHub)
+git config --global user.email "địa chỉ email" (email dùng trên GitHub liên kết với tên người dùng bên trên)
+
+git clone mã_link_copied (clone dự án trên GitHub)
+git init (khởi tạo dự án dùng git)
+
+git status (kiểm tra trạng thái của các thay đổi)
+git add . hoặc file_name (lưu những thay đổi đã thao tác và đẩy lên GitHub)
+git commit -m "your_message" (tạo nôi dung commit)
+git remote add origin https://
+git push origin main (master)
+
+git pull = git fetch + git merge (lấy dữ liệu từ GitHub về máy)
+git merge branch_name (gọp nhánh đang đứng với nhánh chỉ định + nên làm trên GitHub)
+git conflict (trong file dự án ban đầu được 2 máy lấy về sửa sẽ dẫn đến đụng độ)
+git checkout branch_name (di chuyển sang nhánh chỉ định)
+git checkout -b newbranch (tạo nhánh mới + di chuyển vào nhánh mới vừa tạo)
+git checkout mã_commit (trở về thời điểm trước commit đó)
+
+git config -l --global 
+git config -l --local
+
+git log (xem lịch  sử - commit mã - mã để trở lại lần commit tại thời điểm đó)
+git log --oneline (going  trên nhưng tóm tắt)
+git diff (giống status nhưng so sánh vs commit cuối cùng)
+
+.gitignore (git sẽ không quản lý những file/folder chỉ định trong tệp ví dụ dữ liệu "foldername/" or đuôi file *txt)
+
+git init --bare name (chỉ tạo 1 kho lưu trữ trung tâm tại local)
+git clone repository_name_at_local folder_name (lấy dữ liệu từ kho chứa trên máy vào thư mục mới)
+git config --local user.name "tên thành viên tham gia" (vào thư vừa tạo chỉ định tên người quản lý thư mục đó)
+
+git branch -M new_branch_name (đổi tên nhánh)
+git branch -l (xem danh sách nhánh)
+git branch branch_name (chỉ tạo nhánh mới)
+git branch -d branch_name (xóa nhánh chỉ định tại local)
+git push origin -d branch_name (xóa nhánh trên remotes)
+
+git rebase branch_name (nối nhánh đang đứng vào lần commit gần nhất của nhánh master -> có thể gây ra conflict)
+(lưu ý: chỉ có tác dụng chuyển dời nhánh đang đứng vào đầu nhánh master tại nhánh đang đứng nhưng khi chuyển sang nhánh master thì sẽ không thấy thay đổi gì ở master)
+git rebase --continue (nếu xảy conflict hoặc lỗi và đã fix xong thì gọi để hoàn thành việc tái cơ sở)
+
+git reset --soft mã_commit (trở về thời điểm trước mã commit, giữ nguyên những thay đổi trên file và trạng thái tại thời điểm trước reset)
+git reset --mixed mã_commit (trở về thời điểm trước mã commit, giữ nguyên những thay đổi trên file, xóa bỏ trạng thái tại thời điểm trước reset)
+git reset --hard mã_commit (trở về thời điểm trước mã commit nhưng sẽ xóa toàn bộ dữ liệu commit sau thời điểm đó)
+
+git revert --no-edit mã_commit hoặc HEAD (tạo một mã commit mới với dữ liệu giống với trước mã commit chỉ đinh -> có thể gây ra conflict)
+
+git remote -v (kiểm tra fetch và push của dự án đã fork vào profile và dự án gốc đã public)
+git remote add newUpStream http.... (cập nhật dữ liệu theo dự án public)
+
+(esc : W q) -> quit

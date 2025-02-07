@@ -1,0 +1,148 @@
+#content-user {
+    margin-top: 100px;
+}
+
+.user-img-active-container {
+    width: 25%;
+    max-width: 350px;
+    min-width: 230px;
+}
+
+.user-img-active {
+    width: 100%;
+}
+
+.user-active-banner {
+    background: linear-gradient(to bottom, var(--dark_grey-color) 55%, var(--black-color));
+    border-radius: 12px;
+}
+
+#song-edit-img,
+#song-info-img {
+    position: relative;
+}
+
+.song-edit-img-container:hover #modal-edit,
+.song-info-img-container:hover #modal-song {
+    display: block;
+}
+
+#empty-list-songs-img {
+    width: 20%;
+    max-width: 250px;
+    min-width: 200px;
+}
+
+#modal-edit,
+#modal-song {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(30, 30, 30, 0.5);
+    display: none;
+}
+
+.btn-follow:hover {
+    color: var(--white-color) !important;
+    transform: scale(1.05);
+    border: 2px solid var(--white-color);
+}
+
+.btn-follow:hover i {
+    color: var(--white-color) !important;
+}
+
+.active-song-status {
+    width: 55px;
+    height: 55px;
+    background: linear-gradient(40deg, var(--orange-color) 20%, var(--pink_strong-color));
+}
+
+.active-song-status:hover {
+    cursor: pointer;
+    filter: brightness(1.1);
+    scale: 1.1;
+}
+
+#singer-product ul li:not(:first-child):hover {
+    background-color: var(--dark_grey-color);
+}
+
+.row-song-product div:last-child {
+    margin-right: 50px;
+}
+
+ul {
+    list-style: none;
+}
+
+.card-hover-song {
+    position: absolute;
+    width: 25%;
+    height: 25%;
+    bottom: 10%;
+    right: 10%;
+    max-width: 50px;
+    max-height: 50px;
+    min-width: 30px;
+    min-height: 30px;
+    background-color: var(--orange-color);
+    color: var(--black-color);
+    display: none;
+}
+
+.card-song:hover .card-hover-song {
+    display: block;
+}
+
+.card-img-container,
+.card-img-playlist {
+    position: relative;
+}
+
+.card {
+    border: none;
+    position: relative;
+}
+
+.card_song-img,
+.playlist-img-container {
+    transition: transform 0.4s ease-in-out;
+}
+
+.card-song:hover,
+.card-playlist:hover {
+    border-radius: 8px;
+    background-color: var(--dark_grey-color) !important;
+}
+
+.card-song:hover .card_song-img,
+.card-playlist:hover .playlist-img-container {
+    transform: scale(1.07);
+}
+
+.card-hover-song:hover {
+    transform: scale(1.1);
+    filter: brightness(1.2);
+    cursor: pointer;
+}
+
+select option:hover,
+select option:focus,
+select option:active,
+select option:checked {
+    background: linear-gradient(var(--grey-color), var(--grey-color));
+    background-color: var(--grey-color) !important;
+}
+
+@media screen and (max-width: 992px) {
+    #singer-product ul li:first-child {
+        display: none;
+    }
+
+    .product-song .row>div {
+        margin-top: 12px;
+    }
+}

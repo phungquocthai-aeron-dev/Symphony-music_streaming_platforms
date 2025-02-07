@@ -1,0 +1,35 @@
+# Maven
+target/
+!.mvn/wrapper/maven-wrapper.jar
+
+# Eclipse
+.settings/
+.classpath
+.project
+bin/
+
+# Spring Boot
+HELP.md
+
+# Compiled class
+*.class
+
+# Log files
+*.log
+log/
+logs/
+
+# Sensitive information
+application-local.properties
+application-secret.properties
+
+# Environment files
+.env
+
+# Backup files
+*.bak
+*.swp
+*.swo
+
+# Build folder
+build/
