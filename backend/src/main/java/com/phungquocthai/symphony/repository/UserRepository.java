@@ -12,5 +12,5 @@ import com.phungquocthai.symphony.entity.User;
 public interface UserRepository extends JpaRepository<User, Integer> {
 	boolean existsByPhone(String phone);
 	Optional<User> findByPhone(String phone);
-	List<User> findByRole(int role);
+	List<User> findByRole(String role);
 }

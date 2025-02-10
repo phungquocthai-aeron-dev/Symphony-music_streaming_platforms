@@ -35,7 +35,7 @@ public class UserDTO {
 	private String avatar;
 	
 	@NotNull(message = "Vui lòng xác thực quyền")
-	private int role;
+	private String role;
 	
 	public UserDTO(User user) {
 		this.userId = user.getUserId();

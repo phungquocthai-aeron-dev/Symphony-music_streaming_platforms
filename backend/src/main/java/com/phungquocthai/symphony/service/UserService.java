@@ -11,6 +11,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.phungquocthai.symphony.constant.ErrorCode;
+import com.phungquocthai.symphony.constant.Role;
 import com.phungquocthai.symphony.dto.UserDTO;
 import com.phungquocthai.symphony.dto.UserRegistrationDTO;
 import com.phungquocthai.symphony.entity.User;
@@ -48,7 +49,7 @@ public class UserService {
 		
 		dto.setPassword(passwordEncoder.encode(dto.getPassword()));
 		User user = userRegistrationMapper.toEntity(dto);
-		user.setRole(0);
+		user.setRole(Role.USER.getValue());
 		user.setAvatar("/avatar/my_avatar.jpg");
 		
 		userRepository.save(user);

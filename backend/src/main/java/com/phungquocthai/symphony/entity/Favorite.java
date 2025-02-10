@@ -6,6 +6,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import java.time.LocalDate;
+
+import org.hibernate.annotations.CreationTimestamp;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -22,6 +25,7 @@ public class Favorite {
     private Integer favorite_id;
     
     @Column(name = "add_at")
+    @CreationTimestamp
     private LocalDate add_at;
     
     @ManyToOne(fetch = FetchType.LAZY)

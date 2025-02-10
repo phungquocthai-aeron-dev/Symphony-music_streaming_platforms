@@ -59,7 +59,7 @@ public class User {
 	private String avatar;
 	
 	@Column(name = "role")
-	private int role;
+	private String role;
 		
 	@OneToMany(mappedBy = "user")
 	private List<Favorite> favorites;

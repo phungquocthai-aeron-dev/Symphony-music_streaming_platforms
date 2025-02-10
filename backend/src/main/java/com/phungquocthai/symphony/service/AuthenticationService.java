@@ -163,13 +163,14 @@ public class AuthenticationService {
 		JWSHeader header = new JWSHeader(JWSAlgorithm.HS512);
 		
 		JWTClaimsSet jwtClaimsSet = new JWTClaimsSet.Builder()
-				.subject(user.getPhone())
+				.subject(user.getUserId() + "")
 				.issuer("symphony.com")
 				.issueTime(new Date())
 				.expirationTime(new Date(
 						Instant.now().plus(VALID_DURATION, ChronoUnit.SECONDS).toEpochMilli()
 						))
 				.jwtID(UUID.randomUUID().toString())
+				.claim("phone", user.getPhone())
 				.claim("scope", Role.fromValue(user.getRole()))
 				.build();
 		

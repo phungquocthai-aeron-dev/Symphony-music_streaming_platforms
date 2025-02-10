@@ -4,21 +4,21 @@ import lombok.Getter;
 
 @Getter
 public enum Role {
-    USER(0, "Người dùng thông thường"),
-    SINGER(1, "Ca sĩ"),
-    ADMIN(2, "Quản trị");
+    USER("USER", "Người dùng thông thường"),
+    SINGER("SINGER", "Ca sĩ"),
+    ADMIN("ADMIN", "Quản trị");
 
-    private int value;
+    private String value;
     private String description;
 
-    Role(int value, String description) {
+    Role(String value, String description) {
         this.value = value;
         this.description = description;
     }
 
-    public static Role fromValue(int value) {
+    public static Role fromValue(String value) {
         for (Role role : values()) {
-            if (role.value == value) {
+            if (role.value.equals(value)) {
                 return role;
             }
         }

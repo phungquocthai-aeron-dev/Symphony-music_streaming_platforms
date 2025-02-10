@@ -5,6 +5,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.phungquocthai.symphony.entity.Category;
+import com.phungquocthai.symphony.entity.Singer;
 import com.phungquocthai.symphony.entity.Song;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
@@ -20,7 +21,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class SongDTO {
+public class SongCreateDTO {
 
     @NotNull(message = "Id không được để trống")
     private Integer song_id;
@@ -32,8 +33,9 @@ public class SongDTO {
     private String song_img;
     
     @NotNull(message = "Vui lòng chọn lượt nghe")
-    @Min(value = 0, message = "Lượt nghe phải lớn hơn 0")
-    private Integer total_listens;
+    @Min(value = 0, message = "Lượt nghe phải lớn hơn hoặc bằng 0")
+    @Builder.Default
+    private Integer total_listens = 0;
     
     @NotNull(message = "Vui lòng chọn file bài hát")
     private String path;
@@ -60,11 +62,9 @@ public class SongDTO {
     private Set<Integer> categoriesId;
     
     @NotEmpty(message = "Vui lòng chọn ca sĩ thể hiện")
-    private Set<SingerDTO> singers;
-    
-    private boolean isFavorite;
-    
-    public SongDTO(Song song) {
+    private Set<Integer> singersId;
+        
+    public SongCreateDTO(Song song) {
     	this.song_id = song.getSong_id();
     	this.author = song.getAuthor();
     	this.duration = song.getDuration();
@@ -84,10 +84,10 @@ public class SongDTO {
     	}
     	
     	if(song.getSingers() != null) {
-    		this.singers = song.getSingers().stream().map(singer -> new SingerDTO(singer)).collect(Collectors.toSet());
+    		this.singersId = song.getSingers().stream().map(Singer::getSinger_id).collect(Collectors.toSet());
     	}
     	else {
-    		this.singers = null;
+    		this.singersId = null;
     	}
     }
 

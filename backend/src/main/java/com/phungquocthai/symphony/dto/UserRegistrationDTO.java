@@ -29,5 +29,8 @@ public class UserRegistrationDTO {
 
     @NotNull(message = "Vui lòng chọn giới tính")
     private Integer gender;
+    
+    @Builder.Default
+    private String avatar = "/images/avatars/default-avatar.jpg";
 
 }
