@@ -16,4 +16,6 @@ public @interface ValidFile {
 
     long maxSize() default 5 * 1024 * 1024; // 5MB mặc định
     String[] allowedContentTypes() default {"image/jpeg", "image/png", "image/gif"};
+    
+    boolean required() default true;
 }

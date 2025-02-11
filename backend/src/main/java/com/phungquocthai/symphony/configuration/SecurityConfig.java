@@ -22,7 +22,8 @@ public class SecurityConfig {
 	private CustomJwtDecoder customJwtDecoder;
 
 	private final String[] PUBLIC_GET_ENDPOINTS = {"/home/fruits", "/singer/**", "/song/**",
-			"/auth/register", "/auth/login", "/static/**",
+			"/auth/register", "/auth/login", 
+			"/music/normal/**", "/lyric/**", "/lrc/**", "/images/**",
 			"/ranking", "/newSongs", "/category", "/recentlyListen", "/favorite"};
 	
 	private final String[] PUBLIC_POST_ENDPOINTS = {"/auth/login", "/auth/register", "/auth/logout", "/auth/refresh"};

@@ -6,9 +6,12 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.phungquocthai.symphony.constant.PathStorage;
 import com.phungquocthai.symphony.dto.SongCreateDTO;
 import com.phungquocthai.symphony.dto.SongDTO;
 import com.phungquocthai.symphony.entity.Category;
@@ -40,10 +43,14 @@ public class SongService {
 	CategoryRepository categoryRepository;
 	
 	@Autowired
+	FileStorageService fileStorageService;
+	
+	@Autowired
 	SongMapper songMapper;
 	
 	@Autowired
 	SongCreateMapper songCreateMapper;
+	
 	
 	@Transactional
 	public List<SongDTO> getFavoriteSongsOfUser(Integer user_id) {
@@ -68,8 +75,21 @@ public class SongService {
 		return null;
 	}
 	
-	public SongDTO create(SongCreateDTO dto) {
+	@PreAuthorize("hasRole('SINGER')")
+	public SongDTO create(SongCreateDTO dto, MultipartFile pathFile, MultipartFile lyricFile,
+			MultipartFile lrcFile, MultipartFile songImgFile) {
 		Song song = songCreateMapper.toEntity(dto);
+		
+		PathStorage musicStore = (dto.getIsVip()) ? PathStorage.MUSIC_VIP : PathStorage.MUSIC_NORMAL;
+		String path = fileStorageService.storeFile(pathFile, musicStore);
+		String lyric = fileStorageService.storeFile(lyricFile, PathStorage.LYRIC);
+		String lrc = fileStorageService.storeFile(lrcFile, PathStorage.LRC);
+		String songImg = fileStorageService.storeFile(songImgFile, PathStorage.MUSIC_IMG);
+		
+		song.setPath(path);
+		song.setLyric(lyric);
+		song.setLrc(lrc);
+		song.setSong_img(songImg);
 		
 		Set<Singer> singers = new HashSet<Singer>(singerRepository.findAllById(dto.getSingersId()));
 		Set<Category> categories = new HashSet<Category>(categoryRepository.findAllById(dto.getCategoriesId()));

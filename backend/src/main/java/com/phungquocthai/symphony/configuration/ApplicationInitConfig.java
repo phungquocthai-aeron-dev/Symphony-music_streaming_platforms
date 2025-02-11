@@ -24,7 +24,7 @@ public class ApplicationInitConfig {
 			if (userRepository.findByRole(Role.ADMIN.getValue()).isEmpty()) {
 				User user = User.builder()
 							.fullName("Phùng Quốc Thái")
-							.avatar("/avatar/admin")
+							.avatar("/images/avatars/admin.jpg")
 							.phone("0369226360")
 							.birthday(LocalDate.of(2004, 3, 3))
 							.password(passwordEncoder().encode("admin"))

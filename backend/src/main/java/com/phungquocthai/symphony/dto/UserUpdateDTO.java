@@ -6,8 +6,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import java.time.LocalDate;
-import com.phungquocthai.symphony.entity.User;
-
 import jakarta.validation.constraints.*;
 
 @Getter
@@ -15,8 +13,10 @@ import jakarta.validation.constraints.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class UserDTO {
-	private Integer userId;
+public class UserUpdateDTO {
+	
+	@NotNull(message = "Id không được để trống")
+	private Integer id;
 	
 	@NotBlank(message = "Vui lòng điền họ và tên")
 	private String fullName;
@@ -30,19 +30,8 @@ public class UserDTO {
 	
 	@NotNull(message = "Vui lòng chọn giới tính")
 	private int gender;
-	
-	@NotBlank(message = "Vui lòng chọn ảnh đại diện")
-	private String avatar;
-	
+		
 	@NotNull(message = "Vui lòng xác thực quyền")
 	private String role;
-	
-	public UserDTO(User user) {
-		this.avatar = user.getAvatar();
-		this.fullName = user.getFullName();
-		this.birthday = user.getBirthday();
-		this.gender = user.getGender();
-		this.role = user.getRole();
-		this.phone = user.getPhone();
-	}
+
 }

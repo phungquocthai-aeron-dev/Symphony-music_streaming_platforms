@@ -10,10 +10,14 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.phungquocthai.symphony.constant.ErrorCode;
+import com.phungquocthai.symphony.constant.PathStorage;
 import com.phungquocthai.symphony.constant.Role;
 import com.phungquocthai.symphony.dto.UserDTO;
 import com.phungquocthai.symphony.dto.UserRegistrationDTO;
+import com.phungquocthai.symphony.dto.UserUpdateDTO;
 import com.phungquocthai.symphony.entity.User;
 import com.phungquocthai.symphony.exception.AppException;
 import com.phungquocthai.symphony.mapper.UserMapper;
@@ -32,6 +36,9 @@ import lombok.extern.slf4j.Slf4j;
 public class UserService {
 	@Autowired
 	UserRepository userRepository;
+	
+	@Autowired
+	FileStorageService fileStorageService;
 	
 	@Autowired
 	UserMapper userMapper;
@@ -58,6 +65,24 @@ public class UserService {
 		
 		return userDTO;
 	}
+	
+	@PreAuthorize("hasRole('ADMIN') or #dto.userId == authentication.name")
+	public UserDTO update(UserUpdateDTO dto, MultipartFile avatarFile) {
+		User user = userRepository.findById(dto.getId())
+				.orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISRED));
+		if(avatarFile != null) {
+			String avatar = fileStorageService.storeFile(avatarFile, PathStorage.AVATAR);
+			user.setAvatar(avatar);
+		}
+		userMapper.updateEntity(user, dto);
+		userRepository.save(user);
+		return userMapper.toDTO(user);
+	}
+	
+	@PreAuthorize("hasRole('ADMIN') or #dto.userId == authentication.name")
+	public void delete(Integer userId) {
+		userRepository.deleteById(userId);
+	}
 
 	@PreAuthorize("hasRole('ADMIN')")
 	public List<UserDTO> getUsers() {
@@ -70,7 +95,7 @@ public class UserService {
 		return users;
 	}
 	
-	@PostAuthorize("returnObject.phone == authentication.fullname")
+	@PostAuthorize("returnObject.userId == authentication.name")
 	public UserDTO getUser(Integer id) {
 		return userMapper.toDTO(userRepository.findById(id)
 				.orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISRED)));

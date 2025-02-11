@@ -10,14 +10,20 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.phungquocthai.symphony.annotation.ValidFile;
 import com.phungquocthai.symphony.dto.ApiResponse;
 import com.phungquocthai.symphony.dto.SongDTO;
 import com.phungquocthai.symphony.dto.UserDTO;
+import com.phungquocthai.symphony.dto.UserUpdateDTO;
 import com.phungquocthai.symphony.service.FavoriteService;
 import com.phungquocthai.symphony.service.SongService;
 import com.phungquocthai.symphony.service.UserService;
+
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 
 @RestController
@@ -33,27 +39,33 @@ public class UserController {
 	
 	@Autowired
 	private FavoriteService favoriteService;
-
-	public ResponseEntity<ApiResponse<UserDTO>> create(@RequestParam int user_id) {
+	
+	public ResponseEntity<ApiResponse<UserDTO>> findById(@RequestParam("id") int userId) {
 		ApiResponse<UserDTO> apiResponse = new ApiResponse<UserDTO>();
-		UserDTO user = userService.getUser(user_id);
+		UserDTO user = userService.getUser(userId);
 		apiResponse.setResult(user);
 		return ResponseEntity.ok(apiResponse);
 	}
 
-	public ResponseEntity<Void> delete() {
-		// TODO Auto-generated method stub
-		return null;
+	@PostMapping("/delete")
+	public ResponseEntity<Void> delete(@RequestParam("id") Integer userId) {
+		userService.delete(userId);
+		return ResponseEntity.noContent().build();
 	}
 
-	public ResponseEntity<UserDTO> update(UserDTO dto) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public ResponseEntity<UserDTO> findById() {
-		// TODO Auto-generated method stub
-		return null;
+	@PostMapping("/update")
+	public ResponseEntity<ApiResponse<UserDTO>> update(
+			@Valid @RequestPart UserUpdateDTO dto,
+			@ValidFile(maxSize = 1024 * 1024, // 1MB
+	            allowedContentTypes = {"jpeg", "jpg", "png"},
+	            message = "File không hợp lệ",
+	            required = false)
+			@RequestPart(required = false) MultipartFile avatar) {
+		return ResponseEntity.ok(
+				ApiResponse.<UserDTO>builder()
+				.result(userService.update(dto, avatar))
+				.build()
+				);
 	}
 
 	@GetMapping("/users")
