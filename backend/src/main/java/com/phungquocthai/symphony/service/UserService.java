@@ -96,7 +96,7 @@ public class UserService {
 	}
 	
 	@PostAuthorize("returnObject.userId == authentication.name")
-	public UserDTO getUser(Integer id) {
+	public UserDTO getUserById(Integer id) {
 		return userMapper.toDTO(userRepository.findById(id)
 				.orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISRED)));
 	}

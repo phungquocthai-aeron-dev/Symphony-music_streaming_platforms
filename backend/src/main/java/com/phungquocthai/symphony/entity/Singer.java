@@ -23,7 +23,7 @@ public class Singer {
     private Integer singer_id;
     
     @Column(name = "stage_name", length = 50)
-    private String stage_name;
+    private String stageName;
     
     @Column(name = "followers")
     private int followers;

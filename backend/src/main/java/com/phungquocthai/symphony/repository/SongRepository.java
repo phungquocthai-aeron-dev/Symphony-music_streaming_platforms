@@ -28,5 +28,23 @@ public interface SongRepository extends JpaRepository<Song, Integer> {
 	@Query(value =  "INSERT INTO present (singer_id, song_id) VALUES (:singerId, :songId)", nativeQuery = true)
     int addSongToSinger(@Param("singerId") Integer singerId, @Param("songId") Integer songId);
 	
+	@Query(value = "SELECT * FROM song WHERE release_date >= date_sub(CURDATE(), INTERVAL 1 YEAR) ORDER BY release_date DESC", 
+	           nativeQuery = true)
+	List<Song> findSongsFromLastYear();
+
+	@Query(value = "SELECT DISTINCT s.song_id, s.song_name, s.song_img, s.listens, s.path, s.lyric, s.duration, s.release_date, s.author, s.category_id " +
+            "FROM song s " +
+            "NATURAL JOIN present p " +
+            "NATURAL JOIN category c " +
+            "WHERE s.song_name LIKE :key OR c.category_name LIKE :key " +
+            "COLLATE utf8mb4_unicode_ci", nativeQuery = true)
+	List<Song> searchSong(@Param("key") String key);
+	
+	@Query(value = "SELECT s " +
+			"FROM song s " +
+            "NATURAL JOIN present p " +
+            "NATURAL JOIN category c " +
+			"WHERE c.category_id = :categoryId", nativeQuery = true)
+	List<Song> getSongsByCategory(@Param("categoryId") Integer categoryId);
 	// TÌm tất cả ca sĩ theo bài hát
 }

@@ -3,9 +3,11 @@ package com.phungquocthai.symphony.controller;
 import java.text.ParseException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.nimbusds.jose.JOSEException;
@@ -14,7 +16,10 @@ import com.phungquocthai.symphony.dto.AuthenticationRequest;
 import com.phungquocthai.symphony.dto.AuthenticationResponse;
 import com.phungquocthai.symphony.dto.LogoutRequest;
 import com.phungquocthai.symphony.dto.RefreshRequest;
+import com.phungquocthai.symphony.dto.UserDTO;
+import com.phungquocthai.symphony.dto.UserRegistrationDTO;
 import com.phungquocthai.symphony.service.AuthenticationService;
+import com.phungquocthai.symphony.service.UserService;
 
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
@@ -28,6 +33,9 @@ import lombok.experimental.FieldDefaults;
 public class AuthenticationController {
 	@Autowired
 	private AuthenticationService authenticationService;
+	
+	@Autowired
+	private UserService userService;
 	
 	@PostMapping("/login")
 	public ApiResponse<AuthenticationResponse> authenticate(@Valid @RequestBody AuthenticationRequest request) {
@@ -43,6 +51,16 @@ public class AuthenticationController {
 		this.authenticationService.logout(request);
 		
 		return ApiResponse.<Void>builder().build();
+	}
+	
+	@PostMapping(value = "/register")
+	public @ResponseBody ResponseEntity<ApiResponse<UserDTO>> userRegister(@Valid @RequestBody UserRegistrationDTO userRegistrationDTO) {
+		
+		UserDTO userDTO = userService.create(userRegistrationDTO);
+		ApiResponse<UserDTO> apiResponse = new ApiResponse<UserDTO>();
+		apiResponse.setResult(userDTO);
+		
+		return ResponseEntity.ok(apiResponse);
 	}
 	
 	@PostMapping("/refresh")

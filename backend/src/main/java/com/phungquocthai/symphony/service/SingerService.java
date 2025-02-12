@@ -1,0 +1,72 @@
+package com.phungquocthai.symphony.service;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.stereotype.Service;
+
+import com.phungquocthai.symphony.constant.ErrorCode;
+import com.phungquocthai.symphony.dto.SingerCreateDTO;
+import com.phungquocthai.symphony.dto.SingerDTO;
+import com.phungquocthai.symphony.dto.SingerUpdateDTO;
+import com.phungquocthai.symphony.entity.Singer;
+import com.phungquocthai.symphony.exception.AppException;
+import com.phungquocthai.symphony.mapper.SingerCreateMapper;
+import com.phungquocthai.symphony.mapper.SingerMapper;
+import com.phungquocthai.symphony.repository.SingerRepository;
+
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
+
+@Service
+@RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@Slf4j
+public class SingerService {
+	@Autowired
+	SingerRepository singerRepository;
+	
+	@Autowired
+	SingerMapper singerMapper;
+	
+	@Autowired
+	SingerCreateMapper singerCreateMapper;
+	
+	@PreAuthorize("hasRole('ADMIN')")
+	public SingerDTO create(SingerCreateDTO dto) {
+		Singer singerData = singerCreateMapper.toEntity(dto);
+		Singer singer = singerRepository.save(singerData);
+		return singerMapper.toDTO(singer);
+	}
+	
+	@PreAuthorize("hasRole('SINGER', 'ADMIN')")
+	public SingerDTO update(SingerUpdateDTO dto) {
+		Singer singer = singerRepository.findById(dto.getSinger_id())
+				.orElseThrow(() -> new AppException(ErrorCode.SINGER_NOT_EXISTED));
+		return singerMapper.toDTO(singer);
+	}
+	
+	@PreAuthorize("hasRole('SINGER', 'ADMIN')")
+	public void delete(Integer singerId) {
+		singerRepository.deleteById(singerId);
+	}
+	
+	public SingerDTO getSinger(Integer singerId) {
+		Singer singer = singerRepository.findById(singerId)
+				.orElseThrow(() -> new AppException(ErrorCode.SINGER_NOT_EXISTED));
+		return singerMapper.toDTO(singer);
+	}
+	
+	@PreAuthorize("hasRole('ADMIN')")
+	public List<SingerDTO> getSingers() {
+		return null;
+	}
+	
+	public List<SingerDTO> findByStageName(String stageName) {
+		List<Singer> singers = singerRepository.findByStageName(stageName);
+		return singerMapper.toListDTO(singers);
+	}
+}

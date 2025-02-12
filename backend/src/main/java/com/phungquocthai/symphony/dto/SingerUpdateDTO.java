@@ -1,6 +1,5 @@
 package com.phungquocthai.symphony.dto;
 
-import com.phungquocthai.symphony.entity.Singer;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -14,20 +13,16 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class SingerDTO {
-
-    @NotNull(message = "Id không được để trống")
-    private Integer singer_id;
+public class SingerUpdateDTO {
+	@NotNull(message = "Id không được để trống")
+    @Min(value = 1, message = "Id phải lớn hơn hoặc bằng 1")
+	private Integer singer_id;
     
     @NotNull(message = "Vui lòng chọn nghệ danh")
     private String stageName;
     
     @NotNull(message = "Vui lòng chọn lượt theo dõi")
-    @Min(value = 0, message = "Lượt theo dõi phải lớn hơn 0")
-    private int followers;
+    @Builder.Default
+    private int followers = 0;
    
-    public SingerDTO(Singer singer) {
-    	this.stageName = singer.getStageName();
-    	this.followers = singer.getFollowers();
-    }
 }

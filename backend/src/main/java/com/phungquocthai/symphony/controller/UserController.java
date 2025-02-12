@@ -16,10 +16,12 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.phungquocthai.symphony.annotation.ValidFile;
 import com.phungquocthai.symphony.dto.ApiResponse;
+import com.phungquocthai.symphony.dto.LibraryDTO;
 import com.phungquocthai.symphony.dto.SongDTO;
 import com.phungquocthai.symphony.dto.UserDTO;
 import com.phungquocthai.symphony.dto.UserUpdateDTO;
 import com.phungquocthai.symphony.service.FavoriteService;
+import com.phungquocthai.symphony.service.PlaylistService;
 import com.phungquocthai.symphony.service.SongService;
 import com.phungquocthai.symphony.service.UserService;
 
@@ -40,15 +42,19 @@ public class UserController {
 	@Autowired
 	private FavoriteService favoriteService;
 	
-	public ResponseEntity<ApiResponse<UserDTO>> findById(@RequestParam("id") int userId) {
+	@Autowired
+	private PlaylistService playlistService;
+	
+	@GetMapping
+	public ResponseEntity<ApiResponse<UserDTO>> findById(@RequestParam(value = "id", required = true) Integer userId) {
 		ApiResponse<UserDTO> apiResponse = new ApiResponse<UserDTO>();
-		UserDTO user = userService.getUser(userId);
+		UserDTO user = userService.getUserById(userId);
 		apiResponse.setResult(user);
 		return ResponseEntity.ok(apiResponse);
 	}
 
 	@PostMapping("/delete")
-	public ResponseEntity<Void> delete(@RequestParam("id") Integer userId) {
+	public ResponseEntity<Void> delete(@RequestParam(value = "id", required = true) Integer userId) {
 		userService.delete(userId);
 		return ResponseEntity.noContent().build();
 	}
@@ -90,7 +96,7 @@ public class UserController {
 	
 	@PostMapping("/favorite")
 	public ResponseEntity<ApiResponse<Boolean>> addFavoriteSong(
-			@RequestParam("id") int song_id,
+			@RequestParam(value = "id", required = true) int song_id,
 			@AuthenticationPrincipal Jwt jwt) {
 		favoriteService.create(Integer.valueOf(jwt.getSubject()), song_id);
 		return ResponseEntity.ok(ApiResponse.<Boolean>builder().result(true).build());
@@ -105,6 +111,13 @@ public class UserController {
 		return ResponseEntity.ok(apiResponse);
 	}
 	
-	// Thư viện
+	@GetMapping("/library")
+	public ResponseEntity<ApiResponse<LibraryDTO>> library(@RequestParam(value = "id", required = true) Integer userId) {
+		LibraryDTO libraryDTO = LibraryDTO.builder()
+				.playlists(playlistService.getPlaylistOfUser(userId))
+				.songs(songService.getFavoriteSongsOfUser(userId))
+				.build();
+		return ResponseEntity.ok(ApiResponse.<LibraryDTO>builder().result(libraryDTO).build());
+	}
 	
 }

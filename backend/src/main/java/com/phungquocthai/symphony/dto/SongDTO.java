@@ -1,7 +1,7 @@
 package com.phungquocthai.symphony.dto;
 
 import java.time.LocalDate;
-import java.util.Set;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import com.phungquocthai.symphony.entity.Category;
@@ -57,10 +57,10 @@ public class SongDTO {
     private Boolean isVip;
     
     @NotEmpty(message = "Vui lòng chọn thể loại cho bài hát")
-    private Set<Integer> categoriesId;
+    private List<Integer> categoriesId;
     
     @NotEmpty(message = "Vui lòng chọn ca sĩ thể hiện")
-    private Set<SingerDTO> singers;
+    private List<SingerDTO> singers;
     
     private boolean isFavorite;
     
@@ -77,14 +77,14 @@ public class SongDTO {
     	this.total_listens = song.getTotal_listens();
     	
     	if(song.getCategories() != null) {
-    		this.categoriesId = song.getCategories().stream().map(Category::getCategory_id).collect(Collectors.toSet());
+    		this.categoriesId = song.getCategories().stream().map(Category::getCategory_id).collect(Collectors.toList());
     	}
     	else {
     		this.categoriesId = null;
     	}
     	
     	if(song.getSingers() != null) {
-    		this.singers = song.getSingers().stream().map(singer -> new SingerDTO(singer)).collect(Collectors.toSet());
+    		this.singers = song.getSingers().stream().map(singer -> new SingerDTO(singer)).collect(Collectors.toList());
     	}
     	else {
     		this.singers = null;
