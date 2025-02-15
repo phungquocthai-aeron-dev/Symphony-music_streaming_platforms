@@ -58,4 +58,12 @@ public class SingerController {
 		return ResponseEntity.ok(apiResponse);
 	}
 	
+	@PostMapping("/unpresent")
+	public ResponseEntity<Void> deletePresent(
+			@RequestParam(value = "id", required = true) Integer singerId,
+			@RequestParam(value = "id", required = true) Integer songId) {
+		singerService.deletePresent(singerId, songId);
+		return ResponseEntity.noContent().build();
+	}
+	
 }

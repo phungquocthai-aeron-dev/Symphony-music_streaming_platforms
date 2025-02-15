@@ -15,12 +15,12 @@ import org.springframework.web.multipart.MultipartFile;
 import com.phungquocthai.symphony.annotation.ValidFile;
 import com.phungquocthai.symphony.dto.ApiResponse;
 import com.phungquocthai.symphony.dto.CategoryDTO;
-import com.phungquocthai.symphony.dto.SearchDTO;
-import com.phungquocthai.symphony.dto.SingerDTO;
+import com.phungquocthai.symphony.dto.ListeningStatsDTO;
+import com.phungquocthai.symphony.dto.RankingDTO;
 import com.phungquocthai.symphony.dto.SongCreateDTO;
 import com.phungquocthai.symphony.dto.SongDTO;
 import com.phungquocthai.symphony.dto.SongUpdateDTO;
-import com.phungquocthai.symphony.service.SingerService;
+import com.phungquocthai.symphony.dto.TopSongDTO;
 import com.phungquocthai.symphony.service.SongService;
 import java.util.List;
 import jakarta.validation.Valid;
@@ -33,9 +33,6 @@ public class SongController {
 	
 	@Autowired
 	private SongService songService;
-	
-	@Autowired
-	private SingerService singerService;
 	
 	@GetMapping
 	public ResponseEntity<ApiResponse<SongDTO>> findById(@RequestParam(value = "id", required = true) Integer songId) {
@@ -125,7 +122,7 @@ public class SongController {
 	
 	@GetMapping("/newSongs")
 	public ResponseEntity<ApiResponse<List<SongDTO>>> getNewSongs() {
-		List<SongDTO> songs = songService.getNewSongs();
+		List<SongDTO> songs = songService.getNewSongs(100);
 		return ResponseEntity.ok(
 				ApiResponse.<List<SongDTO>>builder()
 				.result(songs)
@@ -149,35 +146,54 @@ public class SongController {
 		return ResponseEntity.ok(totalListens);
 	}
 	
-	@GetMapping("/search")
-	public ResponseEntity<ApiResponse<SearchDTO>> searchSongs(
-			@RequestParam(value = "id") String key) {
-		if(key == null) return ResponseEntity.noContent().build();
-		if(key.length() == 0) return ResponseEntity.noContent().build();
-		
-		List<SongDTO> songs = songService.searchSongs(key);
-		List<SingerDTO> singers = singerService.findByStageName(key);
-		
-		SearchDTO result = SearchDTO.builder()
-				.songs(songs)
-				.singers(singers)
-				.build();
-		
-		return ResponseEntity.ok(
-				ApiResponse.<SearchDTO>builder()
-				.result(result)
-				.build()
-				);
-	}
-	
 	@GetMapping("/category")
-	public ResponseEntity<ApiResponse<List<SongDTO>>> getSongsByCategory(@RequestParam(value = "id", required = true) Integer categoryId) {
-		List<SongDTO> songs = songService.getSongsByCategory(categoryId);
+	public ResponseEntity<ApiResponse<List<SongDTO>>> getSongsByCategory(
+			@RequestParam(value = "id", required = true) Integer categoryId) {
+		List<SongDTO> songs = songService.getSongsByCategoryId(categoryId);
 		return ResponseEntity.ok(
 				ApiResponse.<List<SongDTO>>builder()
 				.result(songs)
 				.build()
 				);
 	}
+	
+	@GetMapping("/songsOfSinger")
+	public ResponseEntity<ApiResponse<List<SongDTO>>> getSongsOfSinger(
+			@RequestParam(value = "id", required = true) Integer singerId) {
+		List<SongDTO> songs = songService.getBySingerId(singerId);
+		return ResponseEntity.ok(
+				ApiResponse.<List<SongDTO>>builder()
+				.result(songs)
+				.build()
+				);
+	}
+
+	@GetMapping("/ranking")
+	public ResponseEntity<ApiResponse<RankingDTO>> getTopSong(
+			@RequestParam(value = "limit", defaultValue = "100") Integer limit) {
+		List<TopSongDTO> songs = songService.getTopSong(limit);
+		List<List<ListeningStatsDTO>> top = null;
+		
+		if(!songs.isEmpty()) {
+			int size = songs.size();
+			if(size >= 3) {
+				top = songService.getTop3TrendingSongsPastHour(
+				songs.get(0).getSong_id(), songs.get(1).getSong_id(), songs.get(2).getSong_id());
+			} else if(size == 2) {
+				top = songService.getTop2TrendingSongsPastHour(
+				songs.get(0).getSong_id(), songs.get(1).getSong_id());
+			} else if(size == 1) {
+				top = songService.getTop1TrendingSongsPastHour(songs.get(0).getSong_id());
+			}
+		}
+		
+		RankingDTO result = new RankingDTO(songs, top);
+		return ResponseEntity.ok(
+				ApiResponse.<RankingDTO>builder()
+				.result(result)
+				.build()
+				);
+	}
+	
 	// xoa file nhạc
 }

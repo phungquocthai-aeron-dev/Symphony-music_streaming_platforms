@@ -105,7 +105,7 @@ public class UserController {
 	@GetMapping("/recentlyListen")
 	public ResponseEntity<ApiResponse<List<SongDTO>>> recentlyListenSongsPage(
 			@AuthenticationPrincipal Jwt jwt) {
-		List<SongDTO> songs = songService.getRecentlyListenSongs(Integer.valueOf(jwt.getSubject()));
+		List<SongDTO> songs = songService.getRecentlyListenSongs(Integer.valueOf(jwt.getSubject()), 100);
 		ApiResponse<List<SongDTO>> apiResponse = new ApiResponse<List<SongDTO>>();
 		apiResponse.setResult(songs);
 		return ResponseEntity.ok(apiResponse);

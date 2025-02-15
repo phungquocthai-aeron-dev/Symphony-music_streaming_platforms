@@ -4,7 +4,7 @@ import lombok.Getter;
 
 @Getter
 public enum CategorySong {
-    NHACTRUTINH("nhactrutinh"),
+	LYRICAL("nhactrutinh"),
     VPOP("v-pop"),
 	REMIX("remix"),
 	USUK("us-uk"),

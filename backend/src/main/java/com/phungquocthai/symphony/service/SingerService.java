@@ -62,11 +62,22 @@ public class SingerService {
 	
 	@PreAuthorize("hasRole('ADMIN')")
 	public List<SingerDTO> getSingers() {
-		return null;
+		List<Singer> singers = singerRepository.findAll();
+		return singerMapper.toListDTO(singers);
+	}
+	
+	@PreAuthorize("hasRole('SINGER', 'ADMIN')")
+	public void deletePresent(Integer singerId, Integer songId) {
+		singerRepository.deletePresent(singerId, songId);
 	}
 	
 	public List<SingerDTO> findByStageName(String stageName) {
 		List<Singer> singers = singerRepository.findByStageName(stageName);
+		return singerMapper.toListDTO(singers);
+	}
+	
+	public List<SingerDTO> getBySongId(List<Integer> ids) {
+		List<Singer> singers = singerRepository.findAllBySongId(ids);
 		return singerMapper.toListDTO(singers);
 	}
 }

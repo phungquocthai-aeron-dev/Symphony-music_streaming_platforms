@@ -1,6 +1,7 @@
 package com.phungquocthai.symphony.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -13,24 +14,26 @@ import com.phungquocthai.symphony.entity.Song;
 
 @Repository
 public interface SongRepository extends JpaRepository<Song, Integer> {
-	@Query("SELECT s FROM Song s JOIN s.favorites f WHERE f.user.userId = :userId")
+	@Query(value =  "select * from song natural join favorite where user_id =:userId", nativeQuery = true)
 	List<Song> getFavoriteSongsOfUser(@Param("userId") Integer userId);
 	
-	@Query("SELECT s, MAX(l.listen_at) as lastListenAt "
-			+ "FROM Song s JOIN s.listens l "
-			+ "WHERE l.user.userId = :userId "
+	@Query(value =  "SELECT s.*, MAX(l.listen_at) as lastListenAt "
+			+ "FROM song s JOIN listen l ON s.song_id = l.song_id"
+			+ "WHERE l.user_id = :userId "
 			+ "GROUP BY s.song_id "
-			+ "ORDER BY lastListenAt DESC")
-	List<Song> getRecentlyListenSongs(@Param("userId") Integer userId);
+			+ "ORDER BY lastListenAt DESC "
+			+ "LIMIT :limit", nativeQuery = true)
+	List<Song> getRecentlyListenSongs(@Param("userId") Integer userId,
+			@Param("limit") Integer limit);
 	
 	@Modifying
     @Transactional
 	@Query(value =  "INSERT INTO present (singer_id, song_id) VALUES (:singerId, :songId)", nativeQuery = true)
     int addSongToSinger(@Param("singerId") Integer singerId, @Param("songId") Integer songId);
 	
-	@Query(value = "SELECT * FROM song WHERE release_date >= date_sub(CURDATE(), INTERVAL 1 YEAR) ORDER BY release_date DESC", 
+	@Query(value = "SELECT * FROM song WHERE release_date >= date_sub(CURDATE(), INTERVAL 1 YEAR) ORDER BY release_date DESC LIMIT :limit", 
 	           nativeQuery = true)
-	List<Song> findSongsFromLastYear();
+	List<Song> findSongsFromLastYear(@Param("limit") Integer limit);
 
 	@Query(value = "SELECT DISTINCT s.song_id, s.song_name, s.song_img, s.listens, s.path, s.lyric, s.duration, s.release_date, s.author, s.category_id " +
             "FROM song s " +
@@ -40,11 +43,77 @@ public interface SongRepository extends JpaRepository<Song, Integer> {
             "COLLATE utf8mb4_unicode_ci", nativeQuery = true)
 	List<Song> searchSong(@Param("key") String key);
 	
-	@Query(value = "SELECT s " +
+	@Query(value = "SELECT s.* " +
 			"FROM song s " +
             "NATURAL JOIN present p " +
             "NATURAL JOIN category c " +
 			"WHERE c.category_id = :categoryId", nativeQuery = true)
 	List<Song> getSongsByCategory(@Param("categoryId") Integer categoryId);
-	// TÌm tất cả ca sĩ theo bài hát
+	
+	@Query(value = "SELECT s.* " +
+			"FROM song s " +
+            "NATURAL JOIN present p " +
+            "NATURAL JOIN category c " +
+			"WHERE c.category_name = :categoryName " +
+			"LIMIT :limit", nativeQuery = true)
+	List<Song> getSongsByCategory(@Param("categoryName") String categoryName,
+			@Param("limit") Integer limit);
+	
+	@Query(value = "SELECT s.* FROM song s " +
+            "INNER JOIN present p ON s.song_id = p.song_id " +
+            "WHERE p.singer_id = :singerId", 
+    nativeQuery = true)
+	List<Song> findBySingerId(@Param("singerId") Integer singerId);
+	
+	@Query(value = "SELECT s.* FROM song s " +
+            "INNER JOIN present p ON s.song_id = p.song_id " +
+            "WHERE p.singer_id IN (:ids)", 
+    nativeQuery = true)
+	List<Song> findAllBySingerId(@Param("ids") Iterable<Integer> ids);
+	
+	@Query(value = "SELECT s.* FROM song s " +
+            "INNER JOIN category_song cs ON s.song_id = cs.song_id " +
+            "WHERE cs.category_id IN (:ids)", 
+    nativeQuery = true)
+	List<Song> findAllByCategoryId(@Param("ids") Iterable<Integer> ids);
+	
+	@Query(value = "SELECT s.* FROM song s " +
+            "INNER JOIN category_song cs ON s.song_id = cs.song_id " +
+            "WHERE cs.category_id IN (:ids) AND s.song_id NOT IN (:notInSongIds)", 
+    nativeQuery = true)
+	List<Song> findAllByCategoryIdNotIn(
+			@Param("ids") Iterable<Integer> ids,
+			@Param("notInSongIds") Iterable<Integer> notInSongIds);
+	
+	@Query(value = "SELECT s.* FROM song s "
+			+ "WHERE s.total_listens >= 100000000 "
+			+ "ORDER BY total_listens DESC "
+			+ "LIMIT :limit", nativeQuery = true)
+	List<Song> findHotHit(@Param("limit") Integer limit);
+	
+	@Query(value = "SELECT p.singer_id FROM present p WHERE song_id = :songId LIMIT 1", nativeQuery = true)
+	Optional<Integer> findFirstBySongId(@Param("songId") Integer songId);
+	
+	@Query(value = """
+		    SELECT s.*, COUNT(l.user_id) AS total_listens_per_hour
+		    FROM listen l INNER JOIN song s ON l.song_id = s.song_id
+		    WHERE l.listen_at < DATE_FORMAT(NOW(), "%Y-%m-%d %H:00:00")  
+		          AND l.listen_at >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 HOUR), "%Y-%m-%d %H:00:00")
+		    GROUP BY s.song_id
+		    ORDER BY total_listens_per_hour DESC, s.release_date DESC, s.duration DESC 
+		    LIMIT :limit
+		    """, nativeQuery = true)
+		List<Object[]> getTopSongsLastHour(@Param("limit") Integer limit);
+
+	@Query(value = """
+		    SELECT song_id, DATE(listen_at) AS listen_date, 
+		           EXTRACT(HOUR FROM listen_at) AS hour, 
+		           COUNT(user_id) AS total_listens_per_hour
+		    FROM listen
+		    WHERE song_id = :songId AND listen_at < DATE_FORMAT(NOW(), '%Y-%m-%d %H:00:00')
+		    GROUP BY song_id, hour, listen_date
+		    ORDER BY song_id, listen_date DESC, hour DESC
+			    """, nativeQuery = true)
+			List<Object[]> getHourlyListeningStats(@Param("songId") Integer songId);
+
 }

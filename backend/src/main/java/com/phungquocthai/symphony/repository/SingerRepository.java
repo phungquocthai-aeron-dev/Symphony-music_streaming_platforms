@@ -3,11 +3,39 @@ package com.phungquocthai.symphony.repository;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-
 import com.phungquocthai.symphony.entity.Singer;
+
+import jakarta.transaction.Transactional;
 
 @Repository
 public interface SingerRepository extends JpaRepository<Singer, Integer> {
 	List<Singer> findByStageName(String stageName);
+	
+	@Modifying
+	@Transactional
+	@Query(value =  "DELETE FROM present p WHERE p.singer_id = :singerId AND p.song_id = :songId"
+			,nativeQuery = true)
+	void deletePresent(@Param("singerId") Integer singerId, @Param("songId") Integer songId);
+	
+	@Modifying
+	@Transactional
+	@Query(value =  "INSERT INTO present (singer_id, song_id) VALUES (:singerId, :songId)"
+			,nativeQuery = true)
+	void addPresent(@Param("singerId") Integer singerId, @Param("songId") Integer songId);
+	
+	@Query(value = "SELECT s.* FROM singer s " +
+            "INNER JOIN present p ON s.singer_id = p.singer_id " +
+            "WHERE p.song_id = :songId", 
+    nativeQuery = true)
+	List<Singer> findBySongId(@Param("songId") Integer songId);
+	
+	@Query(value = "SELECT s.* FROM singer s " +
+            "INNER JOIN present p ON s.singer_id = p.singer_id " +
+            "WHERE p.song_id IN (:ids)", 
+    nativeQuery = true)
+	List<Singer> findAllBySongId(@Param("ids") Iterable<Integer> ids);
 }
