@@ -1,0 +1,13 @@
+footer p,
+footer li {
+    font-family: Montserrat, 'Open Sans', Inter, sans-serif !important;
+}
+
+@media screen and (max-width: 992px) {
+
+    footer {
+        padding-left: 80px;
+        padding-right: 50px;
+    }
+
+}
