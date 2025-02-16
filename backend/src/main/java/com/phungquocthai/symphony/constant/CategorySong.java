@@ -4,14 +4,14 @@ import lombok.Getter;
 
 @Getter
 public enum CategorySong {
-	LYRICAL("nhactrutinh"),
-    VPOP("v-pop"),
-	REMIX("remix"),
-	USUK("us-uk"),
-	RAP("rap"),
-	EDM("edm"),
-	BALLAD("ballad"),
-	KPOP("k-pop");
+	LYRICAL("LYRICAL"),
+    VPOP("VPOP"),
+	REMIX("REMIX"),
+	USUK("USUK"),
+	RAP("RAP"),
+	EDM("EDM"),
+	BALLAD("BALLAD"),
+	KPOP("KPOP");
 
     private String value;
 
