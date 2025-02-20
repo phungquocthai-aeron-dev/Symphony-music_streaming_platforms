@@ -1,11 +1,8 @@
 import { Component } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NgIf } from '@angular/common';
-import { Authentication, AuthenticationResponse } from '../../../shared/models/Authentication.dto';
-import { LoginService } from '../../../core/services/login.service';
-import { Router } from '@angular/router';
-import { ResponseData } from '../../../shared/models/ResponseData';
-
+import { Authentication } from '../../../shared/models/Authentication.dto';
+import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -22,8 +19,7 @@ export class LoginComponent {
   })
 
   constructor(
-    private loginService: LoginService,
-    private router: Router
+    private authService: AuthService,
   ){}
 
   get phone() {
@@ -39,30 +35,15 @@ export class LoginComponent {
       this.isSubmitted = true
       return
     }
-
     const authentication: Authentication = {
       phone: String(this.phone?.value),
       password: String(this.password?.value)
     }
 
-    console.log(authentication)
-    this.loginService.authenticate(authentication).subscribe(
-      (response: ResponseData<AuthenticationResponse>) => {
-        console.log(response);
-        
-        if (response.result && response.result.authenticated) {
-          const jwtInfo = {
-            jwt: response.result.token
-          }
-          localStorage.setItem('SYMPHONY_USER', JSON.stringify(jwtInfo));
-          this.router.navigate(['/']);
-        } else {
-          console.log("Xác thực không thành công");
-        }
-      },
-      (error) => {
-        console.error('Login error:', error);
-      }
-    )
+    this.authService.login({ phone: '123456789', password: 'password' }).subscribe({
+      next: (response) => console.log('Đăng nhập thành công:', response),
+      error: (error) => console.error('Lỗi đăng nhập:', error.message)
+    });
   }
 }
+

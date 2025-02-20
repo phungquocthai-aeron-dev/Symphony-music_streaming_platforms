@@ -1,6 +1,6 @@
 import { HttpInterceptorFn } from '@angular/common/http';
-import { isPlatformBrowser } from '@angular/common';
-import { PLATFORM_ID, inject } from '@angular/core';
+import { inject } from '@angular/core';
+import { AuthService } from '../services/auth.service';
 
 const PUBLIC_GET_ENDPOINTS = [
   '/', '/home', '/singer/', '/song/',
@@ -14,41 +14,33 @@ const PUBLIC_POST_ENDPOINTS = [
 ];
 
 export const jwtInterceptor: HttpInterceptorFn = (req, next) => {
-  const platformId = inject(PLATFORM_ID);
-  let token: string | null = null;
+  const authService = inject(AuthService)
 
-  // Kiểm tra xem có đang chạy trên trình duyệt không
-  if (isPlatformBrowser(platformId)) {
-    const userInfo = localStorage.getItem('SYMPHONY_USER');
-    if (userInfo) {
-      try {
-        const parsedInfo = JSON.parse(userInfo);
-        if (parsedInfo?.jwt) {
-          token = parsedInfo.jwt;
-        }
-      } catch (error) {
-        console.error('Error parsing JWT info:', error);
-      }
-    }
+  const token = authService.getToken()
+
+  if (!token) {
+    return next(req); // Nếu không có token, bỏ qua interceptor
   }
 
-  if (req.url.includes('/home') || req.url === '/') {
-    const authReq = token 
-      ? req.clone({ setHeaders: { Authorization: `Bearer ${token}` } }) 
-      : req;
-    return next(authReq);
+  if ((req.url == 'home' || req.url === '/') && !authService.isLoggedIn()) {
+    return next(req);
   }
 
-  // Kiểm tra xem request có nằm trong danh sách public không
-  const isPublicRequest = (
-    (req.method === 'GET' && PUBLIC_GET_ENDPOINTS.some(url => req.url.includes(url))) ||
-    (req.method === 'POST' && PUBLIC_POST_ENDPOINTS.some(url => req.url.includes(url)))
+  // Kiểm tra xem URL có nằm trong danh sách endpoint công khai không
+  const isPublicEndpoint = [...PUBLIC_GET_ENDPOINTS, ...PUBLIC_POST_ENDPOINTS].some(endpoint =>
+    req.url.includes(endpoint)
   );
 
-  // Nếu request là public, không thêm token
-  const authReq = isPublicRequest
-    ? req
-    : req.clone({ setHeaders: { Authorization: `Bearer ${token}` } });
+  if (isPublicEndpoint) {
+    return next(req); // Không thêm token cho các endpoint công khai
+  }
 
-  return next(authReq);
+  // Nếu không phải endpoint công khai, thêm Authorization header
+  const clonedReq = req.clone({
+    setHeaders: {
+      Authorization: `Bearer ${token}`
+    }
+  });
+
+  return next(clonedReq);
 };
