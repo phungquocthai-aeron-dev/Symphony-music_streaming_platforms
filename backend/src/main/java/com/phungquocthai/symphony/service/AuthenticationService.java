@@ -145,17 +145,15 @@ public class AuthenticationService {
 		User user = userRepository.findByPhone(dto.getPhone())
 		.orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISRED));
 				
-		boolean authenticated = passwordEncoder.matches(dto.getPassword(), user.getPassword()); 
-		
-		if(!authenticated) {
-			throw new AppException(ErrorCode.UNAUTHENTICATED);
-		}
+		boolean authenticated = passwordEncoder.matches(dto.getPassword(), user.getPassword()); 		
 
-		String token = generateToken(user);
+		String token = "";
+		if(authenticated) token = generateToken(user);
+
 		
 		return AuthenticationResponse.builder()
+				.authenticated(authenticated)
 				.token(token)
-				.authenticated(true)
 				.build();
 	}
 	

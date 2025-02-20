@@ -1,5 +1,7 @@
 package com.phungquocthai.symphony.configuration;
 
+import java.util.Arrays;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,7 +13,13 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import jakarta.servlet.http.HttpServletResponse;
 
 @Configuration
 @EnableWebSecurity
@@ -21,7 +29,7 @@ public class SecurityConfig {
 	@Autowired
 	private CustomJwtDecoder customJwtDecoder;
 
-	private final String[] PUBLIC_GET_ENDPOINTS = {"/home/fruits", "/singer/**", "/song/**",
+	private final String[] PUBLIC_GET_ENDPOINTS = {"/", "/home", "/singer/**", "/song/**",
 			"/auth/register", "/auth/login", 
 			"/music/normal/**", "/lyric/**", "/lrc/**", "/images/**",
 			"/ranking", "/newSongs", "/category", "/recentlyListen", "/favorite"};
@@ -34,6 +42,8 @@ public class SecurityConfig {
 	
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    	http.cors(cors -> cors.configurationSource(corsConfigurationSource()));
+    	
         http.authorizeHttpRequests(request ->
         	request
 //        		.requestMatchers(ADMIN_ENDPOINTS).hasRole("ADMIN")
@@ -43,7 +53,12 @@ public class SecurityConfig {
         		.anyRequest().authenticated());
         
         http.oauth2ResourceServer(oauth2 ->
-        	oauth2.jwt(jwtConfigurer -> jwtConfigurer.decoder(customJwtDecoder).jwtAuthenticationConverter(jwtAuthenticationConverter())));
+        	oauth2.jwt(jwtConfigurer -> jwtConfigurer
+        			.decoder(customJwtDecoder)
+        			.jwtAuthenticationConverter(jwtAuthenticationConverter())
+        			)
+        	.authenticationEntryPoint(customAuthenticationEntryPoint())
+        	);
 
         http.csrf(AbstractHttpConfigurer::disable);
         return http.build();
@@ -59,4 +74,31 @@ public class SecurityConfig {
     	return jwtAuthenticationConverter;
     }
   
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:4200"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
+        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "Accept"));
+        configuration.setAllowCredentials(true);
+        
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
+    }
+    
+    @Bean
+    public AuthenticationEntryPoint customAuthenticationEntryPoint() {
+        return (request, response, authException) -> {
+            String path = request.getRequestURI();
+            if (path.equals("/") || path.equals("/home")) {
+                // ✅ Nếu request vào "/" hoặc "/home", vẫn cho phép truy cập
+                response.setStatus(HttpServletResponse.SC_OK);
+                response.getWriter().write("Public Page Accessible");
+            } else {
+                // ❌ Các API khác trả về 401 nếu JWT sai hoặc thiếu
+                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
+            }
+        };
+    }
 }

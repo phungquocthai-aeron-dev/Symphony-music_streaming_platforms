@@ -1,8 +1,8 @@
 package com.phungquocthai.symphony.controller;
 
 import java.text.ParseException;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -14,6 +14,8 @@ import com.nimbusds.jose.JOSEException;
 import com.phungquocthai.symphony.dto.ApiResponse;
 import com.phungquocthai.symphony.dto.AuthenticationRequest;
 import com.phungquocthai.symphony.dto.AuthenticationResponse;
+import com.phungquocthai.symphony.dto.IntrospectRequest;
+import com.phungquocthai.symphony.dto.IntrospectResponse;
 import com.phungquocthai.symphony.dto.LogoutRequest;
 import com.phungquocthai.symphony.dto.RefreshRequest;
 import com.phungquocthai.symphony.dto.UserDTO;
@@ -37,13 +39,40 @@ public class AuthenticationController {
 	@Autowired
 	private UserService userService;
 	
+	@PostMapping("/valid-token")
+	public ResponseEntity<?> checkToken(@RequestBody String token) {
+		System.err.println(token);
+	    if (token != null) {
+	        IntrospectRequest request = new IntrospectRequest(true, token);
+	        try {
+	            IntrospectResponse response = authenticationService.introspect(request);
+	            if (response.isValid()) {
+	                return ResponseEntity.ok("Token hợp lệ");
+	            }
+	        } catch (JOSEException | ParseException e) {
+	            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Token không hợp lệ");
+	        }
+	    }
+	    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Token không hợp lệ");
+	}
+
+	
 	@PostMapping("/login")
-	public ApiResponse<AuthenticationResponse> authenticate(@Valid @RequestBody AuthenticationRequest request) {
-		var authenticated = this.authenticationService.authenticate(request);
-		
-		return ApiResponse.<AuthenticationResponse>builder()
-				.result(authenticated)
-				.build();
+	public ResponseEntity<ApiResponse<AuthenticationResponse>> authenticate(@Valid @RequestBody AuthenticationRequest request) {
+	    AuthenticationResponse authenticated = this.authenticationService.authenticate(request);
+
+	    if (!authenticated.isAuthenticated()) {
+	        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+	                .body(ApiResponse.<AuthenticationResponse>builder()
+	                .code(401)
+	                .message("Sai tên đăng nhập hoặc mật khẩu")
+	                .build());
+	    }
+
+	    ApiResponse<AuthenticationResponse> apiResponse = ApiResponse.<AuthenticationResponse>builder()
+	            .result(authenticated)
+	            .build();
+	    return ResponseEntity.ok(apiResponse);
 	}
 	
 	@PostMapping("/logout")

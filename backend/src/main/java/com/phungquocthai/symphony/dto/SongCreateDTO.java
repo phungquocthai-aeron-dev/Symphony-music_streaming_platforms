@@ -39,7 +39,7 @@ public class SongCreateDTO {
     private Boolean isVip;
     
     @NotEmpty(message = "Vui lòng chọn thể loại cho bài hát")
-    private Set<Integer> categoriesId;
+    private Set<Integer> categoryIds;
     
     @NotEmpty(message = "Vui lòng chọn ca sĩ thể hiện")
     private Set<Integer> singersId;

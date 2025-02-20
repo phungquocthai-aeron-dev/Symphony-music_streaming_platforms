@@ -32,7 +32,7 @@ public class SongUpdateDTO {
     private Boolean isVip;
     
     @NotEmpty(message = "Vui lòng chọn thể loại cho bài hát")
-    private List<Integer> categoriesId;
+    private List<Integer> categoryIds;
     
     private List<Integer> singersId;
     

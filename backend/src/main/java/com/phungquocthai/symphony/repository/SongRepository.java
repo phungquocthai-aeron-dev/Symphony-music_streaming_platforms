@@ -18,7 +18,7 @@ public interface SongRepository extends JpaRepository<Song, Integer> {
 	List<Song> getFavoriteSongsOfUser(@Param("userId") Integer userId);
 	
 	@Query(value =  "SELECT s.*, MAX(l.listen_at) as lastListenAt "
-			+ "FROM song s JOIN listen l ON s.song_id = l.song_id"
+			+ "FROM song s JOIN listen l ON s.song_id = l.song_id "
 			+ "WHERE l.user_id = :userId "
 			+ "GROUP BY s.song_id "
 			+ "ORDER BY lastListenAt DESC "
@@ -86,8 +86,8 @@ public interface SongRepository extends JpaRepository<Song, Integer> {
 			@Param("notInSongIds") Iterable<Integer> notInSongIds);
 	
 	@Query(value = "SELECT s.* FROM song s "
-			+ "WHERE s.total_listens >= 100000000 "
-			+ "ORDER BY total_listens DESC "
+			+ "WHERE listens >= 100000000 "
+			+ "ORDER BY listens DESC "
 			+ "LIMIT :limit", nativeQuery = true)
 	List<Song> findHotHit(@Param("limit") Integer limit);
 	

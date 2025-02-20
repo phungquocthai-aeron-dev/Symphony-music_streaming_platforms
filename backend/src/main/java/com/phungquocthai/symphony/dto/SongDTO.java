@@ -57,7 +57,7 @@ public class SongDTO {
     private Boolean isVip;
     
     @NotEmpty(message = "Vui lòng chọn thể loại cho bài hát")
-    private List<Integer> categoriesId;
+    private List<Integer> categoryIds;
     
     @NotEmpty(message = "Vui lòng chọn ca sĩ thể hiện")
     private List<SingerDTO> singers;
@@ -77,10 +77,10 @@ public class SongDTO {
     	this.total_listens = song.getTotal_listens();
     	
     	if(song.getCategories() != null) {
-    		this.categoriesId = song.getCategories().stream().map(Category::getCategory_id).collect(Collectors.toList());
+    		this.categoryIds = song.getCategories().stream().map(Category::getCategory_id).collect(Collectors.toList());
     	}
     	else {
-    		this.categoriesId = null;
+    		this.categoryIds = null;
     	}
     	
     	if(song.getSingers() != null) {

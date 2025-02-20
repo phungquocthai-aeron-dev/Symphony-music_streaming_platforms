@@ -1,8 +1,6 @@
 package com.phungquocthai.symphony.service;
 
 import java.util.List;
-import java.util.stream.Collectors;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -91,7 +89,7 @@ public class UserService {
 		authentication.getAuthorities().forEach(grantedAuthority -> log.info(grantedAuthority.getAuthority()));
 		
 		List<User> userEntities = userRepository.findAll();
-		List<UserDTO> users = userEntities.stream().map(userEntity -> new UserDTO(userEntity)).collect(Collectors.toList());
+		List<UserDTO> users = userMapper.toListDTO(userEntities);
 		return users;
 	}
 	

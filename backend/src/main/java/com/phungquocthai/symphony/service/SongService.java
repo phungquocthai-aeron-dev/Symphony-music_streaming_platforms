@@ -82,13 +82,13 @@ public class SongService {
 	
 	public List<SongDTO> getRecentlyListenSongs(Integer userId, Integer limit) {
 		List<Song> songEntities = songRepository.getRecentlyListenSongs(userId, limit); 
+		List<SongDTO> songs = null;
 		if(!songEntities.isEmpty()) {
-			List<SongDTO> songs = songEntities.stream()
+			songs = songEntities.stream()
 					.map(songEntity -> new SongDTO(songEntity))
 					.collect(Collectors.toList());
-			return songs;
 		}
-		return null;
+		return songs;
 	}
 	
 	@PreAuthorize("hasRole('SINGER')")
@@ -108,7 +108,7 @@ public class SongService {
 		song.setSong_img(songImg);
 		
 		Set<Singer> singers = new HashSet<Singer>(singerRepository.findAllById(dto.getSingersId()));
-		Set<Category> categories = new HashSet<Category>(categoryRepository.findAllById(dto.getCategoriesId()));
+		Set<Category> categories = new HashSet<Category>(categoryRepository.findAllById(dto.getCategoryIds()));
 		
 		song.setCategories(categories);
 		song.setSingers(singers);
@@ -148,9 +148,9 @@ public class SongService {
 			song.getSingers().addAll(singers);
 		}
 		
-		if(dto.getCategoriesId() != null) {
-			if(!dto.getCategoriesId().isEmpty()) {
-				List<Category> categories = categoryRepository.findAllById(dto.getCategoriesId());
+		if(dto.getCategoryIds() != null) {
+			if(!dto.getCategoryIds().isEmpty()) {
+				List<Category> categories = categoryRepository.findAllById(dto.getCategoryIds());
 				song.setCategories(categories.stream().collect(Collectors.toSet()));
 			}
 		}
@@ -226,7 +226,7 @@ public class SongService {
 		int size = songs.size();
 		int n = 0;
 		if(size < 6) {
-			List<Song> support = songRepository.findAllByCategoryIdNotIn(song.getCategoriesId(), ids);
+			List<Song> support = songRepository.findAllByCategoryIdNotIn(song.getCategoryIds(), ids);
 			int sizeSupport = support.size();
 			
 			if(support.size() > 0) {

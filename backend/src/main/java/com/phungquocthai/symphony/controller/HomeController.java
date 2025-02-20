@@ -22,8 +22,11 @@ import com.phungquocthai.symphony.dto.TopSongDTO;
 import com.phungquocthai.symphony.service.SingerService;
 import com.phungquocthai.symphony.service.SongService;
 
+import lombok.extern.slf4j.Slf4j;
+
 @RestController
 @RequestMapping(value = {"/home", "/"})
+@Slf4j
 public class HomeController {
 	@Autowired
 	private SongService songService;
@@ -48,15 +51,21 @@ public class HomeController {
 		data.setRemixSongs(remixSongs);
 		data.setLyricalSongs(lyricalSongs);
 		data.setNewSongs(newSongs);
-
+		
 		if(jwt != null) {
-			List<SongDTO> recentlyListen = songService.getRecentlyListenSongs(Integer.valueOf(jwt.getSubject()), 6);
-			if(!recentlyListen.isEmpty()) {
-				List<SongDTO> recommend = songService.recommend(recentlyListen.get(0));
-				
-				data.setRecentlyListen(recentlyListen);
-				data.setRecommend(recommend);
-			}
+			try {
+				Integer userId = Integer.parseInt(jwt.getSubject());
+				List<SongDTO> recentlyListen = songService.getRecentlyListenSongs(Integer.valueOf(userId), 6);
+				if(recentlyListen != null) {
+					List<SongDTO> recommend = songService.recommend(recentlyListen.get(0));
+					
+					data.setRecentlyListen(recentlyListen);
+					data.setRecommend(recommend);
+				}
+		    } catch (NumberFormatException e) {
+		        log.error(e.getMessage());
+		    }
+			
 		}
 		
 		List<TopSongDTO> topSongs = songService.getTopSong(3);
