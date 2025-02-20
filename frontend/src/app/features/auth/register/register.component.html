@@ -1,0 +1,82 @@
+<div class="container">
+    <div class="row">
+
+        <a href="" class="d-block mx-auto" id="logo">
+            <img src="assets/images/symphony-darktheme-icon.png" alt="logo" class="w-100">
+        </a>
+        <h3 class="text-white-primary text-center mt-3 mb-5">Đăng ký để tối ưu trải nghiệm</h3>
+        <form action="/register" method="POST">
+            <div class="row bg-dark_grey-color rounded-4 px-2 py-4">
+                <div class="col-md-6">
+                    <div class="mb-3 mt-3">
+                        <label for="username" class="text-white-primary mb-3">Họ và tên:
+                        </label>
+                        <input required type="text"
+                            class="form-control text-white-primary bg-black-primary no-outline shadow-none"
+                            id="username" placeholder="Nhập họ và tên" name="username" value="">
+<!-- info -->
+                    </div>
+                    <div class="mb-3 mt-3">
+                        <label for="phone" class="text-white-primary mb-3">Số điện thoại:</label>
+                        <input required type="text"
+                            class="form-control text-white-primary bg-black-primary no-outline shadow-none"
+                            id="phone" placeholder="Số điện thoại dùng để đăng nhập" name="phone" value="">
+
+<!-- info -->
+                    </div>
+                    <div class="mb-3">
+                        <label for="password" class="text-white-primary mb-3">Mật khẩu:</label>
+                        <input required type="password"
+                            class="form-control text-white-primary bg-black-primary no-outline shadow-none"
+                            id="password"
+                            placeholder="Tối đa 8 ký tự và chứa ký tự thường, chữ in hoa, ký tự đặc biệt"
+                            name="password">
+
+<!-- info -->
+                    </div>
+                    <div class="mb-3">
+                        <label for="password_confirm" class="text-white-primary mb-3">Nhập lại mật khẩu:</label>
+                        <input required type="password"
+                            class="form-control <?= isset($errors['password_confirm']) ? ' is-invalid' : '' ?> text-white-primary bg-black-primary no-outline shadow-none"
+                            id="password_confirm" name="password_confirm">
+<!-- info -->
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3 mt-3">
+                        <!-- Trả về chuỗi theo dạng yyyy-mm-dd -->
+                        <label for="birthday" class="text-white-primary mb-3">Ngày sinh:</label>
+                        <input required type="date"
+                            class="form-control text-white-primary bg-black-primary no-outline shadow-none"
+                            id="birthday" placeholder="" name="birthday" max="" value="">
+<!-- info -->
+                    </div>
+                    <div class="mb-3 mt-3">
+                        <p class="text-white-primary mb-4">Giới tính:</p>
+                        <label for="male" class="text-white-primary mb-3">Nam: </label>
+                        <input required type="radio" class="form-check-input ms-2 me-5" id="male" name="gender"
+                            value="1">
+                        <label for="female" class="text-white-primary mb-3">Nữ: </label>
+                        <input required type="radio" class="form-check-input ms-2 me-5" id="female" name="gender"
+                            value="0">
+                        <label for="other" class="text-white-primary mb-3">Khác: </label>
+                        <input required type="radio" class="form-check-input ms-2 me-5" id="other" name="gender"
+                            value="2">
+<!-- info -->
+                    </div>
+                    <div class="form-check">
+                        <label class="form-check-label text-white-primary mb-1">
+                            <input required class="form-check-input" type="checkbox" name="agree" value="1"> Bạn đồng ý với <a
+                                href="/clause" class="text-orange-primary text-decoration-none">điều
+                                khoản</a> của chúng tôi
+                        </label>
+                    </div>
+                    <div class="mb-4">
+                        <p class="text-white-primary ms-0">Bạn đã có tài khoản? <a href="/login" class="text-orange-primary text-decoration-none">Đăng nhập tại đây</a></p>
+                    </div>
+                    <button type="submit" id="btn-submit" class="btn text-white-primary">Đăng ký</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

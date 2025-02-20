@@ -1,0 +1,49 @@
+    .nav-link {
+        font-family: Montserrat, 'Open Sans', Inter, sans-serif !important;
+    }
+
+    #avatar {
+        background-image: url('https://static.vecteezy.com/system/resources/previews/000/439/863/non_2x/vector-users-icon.jpg');
+        width: 38px;
+        height: 38px;
+        background-repeat: no-repeat;
+        background-position: center center;
+        background-size: cover;
+        cursor: pointer;
+    }
+
+    .navbar-nav li {
+        font-family: Montserrat, 'Open Sans', Inter, sans-serif !important;
+    }
+
+    #notification {
+        position: relative;
+    }
+
+    .notification-number {
+        position: absolute;
+        color: var(--text_dark_theme-color);
+        background-color: red;
+        padding: 2px 4px;
+        line-height: 10px;
+        font-size: 8px;
+        top: 0;
+        right: -6px;
+    }
+
+    .clean-navbar {
+        display: none;
+    }
+
+    @media screen and (max-width: 992px) {
+        /* HEADER */
+
+        .clean-navbar {
+            display: block;
+        }
+
+        .clean-navbar-before {
+            display: none;
+        }
+
+    }

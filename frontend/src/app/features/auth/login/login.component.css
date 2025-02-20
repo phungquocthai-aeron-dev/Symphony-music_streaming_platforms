@@ -1,0 +1,60 @@
+* {
+    color: var(--white-color);
+}
+
+#wrap-login {
+    margin: 0;
+    width: 100vw;
+    height: 100vh;
+    background-image: url(/assets/images/background-login.jpg);
+    background-repeat: no-repeat;
+    background-size: cover;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#form-login-container {
+    background-color: rgba(0, 0, 0, 0.7);
+    padding: 48px 24px;
+    width: 60%;
+    max-width: 400px;
+    border-radius: 12px;
+    border: 1px solid var(--pink_strong-color);
+    box-shadow: 0 0 25px var(--pink_strong-color);
+}
+
+input[type='text'],
+input[type='password'] {
+    background: transparent !important;
+}
+
+.input-container {
+    border-bottom: 2px solid var(--white-color) !important;
+
+}
+
+button {
+    background: linear-gradient(to right, var(--orange-color), var(--pink_strong-color));
+}
+
+.text-orange-primary {
+    color: var(--orange-color) !important;
+  }
+
+@media screen and (max-width: 576px) {
+    #form-login-container {
+        background-color: rgba(0, 0, 0, 0.7);
+        padding: 48px 24px;
+        width: 100%;
+        border-radius: 12px;
+        border: 1px solid var(--pink_strong-color);
+        box-shadow: 0 0 25px var(--pink_strong-color);
+
+    }
+
+    .form-check {
+        display: flex;
+        flex-direction: column;
+    }
+}

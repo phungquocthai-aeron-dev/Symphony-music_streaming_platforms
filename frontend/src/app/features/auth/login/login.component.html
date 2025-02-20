@@ -1,0 +1,46 @@
+<div id="wrap-login">
+    <div id="form-login-container">
+        <div class="d-flex justify-content-center">
+            <img src="assets/images/symphony-darktheme-icon.png" alt="logo" class="w-50">
+        </div>
+        <form [formGroup]="auth">
+            <div class="mb-3 input-container mt-5 d-flex align-self-center justify-content-between">
+                <input type="text" class="form-control text-white-primary no-outline shadow-none rounded-0 ps-0"
+                    id="phone" placeholder="Nhập số điện thoại" name="phone"required  formControlName="phone">
+                   <!-- value="<?php
+                   if (isset($phone)) echo $this->e($phone);
+                   else if (isset($old['phone'])) echo $this->e($old['phone']);
+                   else if (isset($_COOKIE['remember'])) echo $this->e($_COOKIE['remember']);
+                   else echo '';
+                   ?>" -->
+    
+                <i class="fa-solid fa-user lh-lg"></i>
+            </div>
+            <div *ngIf="phone?.hasError('required') && isSubmitted">
+                <strong class="text-danger">Vui lòng nhập số điện thoại</strong>
+            </div>
+
+            <div class="mb-3 input-container d-flex align-self-center justify-content-between">
+                <input type="password" class="form-control text-white-primary no-outline shadow-none rounded-0 ps-0" id="password"
+                    placeholder="Nhập mật khẩu" name="password" required  formControlName="password" >
+                <i class="fa-solid fa-lock lh-lg"></i>
+            </div>
+            
+                <div *ngIf="password?.hasError('required') && isSubmitted">
+                    <strong class="text-danger">Vui lòng nhập mật khẩu</strong>
+                </div>
+
+            <div class="form-check mb-3 d-flex justify-content-between">
+                <label class="form-check-label mb-2">
+                    <input class="form-check-input no-outline shadow-none" type="checkbox" name="remember" value="1"> Remember me
+                </label>
+                <a href="" class="text-decoration-none text-orange-primary">Bạn quên mật khẩu?</a>
+            </div>
+            <button class="btn w-100" (click)="handleLogin()">Đăng nhập</button>
+            <div class="text-center mt-3">
+                <span>Bạn chưa có tài khoản? </span>
+                <a href="/register" class="text-decoration-none text-orange-primary">Đăng ký</a>
+            </div>
+        </form>
+    </div>
+</div>

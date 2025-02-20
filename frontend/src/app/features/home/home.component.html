@@ -1,0 +1,27 @@
+<h1 class="text-white-primary">Home</h1>
+<div>
+    <ul>
+        <li class="text-white-primary" *ngFor="let song of hotHitSongs">{{ song.songName }}</li>
+    </ul>
+    
+</div>
+<h1 class="text-white-primary">Home</h1>
+
+<h1 class="text-white-primary">Home Here</h1>
+
+
+<!-- <ng-container *ngIf="!loading; else loadingTemplate">
+    <ng-container *ngIf="hotHitSongs.length > 0; else noDataTemplate">
+      <div *ngFor="let song of hotHitSongs">
+        {{ song.songName }}
+      </div>
+    </ng-container>
+  </ng-container>
+  
+  <ng-template #loadingTemplate>
+    <div>Loading...</div>
+  </ng-template>
+  
+  <ng-template #noDataTemplate>
+    <div>No songs available</div>
+  </ng-template> -->

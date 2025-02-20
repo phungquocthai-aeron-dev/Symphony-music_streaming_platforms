@@ -1,0 +1,18 @@
+#logo {
+    margin-top: 30px;
+    width: 18%;
+    max-width: 240px;
+    min-width: 180px;
+}
+
+input::placeholder {
+    color: var(--grey-color) !important;
+}
+
+#btn-submit {
+    background: linear-gradient(40deg, var(--orange-color) 20%, var(--pink_strong-color));
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: brightness(0) invert(1);
+}
