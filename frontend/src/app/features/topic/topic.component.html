@@ -7,7 +7,7 @@
                 <h3 class="text-center text-white-primary mb-4">THỂ LOẠI</h3>
                 <div class="col-lg-3 col-sm-6" *ngFor="let categoryItem of categories">
                     <div class="category-container mt-3 pe-3">
-                        <a [href]="'/search?search=' + categoryItem.category_name">
+                        <a [routerLink]="['/search']" [queryParams]="{ s: categoryItem.category_name}">
                             <img [src]="'/assets/images/category-' + categoryItem.category_name + '.png'" 
                                  class="rounded-3 w-100" 
                                  [alt]="categoryItem.category_name">
@@ -19,28 +19,28 @@
                 <h3 class="text-center text-white-primary mb-4 mt-5">CHỦ ĐỀ</h3>
                 <div class="col-lg-3 col-sm-6">
                     <div class="category-container mt-3 pe-3">
-                        <a href="/search?search=coffee">
+                        <a [routerLink]="['/search']" [queryParams]="{ s: 'coffee' }">
                             <img src="/assets/images/category-coffee.png" class="rounded-3 w-100" alt="Coffee">
                         </a>
                     </div>
                 </div>
                 <div class="col-lg-3 col-sm-6">
                     <div class="category-container mt-3 pe-3">
-                        <a href="/search?search=chill">
+                        <a [routerLink]="['/search']" [queryParams]="{ s: 'chill' }">
                             <img src="/assets/images/category-chill.png" class="rounded-3 w-100" alt="Chill">
                         </a>
                     </div>
                 </div>
                 <div class="col-lg-3 col-sm-6">
                     <div class="category-container mt-3 pe-3">
-                        <a href="/search?search=thanh xuân">
+                        <a [routerLink]="['/search']" [queryParams]="{ s: 'thanh xuân' }">
                             <img src="/assets/images/category-youth.jpg" class="rounded-3 w-100" alt="Thanh xuân">
                         </a>
                     </div>
                 </div>
                 <div class="col-lg-3 col-sm-6">
                     <div class="category-container mt-3 pe-3">
-                        <a href="/search?search=yêu">
+                        <a [routerLink]="['/search']" [queryParams]="{ s: 'yêu' }">
                             <img src="/assets/images/category-love.png" class="rounded-3 w-100" alt="Tình yêu">
                         </a>
                     </div>

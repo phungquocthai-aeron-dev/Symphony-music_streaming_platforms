@@ -14,7 +14,7 @@ import { DataShareService } from '../../../core/services/dataShare.service';
   styleUrl: './audio-menu.component.css'
 })
 
-export class AudioMenuComponent implements OnInit, AfterViewInit, OnDestroy, OnChanges {
+export class AudioMenuComponent implements OnInit, AfterViewInit, OnChanges {
   @Input() song!: SongDTO;
   @Input() playlistSongs: SongDTO[] = [];
   @Input() isOptionPlaylist = true;
@@ -61,11 +61,6 @@ export class AudioMenuComponent implements OnInit, AfterViewInit, OnDestroy, OnC
 
       
     }
-
-  ngOnDestroy(): void {
-    // this.audioRef.nativeElement.ontimeupdate = null;
-    console.log("Destroyed")
-  }
 
   loadData() {
     const audio = this.audioRef.nativeElement;

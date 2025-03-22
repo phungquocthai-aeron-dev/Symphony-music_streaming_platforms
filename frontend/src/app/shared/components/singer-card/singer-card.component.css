@@ -1,0 +1,53 @@
+.card-hover-singer,
+.card-hover-playlist {
+    position: absolute;
+    width: 25%;
+    height: 25%;
+    bottom: 10%;
+    right: 10%;
+    max-width: 50px;
+    max-height: 50px;
+    min-width: 30px;
+    min-height: 30px;
+    background-color: var(--orange-color);
+    color: var(--black-color);
+    display: none;
+}
+
+.card-singer:hover .card-hover-singer,
+.card-playlist:hover .card-hover-playlist {
+    display: block;
+}
+
+.card-img-container,
+.card-img-playlist {
+    position: relative;
+}
+
+.card {
+    border: none;
+    position: relative;
+}
+
+.card_singer-img,
+.playlist-img-container {
+    transition: transform 0.4s ease-in-out;
+}
+
+.card-singer:hover,
+.card-playlist:hover {
+    border-radius: 8px;
+    background-color: var(--dark_grey-color) !important;
+}
+
+.card-singer:hover .card_singer-img,
+.card-playlist:hover .playlist-img-container {
+    transform: scale(1.07);
+}
+
+.card-hover-singer:hover,
+.card-hover-playlist:hover {
+    transform: scale(1.1);
+    filter: brightness(1.2);
+    cursor: pointer;
+}

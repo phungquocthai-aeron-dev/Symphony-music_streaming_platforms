@@ -9,6 +9,7 @@ import { Subject, takeUntil } from 'rxjs';
 import { NgFor } from '@angular/common';
 import { CardComponent } from '../../shared/components/card/card.component';
 import { NewCardComponent } from '../../shared/components/new-card/new-card.component';
+import { DataShareService } from '../../core/services/dataShare.service';
 
 @Component({
   selector: 'app-home',
@@ -36,10 +37,15 @@ export class HomeComponent implements OnInit, OnDestroy {
   topSongs: TopSongDTO[] = [];
   topTrendingStats: ListeningStatsDTO[] = [];
 
-  constructor(private homeService: HomeService) {}
+  constructor(
+    private homeService: HomeService,
+    private dataShareService: DataShareService) {}
 
   ngOnInit(): void {
     this.fetchData();
+    this.dataShareService.changeLeftSideInfo("Home");
+    this.dataShareService.changeTitle("Trang chủ");
+
     console.log(this.hotHitSongs)
 
   }

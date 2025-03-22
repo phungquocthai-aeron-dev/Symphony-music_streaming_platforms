@@ -1,0 +1,37 @@
+<main id="content" class="container-fluid bg-black-primary mt-5 pt-5">
+    <div class="row">
+        <div class="col-2 bg-black-primary">
+        </div>
+
+        <div id="content-option" class="col-10 p-4 pt-0">
+
+            <div id="songs-option" class="container p-0 listen-recently mt-4">
+                <h3 class="text-center text-white-primary mb-5">KẾT QUẢ TÌM KIẾM</h3>
+                <div class="row" *ngIf="songs">
+                    <h4 *ngIf="songs.length != 0" class="text-white-primary mb-4">Bài hát</h4>
+                       
+                    <app-card class="col-12 col-sm-6 col-md-3 col-lg-2 mb-2"
+                        *ngFor="let song of songs"
+                        [song]="song">
+                    </app-card>
+              
+                </div>
+                        
+                <div class="row" *ngIf="singers">
+                    <h4 *ngIf="singers.length != 0" class="text-white-primary mb-4">Nghệ sĩ</h4>
+                    <app-singer-card class="col-12 col-sm-6 col-md-3 col-lg-2 mb-2"
+                        *ngFor="let singer of singers" [singer]="singer">
+                    </app-singer-card>
+                </div>
+
+
+                <div *ngIf="songs.length == 0 && singers.length == 0" id="no-list-songs-favorite">
+                    <img id="empty-list-songs-img" src="assets/images/Empty-songs.png" alt="" class="mx-auto d-block" style="width: 350px;">
+                    <h3 class="text-white-primary text-center mb-5">Không tìm thấy kết quả</h3>
+                </div>
+
+                </div>
+            </div>
+
+        </div>
+</main>

@@ -5,6 +5,7 @@ import { AuthService } from '../../core/services/auth.service';
 import { SongService } from '../../core/services/song.service';
 import { ResponseData } from '../../shared/models/ResponseData';
 import { CardComponent } from '../../shared/components/card/card.component';
+import { DataShareService } from '../../core/services/dataShare.service';
 
 @Component({
   selector: 'app-recent',
@@ -18,12 +19,16 @@ export class RecentComponent implements OnInit {
 
   constructor(
     private authService: AuthService,
-    private songService: SongService
+    private songService: SongService,
+    private dataShareService: DataShareService
   ) {}
 
   ngOnInit(): void {
-      this.isLoggedIn = this.authService.isLoggedIn();
-      if(this.isLoggedIn) this.loadData();
+    this.dataShareService.changeLeftSideInfo("Recent");
+    this.dataShareService.changeTitle("Nghe gần đây");
+
+    this.isLoggedIn = this.authService.isLoggedIn();
+    if(this.isLoggedIn) this.loadData();
   }
 
   loadData() {

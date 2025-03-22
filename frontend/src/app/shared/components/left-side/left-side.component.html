@@ -3,7 +3,8 @@
         <div class="col-1 col-lg-2 fixed-top left-side ps-0">
             <ul class="list-group">
                 <h5 class="ps-5 pt-4 pb-2 left-side-title">Khám phá</h5>
-                <li class="list-group-item left-side-item bg-black-primary ps-5 border-0 active" data-option="home">
+                <li class="list-group-item left-side-item bg-black-primary ps-5 border-0"
+                [class.active]="checkCurrentPage('Home')" data-option="home">
                     <a class="text-decoration-none text-white-primary"  [routerLink]="['/home']">
                         <i class="left-side-icon pe-2 fa-solid fa-house"></i>
                         <span class="left-side-info">
@@ -11,7 +12,8 @@
                         </span>
                     </a>
                 </li>
-                <li class="list-group-item left-side-item bg-black-primary ps-5 border-0" data-option="rank">
+                <li class="list-group-item left-side-item bg-black-primary ps-5 border-0"
+                [class.active]="checkCurrentPage('Rank')" data-option="rank">
                     <a class="text-decoration-none text-white-primary"  [routerLink]="['/ranking']">
                         <i class="left-side-icon pe-2 fa-solid fa-ranking-star"></i>
                         <span class="left-side-info">
@@ -19,7 +21,8 @@
                         </span>
                     </a>
                 </li>
-                <li class="list-group-item left-side-item bg-black-primary ps-5 border-0" data-option="newSongs">
+                <li class="list-group-item left-side-item bg-black-primary ps-5 border-0"
+                [class.active]="checkCurrentPage('Release')" data-option="newSongs">
                     <a class="text-decoration-none text-white-primary"  [routerLink]="['/hot']">
                         <i class="left-side-icon pe-2 fa-solid fa-star"></i>
                         <span class="left-side-info">
@@ -27,7 +30,8 @@
                         </span>
                     </a>
                 </li>
-                <li class="list-group-item left-side-item bg-black-primary ps-5 border-0" data-option="category">
+                <li class="list-group-item left-side-item bg-black-primary ps-5 border-0"
+                [class.active]="checkCurrentPage('Topic')" data-option="category">
                     <a class="text-decoration-none text-white-primary" [routerLink]="['/topic']">
                         <i class="left-side-icon pe-2 fa-solid fa-bookmark"></i>
                         <span class="left-side-info">
@@ -37,7 +41,8 @@
                 </li>
 
                 <h5 class="mt-5 ps-5 pb-2 left-side-title">Về Bạn</h5>
-                <li class="list-group-item left-side-item bg-black-primary ps-5 border-0" data-option="recentlyListen">
+                <li class="list-group-item left-side-item bg-black-primary ps-5 border-0"
+                [class.active]="checkCurrentPage('Recent')" data-option="recentlyListen">
                     <a class="text-decoration-none text-white-primary" [routerLink]="['/recent']">
                         <i class="left-side-icon pe-2 fa-solid fa-clock"></i>
                         <span class="left-side-info">
@@ -45,7 +50,8 @@
                         </span>
                     </a>
                 </li>
-                <li class="list-group-item left-side-item bg-black-primary ps-5 border-0" data-option="favorite">
+                <li class="list-group-item left-side-item bg-black-primary ps-5 border-0"
+                [class.active]="checkCurrentPage('Favorite')" data-option="favorite">
                     <a class="text-decoration-none text-white-primary"  [routerLink]="['/favorite']">
                         <i class="left-side-icon pe-2 fa-regular fa-heart"></i>
                         <span class="left-side-info">

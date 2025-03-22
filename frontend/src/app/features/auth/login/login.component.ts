@@ -1,9 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NgIf } from '@angular/common';
 import { Authentication } from '../../../shared/models/Authentication.dto';
 import { AuthService } from '../../../core/services/auth.service';
 import { Router } from '@angular/router';
+import { DataShareService } from '../../../core/services/dataShare.service';
 
 @Component({
   selector: 'app-login',
@@ -12,7 +13,7 @@ import { Router } from '@angular/router';
   styleUrl: './login.component.css'
 })
 
-export class LoginComponent {
+export class LoginComponent implements OnInit {
   isSubmitted = false;
   auth = new FormGroup({
     phone: new FormControl('', Validators.required),
@@ -22,7 +23,12 @@ export class LoginComponent {
   constructor(
     private authService: AuthService,
     private router: Router,
+    private dataShareService: DataShareService
   ){}
+
+  ngOnInit(): void {
+    this.dataShareService.changeTitle("Đăng nhập");
+  }
 
   get phone() {
     return this.auth.get('phone')

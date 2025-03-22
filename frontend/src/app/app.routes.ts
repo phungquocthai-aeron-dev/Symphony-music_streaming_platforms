@@ -11,6 +11,8 @@ import { TopicComponent } from './features/topic/topic.component';
 import { ReleaseComponent } from './features/release/release.component';
 import { RecentComponent } from './features/recent/recent.component';
 import { FavoriteComponent } from './features/favorite/favorite.component';
+import { SearchComponent } from './features/search/search.component';
+import { RankComponent } from './features/rank/rank.component';
 
 export const routes: Routes = [
     { 
@@ -24,7 +26,9 @@ export const routes: Routes = [
             {path: 'topic', component: TopicComponent},
             {path: 'recent', component: RecentComponent},
             {path: 'hot', component: ReleaseComponent},
-            {path: 'favorite', component: FavoriteComponent}
+            {path: 'favorite', component: FavoriteComponent},
+            {path: 'search', component: SearchComponent},
+            {path: 'ranking', component: RankComponent}
         ]
      },
     { path: 'login', component: LoginComponent, canActivate: [LoginGuard]},

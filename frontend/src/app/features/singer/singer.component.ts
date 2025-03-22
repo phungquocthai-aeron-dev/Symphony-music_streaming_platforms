@@ -73,6 +73,7 @@ export class SingerComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
+    this.dataShareService.changeLeftSideInfo("Singer");
 
     this.paramSubscription = this.route.paramMap.subscribe(params => {
       this.singerId = params.get('id');
@@ -93,13 +94,13 @@ export class SingerComponent implements OnInit, OnDestroy {
           next: (response: ResponseData<SingerDTO>) => {
             if (response.code === 1000) {
               this.singer = response.result;
-              console.log(this.singer)
+              this.dataShareService.changeTitle(this.singer.stageName);
 
               this.authService.getUserBySingerId(this.singer.singer_id).subscribe({
                 next: (response: ResponseData<UserDTO>) => {
                   if (response.code === 1000) {
                     this.originUser = response.result;
-                  console.log(this.singer)
+           
                   }
 
                   if(this.authService.isLoggedIn()) {

@@ -1,7 +1,7 @@
 import { ListeningStatsDTO } from "./ListeningStats.dto";
-import { SongDTO } from "./Song.dto";
+import { TopSongDTO } from "./TopSong.dto";
 
 export interface RankingDTO {
-    topSong: SongDTO[],
+    topSong: TopSongDTO[],
     top3: ListeningStatsDTO[][]
 }

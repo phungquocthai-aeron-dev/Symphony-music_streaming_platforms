@@ -4,8 +4,9 @@ import { environment } from '../../../../environments/environment';
 import { AuthService } from '../../../core/services/auth.service';
 import { UserDTO } from '../../models/User.dto';
 import { NgIf } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { SingerDTO } from '../../models/Singer.dto';
+import { FormsModule } from '@angular/forms';
 
 interface ThemeSave {
   isDarkTheme: boolean;
@@ -15,10 +16,12 @@ interface ThemeSave {
   selector: 'app-header',
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.css'],
-  imports: [NgIf, RouterModule]
+  imports: [NgIf, RouterModule, FormsModule]
 })
+
 export class HeaderComponent implements OnInit {
   private COOKIE_NAME = 'music-streaming-theme';
+  search: string = '';
 
   pathLogoDarkTheme = environment.assetsPath + 'symphony-darktheme-icon.png';
   pathLogoLightTheme = environment.assetsPath + 'symphony-lighttheme-icon.png';
@@ -31,7 +34,8 @@ export class HeaderComponent implements OnInit {
 
   constructor(
     private cookieService: CookieService,
-    private authService: AuthService
+    private authService: AuthService,
+    private router: Router
   ) {
     const storedTheme = this.cookieService.get(this.COOKIE_NAME);
     this.dataTheme = storedTheme ? JSON.parse(storedTheme) : null;
@@ -84,5 +88,13 @@ export class HeaderComponent implements OnInit {
       document.documentElement.style.setProperty('--dark_grey-color', '#1e1e1e');
       document.documentElement.style.setProperty('--light_grey-color', '#d9dce1');
     }
+  }
+
+  handleSearch() {
+    this.search = this.search.trim();
+    
+    this.router.navigate(['/search'], { 
+      queryParams: { s: this.search } 
+    });
   }
 }

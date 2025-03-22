@@ -39,6 +39,7 @@ export class SongComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
+    this.eventSource.changeLeftSideInfo("Song");
     this.paramSubscription = this.route.paramMap.subscribe(params => {
       this.songId = params.get('id');
       if(this.songId) {
@@ -51,8 +52,9 @@ export class SongComponent implements OnInit, OnDestroy {
     this.songService.getSongById(songId).subscribe({
       next: (response: ResponseData<SongDTO>) => {
         this.song = response.result;
-        console.log("AAAA")
-        console.log(this.song.favorite)
+        this.eventSource.changeTitle(this.song.songName);
+
+
         // Tải file lời bài hát nếu có
         if (this.song.lyric) {
           const lyricPath = 'http://localhost:8080/symphony' + this.song.lyric;

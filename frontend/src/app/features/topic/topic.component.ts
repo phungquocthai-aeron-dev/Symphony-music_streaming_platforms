@@ -3,20 +3,27 @@ import { SongService } from '../../core/services/song.service';
 import { CategoryDTO } from '../../shared/models/Category.dto';
 import { ResponseData } from '../../shared/models/ResponseData';
 import { NgFor } from '@angular/common';
+import { DataShareService } from '../../core/services/dataShare.service';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-topic',
-  imports: [NgFor],
+  imports: [NgFor, RouterModule],
   templateUrl: './topic.component.html',
   styleUrl: './topic.component.css'
 })
 export class TopicComponent implements OnInit {
   categories:CategoryDTO[] = []
 
-  constructor(private songService: SongService) {}
+  constructor(
+    private songService: SongService,
+    private dataShareService: DataShareService) {}
   
   ngOnInit(): void {
-      this.loadData();
+    this.dataShareService.changeLeftSideInfo("Topic");
+    this.dataShareService.changeTitle("Chủ đề");
+
+    this.loadData();
   }
 
   loadData() {

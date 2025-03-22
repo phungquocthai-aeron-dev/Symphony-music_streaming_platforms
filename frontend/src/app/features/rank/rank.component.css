@@ -1,0 +1,47 @@
+i.active {
+    color: var(--orange-color);
+}
+
+#content-ranking-songs ul li:not(:first-child):hover {
+    background-color: var(--dark_grey-color);
+}
+
+.row-song-ranking div:last-child {
+    margin-right: 50px;
+}
+
+ul {
+    list-style: none;
+}
+
+.top1-ranking {
+    color: var(--blue-color);
+}
+
+.top2-ranking {
+    color: var(--green-color);
+}
+
+.top3-ranking {
+    color: var(--pink_strong-color);
+}
+
+.chart-container {
+    margin-top: 100px;
+}
+
+.active-song-status:hover {
+    cursor: pointer;
+    filter: brightness(1.1);
+    scale: 1.1;
+}
+
+@media screen and (max-width: 992px) {
+    #content-ranking-songs ul li:first-child {
+        display: none;
+    }
+
+    .ranking-song .row>div {
+        margin-top: 12px;
+    }
+}

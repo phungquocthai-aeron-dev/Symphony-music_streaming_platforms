@@ -9,6 +9,7 @@ import { RankingDTO } from '../../shared/models/Ranking.dto';
 import { HttpParams } from '@angular/common/http';
 import { CategoryDTO } from '../../shared/models/Category.dto';
 import { AuthService } from './auth.service';
+import { SearchDTO } from '../../shared/models/Search.dto';
 
 
 @Injectable({
@@ -153,7 +154,7 @@ export class SongService {
   }
 
 
- getTopSong(limit: number = 100): Observable<ResponseData<RankingDTO>> {
+ getTopSong(limit: number = 10): Observable<ResponseData<RankingDTO>> {
    // Tạo params để truyền limit
    const params = new HttpParams().set('limit', limit.toString());
    
@@ -191,6 +192,11 @@ reportListenedSong(songId: number): Observable<number> {
 userListened(songId: number): Observable<void> {
   const params = new HttpParams().set('id', songId.toString());
   return this.http.get<void>(`${environment.apiUrl}user/listened`, { params });
+}
+
+search(search: string): Observable<ResponseData<SearchDTO>> {
+  const params = new HttpParams().set('s', search);
+  return this.http.get<ResponseData<SearchDTO>>(`${environment.apiUrl}search`, { params });
 }
 
 }

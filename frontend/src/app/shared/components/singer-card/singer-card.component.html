@@ -1,0 +1,19 @@
+<div>
+    <div class="card card-singer p-2" data-index="" style="background-color: var(--black-color);">
+        <div class="card-img-container overflow-hidden rounded-circle">
+            <a class="refer text-decoration-none text-support" [routerLink]="['/singer', singer.singer_id]">
+                <img class="card-img-top card_singer-img rounded-3"
+                *ngIf="user"
+                [src]="'http://localhost:8080/symphony' + user.avatar"
+                    alt="Card image">
+            </a>
+        </div>
+        <div class="card-body ps-0 pe-0">
+            <h6 class="card-title card-singer-name"
+                style="color: var(--text_dark_theme-color);">
+                <a [routerLink]="['/singer', singer.singer_id]" class="text-decoration-none text-white-primary refer">{{ singer.stageName }}</a>
+            </h6>
+            <p class="card-text card-singer-singer text-support">Nghệ sĩ</p>
+        </div>
+    </div>
+</div>

@@ -4,6 +4,7 @@ import { AuthService } from '../../../core/services/auth.service';
 import { Router } from '@angular/router';
 import { UserRegistrationDTO } from '../../../shared/models/UserRegistration.dto';
 import { NgIf } from '@angular/common';
+import { DataShareService } from '../../../core/services/dataShare.service';
 
 @Component({
   selector: 'app-register',
@@ -31,9 +32,14 @@ export class RegisterComponent implements OnInit {
   maxDate?: string;
 
 
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(
+    private authService: AuthService, 
+    private router: Router,
+    private dataShareService: DataShareService) {}
 
   ngOnInit() {
+    this.dataShareService.changeTitle("Đăng ký");
+
     const today = new Date();
 today.setMinutes(today.getMinutes() - today.getTimezoneOffset()); // Điều chỉnh theo múi giờ địa phương
 this.maxDate = today.toISOString().split('T')[0]; 

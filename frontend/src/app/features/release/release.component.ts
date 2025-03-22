@@ -5,6 +5,7 @@ import { SongDTO } from '../../shared/models/Song.dto';
 import { SongService } from '../../core/services/song.service';
 import { ResponseData } from '../../shared/models/ResponseData';
 import { Subscription } from 'rxjs';
+import { DataShareService } from '../../core/services/dataShare.service';
 
 @Component({
   selector: 'app-release',
@@ -17,10 +18,14 @@ export class ReleaseComponent implements OnInit, OnDestroy {
   private paramSubscription!: Subscription;
   
   constructor(
-    private songService: SongService
+    private songService: SongService,
+    private dataShareService: DataShareService
   ) {}
 
   ngOnInit(): void {
+      this.dataShareService.changeLeftSideInfo("Release");
+      this.dataShareService.changeTitle("Mới phát hành");
+
       this.loadData();
   }
 

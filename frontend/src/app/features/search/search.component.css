@@ -1,0 +1,9 @@
+#content {
+    min-height: 500px;
+}
+
+#empty-list-songs-img {
+    width: 20%;
+    max-width: 250px;
+    min-width: 200px;
+}
