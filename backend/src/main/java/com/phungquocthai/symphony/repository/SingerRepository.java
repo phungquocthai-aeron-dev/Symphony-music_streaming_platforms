@@ -1,6 +1,7 @@
 package com.phungquocthai.symphony.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -38,4 +39,12 @@ public interface SingerRepository extends JpaRepository<Singer, Integer> {
             "WHERE p.song_id IN (:ids)", 
     nativeQuery = true)
 	List<Singer> findAllBySongId(@Param("ids") Iterable<Integer> ids);
+	
+	@Query(value = "SELECT * FROM singer WHERE user_id = :userId", nativeQuery = true)
+	Optional<Singer> findByUserId(@Param("userId") Integer userId);
+	
+	@Query(value = "SELECT * FROM singer WHERE singer_id NOT IN (:ids)", 
+    nativeQuery = true)
+	List<Singer> findAllBySongIdNotIn(@Param("ids") Iterable<Integer> ids);
+
 }

@@ -30,11 +30,13 @@ public class SecurityConfig {
 	private CustomJwtDecoder customJwtDecoder;
 
 	private final String[] PUBLIC_GET_ENDPOINTS = {"/", "/home", "/singer/**", "/song/**",
-			"/auth/register", "/auth/login", 
-			"/music/normal/**", "/lyric/**", "/lrc/**", "/images/**",
-			"/ranking", "/newSongs", "/category", "/recentlyListen", "/favorite"};
+			"/auth/register", "/auth/login", "/user/singer/**", "/user\\?id=\\d+",
+			"/music/**", "/lyric/**", "/lrc/**", "/images/**", "/singer/exclude",
+			"/ranking", "/newSongs", "/category", "/favorite"};
 	
-	private final String[] PUBLIC_POST_ENDPOINTS = {"/auth/login", "/auth/register", "/auth/logout", "/auth/refresh"};
+	private final String[] PUBLIC_POST_ENDPOINTS = {"/auth/login", "/auth/register", "/auth/logout",
+			"/auth/refresh", "/song/listenedSong",
+			"/singer/exclude**", "/singer/exclude/**", "/singer/exclude"};
 	
 //	private final String[] ADMIN_ENDPOINTS = {"/user/users", "/singer/singers", "/singer/create"};
 //	
@@ -78,10 +80,13 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(Arrays.asList("http://localhost:4200"));
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
-        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "Accept"));
+        configuration.setAllowedOriginPatterns(Arrays.asList("*"));
+//        configuration.setAllowedMethods(Arrays.asList("*"));
+//        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "Accept"));
         configuration.setAllowCredentials(true);
-        
+//        configuration.setAllowedHeaders(Arrays.asList("*"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "Accept"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;

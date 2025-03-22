@@ -1,5 +1,6 @@
 package com.phungquocthai.symphony.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,6 +50,14 @@ public class UserController {
 	public ResponseEntity<ApiResponse<UserDTO>> findById(@RequestParam(value = "id", required = true) Integer userId) {
 		ApiResponse<UserDTO> apiResponse = new ApiResponse<UserDTO>();
 		UserDTO user = userService.getUserById(userId);
+		apiResponse.setResult(user);
+		return ResponseEntity.ok(apiResponse);
+	}
+	
+	@GetMapping("/singer")
+	public ResponseEntity<ApiResponse<UserDTO>> findBySingerId(@RequestParam(value = "id", required = true) Integer userId) {
+		ApiResponse<UserDTO> apiResponse = new ApiResponse<UserDTO>();
+		UserDTO user = userService.getUserBySingerId(userId);
 		apiResponse.setResult(user);
 		return ResponseEntity.ok(apiResponse);
 	}
@@ -111,13 +120,52 @@ public class UserController {
 		return ResponseEntity.ok(apiResponse);
 	}
 	
-	@GetMapping("/library")
-	public ResponseEntity<ApiResponse<LibraryDTO>> library(@RequestParam(value = "id", required = true) Integer userId) {
-		LibraryDTO libraryDTO = LibraryDTO.builder()
-				.playlists(playlistService.getPlaylistOfUser(userId))
-				.songs(songService.getFavoriteSongsOfUser(userId))
+//	@GetMapping("/library")
+//	public ResponseEntity<ApiResponse<LibraryDTO>> library(@RequestParam(value = "id", required = true) Integer userId) {
+//		LibraryDTO libraryDTO = LibraryDTO.builder()
+//				.playlists(playlistService.getPlaylistOfUser(userId))
+//				.songs(songService.getFavoriteSongsOfUser(userId))
+//				.build();
+//		return ResponseEntity.ok(ApiResponse.<LibraryDTO>builder().result(libraryDTO).build());
+//	}
+	
+	@GetMapping("/listened")
+	public void listened(
+			@RequestParam(value = "id", required = true) int songId,
+			@AuthenticationPrincipal Jwt jwt) {
+		if(jwt != null) {
+			try {
+				Integer userId = Integer.parseInt(jwt.getSubject());
+				log.info(userId.toString());
+				this.songService.listenedSong(userId, songId);
+		    } catch (NumberFormatException e) {
+		        log.error(e.getMessage());
+		    }
+			
+		}
+	}
+	
+	@GetMapping("/recently")
+	public ResponseEntity<ApiResponse<List<SongDTO>>> recentlyListenSongs(
+			@AuthenticationPrincipal Jwt jwt,
+			@RequestParam(value = "limit", defaultValue = "50") Integer limit) {
+		List<SongDTO> songs = new ArrayList<SongDTO>();
+		
+		if(jwt != null) {
+			try {
+				Integer userId = Integer.parseInt(jwt.getSubject());
+				songs = songService.getRecentlyListenSongs(userId, limit);
+
+		    } catch (NumberFormatException e) {
+		        log.error(e.getMessage());
+		    }
+			
+		}
+		
+		ApiResponse<List<SongDTO>> apiResponse = ApiResponse.<List<SongDTO>>builder()
+				.result(songs)
 				.build();
-		return ResponseEntity.ok(ApiResponse.<LibraryDTO>builder().result(libraryDTO).build());
+		return ResponseEntity.ok(apiResponse);
 	}
 	
 }

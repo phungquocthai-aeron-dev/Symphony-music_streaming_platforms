@@ -2,13 +2,15 @@ package com.phungquocthai.symphony.service;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.Collections;
+
 import java.util.List;
-import java.util.Set;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -31,6 +33,7 @@ import com.phungquocthai.symphony.mapper.SongCreateMapper;
 import com.phungquocthai.symphony.mapper.SongMapper;
 import com.phungquocthai.symphony.mapper.TopSongMapper;
 import com.phungquocthai.symphony.repository.CategoryRepository;
+import com.phungquocthai.symphony.repository.FavoriteRepository;
 import com.phungquocthai.symphony.repository.SingerRepository;
 import com.phungquocthai.symphony.repository.SongRepository;
 
@@ -68,52 +71,82 @@ public class SongService {
 	@Autowired
 	CategoryMapper categoryMapper;
 	
-	@Transactional
-	public List<SongDTO> getFavoriteSongsOfUser(Integer user_id) {
-		List<Song> songEntities = songRepository.getFavoriteSongsOfUser(user_id); 
+	@Autowired
+	FavoriteRepository favoriteRepository;
+	
+	public List<SongDTO> getFavoriteSongsOfUser(Integer userId) {
+		List<Song> songEntities = songRepository.getFavoriteSongsOfUser(userId); 
 		if(!songEntities.isEmpty()) {
-			List<SongDTO> songs = songEntities.stream()
-					.map(songEntity -> new SongDTO(songEntity))
-					.collect(Collectors.toList());
+			List<SongDTO> songs = songMapper.toListDTO(songEntities);
+			songs.forEach(song -> song.setFavorite(true));
 			return songs;
 		}
 		return null;
 	}
 	
+	public void reverseFavorite(Integer songId, Integer userId) {		
+		Integer check = favoriteRepository.findFavorited(songId, userId);
+		if(check == null) favoriteRepository.insertFavorite(songId, userId);
+		else favoriteRepository.deleteBySongIdAndUserId(songId, userId);
+	}
+	
+//	public void removeFavorite(Integer songId, Integer userId) {
+//		favoriteRepository.deleteBySongIdAndUserId(songId, userId);
+//	}
+	
 	public List<SongDTO> getRecentlyListenSongs(Integer userId, Integer limit) {
-		List<Song> songEntities = songRepository.getRecentlyListenSongs(userId, limit); 
+		List<Song> songEntities = songRepository.findRecentlyListenedSongs(userId, limit); 
 		List<SongDTO> songs = null;
 		if(!songEntities.isEmpty()) {
 			songs = songEntities.stream()
-					.map(songEntity -> new SongDTO(songEntity))
+					.map(song -> songMapper.toDTO(song))
 					.collect(Collectors.toList());
+			songs.forEach(song -> song.setFavorite(isFavoriteSong(song.getSong_id(), userId)));
 		}
 		return songs;
+	}
+	
+	public void listenedSong(Integer userId, Integer songId) {
+		this.songRepository.addListened(userId, songId);
 	}
 	
 	@PreAuthorize("hasRole('SINGER')")
 	public SongDTO create(SongCreateDTO dto, MultipartFile pathFile, MultipartFile lyricFile,
 			MultipartFile lrcFile, MultipartFile songImgFile) {
+		log.info("AB");
 		Song song = songCreateMapper.toEntity(dto);
+		log.info("BA");
 		
 		PathStorage musicStore = (dto.getIsVip()) ? PathStorage.MUSIC_VIP : PathStorage.MUSIC_NORMAL;
+		log.info("B");
 		String path = fileStorageService.storeFile(pathFile, musicStore);
 		String lyric = fileStorageService.storeFile(lyricFile, PathStorage.LYRIC);
 		String lrc = fileStorageService.storeFile(lrcFile, PathStorage.LRC);
 		String songImg = fileStorageService.storeFile(songImgFile, PathStorage.MUSIC_IMG);
-		
+		log.info("C");
 		song.setPath(path);
 		song.setLyric(lyric);
 		song.setLrc(lrc);
 		song.setSong_img(songImg);
 		
-		Set<Singer> singers = new HashSet<Singer>(singerRepository.findAllById(dto.getSingersId()));
-		Set<Category> categories = new HashSet<Category>(categoryRepository.findAllById(dto.getCategoryIds()));
 		
-		song.setCategories(categories);
-		song.setSingers(singers);
+		SongDTO songDTO = songMapper.toDTO(songRepository.save(song));		
 		
-		return songMapper.toDTO(songRepository.save(song));		
+		int singersSize = dto.getSingersId().size();
+		for(int i = 0; i < singersSize; i++) {
+			System.out.println("INS");
+			songRepository.addSongToSinger(dto.getSingersId().get(i), songDTO.getSong_id());
+		}
+		
+		int categoriesSize = dto.getCategoryIds().size();
+		for(int i = 0; i < categoriesSize; i++) {
+			System.out.println("INSS");
+
+			songRepository.addSongToCategory(dto.getCategoryIds().get(i), songDTO.getSong_id());
+		}
+		
+		log.info("E");
+		return songDTO;
 	}
 
 	@PreAuthorize("hasRole('SINGER', 'ADMIN')")
@@ -167,40 +200,155 @@ public class SongService {
 	}
 	
 	public SongDTO getSongById(Integer songId) {
-		Song song = songRepository.findById(songId)
+		Song songEntity = songRepository.findById(songId)
 				.orElseThrow(() -> new AppException(ErrorCode.SONG_NOT_EXISTED));
-		return songMapper.toDTO(song);
+		SongDTO song = songMapper.toDTO(songEntity);
+		String userIdLoggedIn = getUserIdIfLoggedIn();
+		log.info(userIdLoggedIn);
+		log.info("AAAAAAAAAAAAA");
+		if(userIdLoggedIn != null) {
+			try {
+				int userId = Integer.parseInt(userIdLoggedIn);
+				boolean check = isFavoriteSong(songId, userId);
+				log.info(check + "");
+
+				if(check) {
+					song.setFavorite(check);
+				}
+			} catch (NumberFormatException e) {
+				log.error(e.getMessage());
+			}
+		}
+		return song;
+	}
+	
+	public SongDTO getNewSong() {
+		Song songEntity = songRepository.getNewSong()
+				.orElseThrow(() -> new AppException(ErrorCode.SONG_NOT_EXISTED));
+		
+		SongDTO song = songMapper.toDTO(songEntity);
+		isFavoriteSong(song.getSong_id(), null);
+		String userIdLoggedIn = getUserIdIfLoggedIn();
+		if(userIdLoggedIn != null) {
+			try {
+				int userId = Integer.parseInt(userIdLoggedIn);
+				boolean check = isFavoriteSong(song.getDuration(), userId);
+				if(check) {
+					song.setFavorite(check);
+				}
+			} catch (NumberFormatException e) {
+				log.error(e.getMessage());
+			}
+		}
+		
+		return song;
 	}
 	
 	public List<SongDTO> getNewSongs(Integer limit) {
-		List<Song> song = songRepository.findSongsFromLastYear(limit);
-		return songMapper.toListDTO(song);
+		List<Song> songEntities = songRepository.findSongsFromLastYear(limit);
+		List<SongDTO> songs = songMapper.toListDTO(songEntities);
+		
+		String userIdLoggedIn = getUserIdIfLoggedIn();
+		if(userIdLoggedIn != null) {
+			try {
+				int userId = Integer.parseInt(userIdLoggedIn);
+				
+				songs.forEach(song -> song.setFavorite(isFavoriteSong(song.getSong_id(), userId)));
+
+			} catch (NumberFormatException e) {
+				log.error(e.getMessage());
+			}
+		}
+		
+		return songs;
 	}
 	
 	public List<SongDTO> searchSongs(String key) {
-		List<Song> songs = songRepository.searchSong(key);
-		return songMapper.toListDTO(songs);
+		List<Song> songEntities = songRepository.searchSong(key);
+		
+		List<SongDTO> songs = songMapper.toListDTO(songEntities);
+		String userIdLoggedIn = getUserIdIfLoggedIn();
+		if(userIdLoggedIn != null) {
+			try {
+				int userId = Integer.parseInt(userIdLoggedIn);
+				
+				songs.forEach(song -> song.setFavorite(isFavoriteSong(song.getSong_id(), userId)));
+
+			} catch (NumberFormatException e) {
+				log.error(e.getMessage());
+			}
+		}
+		return songs;
 	}
 	
 	public List<SongDTO> getSongsByCategoryId(Integer categoryId) {
-		List<Song> songs = songRepository.getSongsByCategory(categoryId);
-		return songMapper.toListDTO(songs);
+		List<Song> songEntities = songRepository.getSongsByCategory(categoryId);
+		List<SongDTO> songs = songMapper.toListDTO(songEntities);
+		String userIdLoggedIn = getUserIdIfLoggedIn();
+		if(userIdLoggedIn != null) {
+			try {
+				int userId = Integer.parseInt(userIdLoggedIn);
+				
+				songs.forEach(song -> song.setFavorite(isFavoriteSong(song.getSong_id(), userId)));
+
+			} catch (NumberFormatException e) {
+				log.error(e.getMessage());
+			}
+		}
+		return songs;
 	}
 	
 	public List<SongDTO> getSongsByCategoryName(String categoryName, Integer limit) {
-		List<Song> songs = songRepository.getSongsByCategory(categoryName, limit);
-		return songMapper.toListDTO(songs);
+		List<Song> songEntities = songRepository.getSongsByCategory(categoryName, limit);
+		log.info(categoryName);
+		List<SongDTO> songs = songMapper.toListDTO(songEntities);
+		String userIdLoggedIn = getUserIdIfLoggedIn();
+		if(userIdLoggedIn != null) {
+			try {
+				int userId = Integer.parseInt(userIdLoggedIn);
+				
+				songs.forEach(song -> song.setFavorite(isFavoriteSong(song.getSong_id(), userId)));
+
+			} catch (NumberFormatException e) {
+				log.error(e.getMessage());
+			}
+		}
+		return songs;
 	}
 	
 	@PreAuthorize("hasRole('ADMIN')")
 	public List<SongDTO> findAll() {
-		List<Song> songs = songRepository.findAll();
-		return songMapper.toListDTO(songs);
+		List<Song> songEntities = songRepository.findAll();
+		List<SongDTO> songs = songMapper.toListDTO(songEntities);
+		String userIdLoggedIn = getUserIdIfLoggedIn();
+		if(userIdLoggedIn != null) {
+			try {
+				int userId = Integer.parseInt(userIdLoggedIn);
+				
+				songs.forEach(song -> song.setFavorite(isFavoriteSong(song.getSong_id(), userId)));
+
+			} catch (NumberFormatException e) {
+				log.error(e.getMessage());
+			}
+		}
+		return songs;
 	}
 	
 	public List<SongDTO> getBySingerId(Integer singerId) {
-		List<Song> songs = songRepository.findBySingerId(singerId);
-		return songMapper.toListDTO(songs);
+		List<Song> songEntities = songRepository.findBySingerId(singerId);
+		List<SongDTO> songs = songMapper.toListDTO(songEntities);
+		String userIdLoggedIn = getUserIdIfLoggedIn();
+		if(userIdLoggedIn != null) {
+			try {
+				int userId = Integer.parseInt(userIdLoggedIn);
+				
+				songs.forEach(song -> song.setFavorite(isFavoriteSong(song.getSong_id(), userId)));
+
+			} catch (NumberFormatException e) {
+				log.error(e.getMessage());
+			}
+		}
+		return songs;
 	}
 	
 	public List<CategoryDTO> getAllCategories() {
@@ -208,22 +356,55 @@ public class SongService {
 		return categoryMapper.toListDTO(categories);
 	}
 	
+	public List<SongDTO> recommedSongs(List<Integer> ids, int size) {
+		List<Song> songs = songRepository.findAllByCategoryId(ids);
+		if(size > songs.size()) return songMapper.toListDTO(songs);
+		
+		Collections.shuffle(songs, new Random());
+
+	    return songMapper.toListDTO(new ArrayList<Song>(songs.subList(0, size)));
+	}
+	
 	public List<SongDTO> getHotHitSong(Integer limit) {
-		List<Song> songs = songRepository.findHotHit(limit);
-		return songMapper.toListDTO(songs);
+		List<Song> songEntities = songRepository.findHotHit(limit);
+		List<SongDTO> songs = songMapper.toListDTO(songEntities);
+		String userIdLoggedIn = getUserIdIfLoggedIn();
+		if(userIdLoggedIn != null) {
+			try {
+				int userId = Integer.parseInt(userIdLoggedIn);
+				
+				songs.forEach(song -> song.setFavorite(isFavoriteSong(song.getSong_id(), userId)));
+
+			} catch (NumberFormatException e) {
+				log.error(e.getMessage());
+			}
+		}
+		return songs;
 	}
 	
 	public List<SongDTO> getByCategoryId(List<Integer> ids) {
-		List<Song> songs = songRepository.findAllByCategoryId(ids);
-		return songMapper.toListDTO(songs);
+		List<Song> songEntities = songRepository.findAllByCategoryId(ids);
+		List<SongDTO> songs = songMapper.toListDTO(songEntities);
+		String userIdLoggedIn = getUserIdIfLoggedIn();
+		if(userIdLoggedIn != null) {
+			try {
+				int userId = Integer.parseInt(userIdLoggedIn);
+				
+				songs.forEach(song -> song.setFavorite(isFavoriteSong(song.getSong_id(), userId)));
+
+			} catch (NumberFormatException e) {
+				log.error(e.getMessage());
+			}
+		}
+		return songs;
 	}
 	
 	@Transactional
 	public List<SongDTO> recommend(SongDTO song) {
 		List<Integer> ids = song.getSingers().stream().map(SingerDTO::getSinger_id).collect(Collectors.toList());
-		List<Song> songs = songRepository.findAllByCategoryId(ids);
+		List<Song> songEntities = songRepository.findAllByCategoryId(ids);
 		
-		int size = songs.size();
+		int size = songEntities.size();
 		int n = 0;
 		if(size < 6) {
 			List<Song> support = songRepository.findAllByCategoryIdNotIn(song.getCategoryIds(), ids);
@@ -231,12 +412,25 @@ public class SongService {
 			
 			if(support.size() > 0) {
 				while(size < 6 || n < sizeSupport) {
-					songs.add(support.get(n++));
+					songEntities.add(support.get(n++));
 					size++;
 				}
 			}
 		}
-		return songMapper.toListDTO(songs);
+		
+		List<SongDTO> songs = songMapper.toListDTO(songEntities);
+		String userIdLoggedIn = getUserIdIfLoggedIn();
+		if(userIdLoggedIn != null) {
+			try {
+				int userId = Integer.parseInt(userIdLoggedIn);
+				
+				songs.forEach(songItem -> songItem.setFavorite(isFavoriteSong(song.getSong_id(), userId)));
+
+			} catch (NumberFormatException e) {
+				log.error(e.getMessage());
+			}
+		}
+		return songs;
 	}
 	
 	public List<TopSongDTO> getTopSong(Integer limit) {
@@ -248,9 +442,20 @@ public class SongService {
 		    song.setTotal_listens_per_hour(((Long) row[1]).longValue());
 		    songs.add(song);
 		}
+		String userIdLoggedIn = getUserIdIfLoggedIn();
+		if(userIdLoggedIn != null) {
+			try {
+				int userId = Integer.parseInt(userIdLoggedIn);
+				
+				songs.forEach(song -> song.setFavorite(isFavoriteSong(song.getSong_id(), userId)));
+
+			} catch (NumberFormatException e) {
+				log.error(e.getMessage());
+			}
+		}
 		return songs;
 	}
-	
+
 	public List<ListeningStatsDTO> listeningStatistics(Integer songId) {
 		List<Object[]> rows = songRepository.getHourlyListeningStats(songId);
 		List<ListeningStatsDTO> songs = new ArrayList<ListeningStatsDTO>();
@@ -298,5 +503,32 @@ public class SongService {
 		result.add(top1);
 		
 		return result;
+	}
+	
+	private boolean isFavoriteSong(Integer songId, Integer userId) {
+		int isExisted = favoriteRepository.findByPrimaryKey(songId, userId);
+		if(isExisted >= 1) return true;
+		
+//	    if(userId == null) {
+//	    	Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//		    if (authentication != null && authentication.getPrincipal() instanceof Jwt) {
+//		        Jwt jwt = (Jwt) authentication.getPrincipal();
+//		        if(jwt != null) {
+//		        	Integer usId = Integer.valueOf(jwt.getSubject());
+//		        	int isExisted2 = favoriteRepository.findByPrimaryKey(songId, usId);
+//		    		if(isExisted2 >= 1) return true;
+//		        }
+//		    }
+//	    }
+	    
+		return false;
+	}
+	
+	private String getUserIdIfLoggedIn() {
+		String userId = SecurityContextHolder.getContext().getAuthentication().getName();
+		if(userId.equals("anonymousUser")) {
+			return null;
+		}
+		return userId;
 	}
 }

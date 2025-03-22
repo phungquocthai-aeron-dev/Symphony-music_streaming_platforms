@@ -2,6 +2,9 @@ package com.phungquocthai.symphony.entity;
 
 import java.time.LocalDate;
 import java.util.Set;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import java.util.List;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -60,9 +63,11 @@ public class Song {
     private Set<Album> albums;
     
     @ManyToMany(mappedBy = "songs")
+    @JsonManagedReference
     private Set<Category> categories;
     
     @ManyToMany(mappedBy = "songs")
+    @JsonManagedReference
     private Set<Singer> singers;
     
     @OneToMany(mappedBy = "song")

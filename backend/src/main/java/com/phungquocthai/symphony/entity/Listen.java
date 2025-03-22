@@ -1,6 +1,9 @@
 package com.phungquocthai.symphony.entity;
 
 import java.time.LocalDateTime;
+
+import org.hibernate.annotations.CreationTimestamp;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -29,6 +32,7 @@ public class Listen {
 	private int listen_id;
 	
 	@Column(name = "listen_at")
+	@CreationTimestamp
 	private LocalDateTime listen_at;
 	
 	@ManyToOne

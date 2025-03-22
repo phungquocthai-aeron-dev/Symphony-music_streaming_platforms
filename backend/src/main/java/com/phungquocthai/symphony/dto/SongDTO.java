@@ -4,8 +4,8 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.phungquocthai.symphony.entity.Category;
-import com.phungquocthai.symphony.entity.Song;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -57,38 +57,19 @@ public class SongDTO {
     private Boolean isVip;
     
     @NotEmpty(message = "Vui lòng chọn thể loại cho bài hát")
-    private List<Integer> categoryIds;
+    private List<CategoryDTO> categories;
     
     @NotEmpty(message = "Vui lòng chọn ca sĩ thể hiện")
     private List<SingerDTO> singers;
     
     private boolean isFavorite;
     
-    public SongDTO(Song song) {
-    	this.song_id = song.getSong_id();
-    	this.author = song.getAuthor();
-    	this.duration = song.getDuration();
-    	this.isVip = song.getIsVip();
-    	this.lrc = song.getLrc();
-    	this.lyric = song.getLyric();
-    	this.path = song.getPath();
-    	this.releaseDate = song.getReleaseDate();
-    	this.song_img = song.getSong_img();
-    	this.total_listens = song.getTotal_listens();
-    	
-    	if(song.getCategories() != null) {
-    		this.categoryIds = song.getCategories().stream().map(Category::getCategory_id).collect(Collectors.toList());
+    @JsonIgnore
+    public List<Integer> getCategoryIds() { 
+    	if(getCategories() != null) {
+    		return getCategories().stream().map(CategoryDTO::getCategory_id).collect(Collectors.toList());
     	}
-    	else {
-    		this.categoryIds = null;
-    	}
-    	
-    	if(song.getSingers() != null) {
-    		this.singers = song.getSingers().stream().map(singer -> new SingerDTO(singer)).collect(Collectors.toList());
-    	}
-    	else {
-    		this.singers = null;
-    	}
+    	return null;
     }
 
 }

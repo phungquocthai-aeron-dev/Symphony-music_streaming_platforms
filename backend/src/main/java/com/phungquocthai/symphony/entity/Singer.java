@@ -2,6 +2,9 @@ package com.phungquocthai.symphony.entity;
 
 import java.util.List;
 import java.util.Set;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -45,6 +48,7 @@ public class Singer {
 					@JoinColumn(name = "song_id")
 			}
 		)
+    @JsonBackReference
     private Set<Song> songs;
 
 }

@@ -6,7 +6,8 @@ import lombok.Getter;
 public enum Role {
     USER("USER", "Người dùng thông thường"),
     SINGER("SINGER", "Ca sĩ"),
-    ADMIN("ADMIN", "Quản trị");
+    ADMIN("ADMIN", "Quản trị"),
+	VIP("VIP", "Vip");
 
     private String value;
     private String description;

@@ -52,21 +52,21 @@ public class HomeController {
 		data.setLyricalSongs(lyricalSongs);
 		data.setNewSongs(newSongs);
 		
-		if(jwt != null) {
-			try {
-				Integer userId = Integer.parseInt(jwt.getSubject());
-				List<SongDTO> recentlyListen = songService.getRecentlyListenSongs(Integer.valueOf(userId), 6);
-				if(recentlyListen != null) {
-					List<SongDTO> recommend = songService.recommend(recentlyListen.get(0));
-					
-					data.setRecentlyListen(recentlyListen);
-					data.setRecommend(recommend);
-				}
-		    } catch (NumberFormatException e) {
-		        log.error(e.getMessage());
-		    }
-			
-		}
+//		if(jwt != null) {
+//			try {
+//				Integer userId = Integer.parseInt(jwt.getSubject());
+//				List<SongDTO> recentlyListen = songService.getRecentlyListenSongs(Integer.valueOf(userId), 6);
+//				if(recentlyListen != null) {
+//					List<SongDTO> recommend = songService.recommend(recentlyListen.get(0));
+//					
+//					data.setRecentlyListen(recentlyListen);
+//					data.setRecommend(recommend);
+//				}
+//		    } catch (NumberFormatException e) {
+//		        log.error(e.getMessage());
+//		    }
+//			
+//		}
 		
 		List<TopSongDTO> topSongs = songService.getTopSong(3);
 		List<List<ListeningStatsDTO>> top = null;
@@ -83,10 +83,9 @@ public class HomeController {
 				top = songService.getTop1TrendingSongsPastHour(topSongs.get(0).getSong_id());
 			}
 		}
-		
+				
 		data.setTopSongs(topSongs);
 		data.setTopTrendingStats(top);
-		
 		return ResponseEntity.ok(
 				ApiResponse.<HomeDTO>builder()
 				.result(data)

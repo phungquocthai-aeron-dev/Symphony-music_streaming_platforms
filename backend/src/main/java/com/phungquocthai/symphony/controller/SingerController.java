@@ -1,11 +1,13 @@
 package com.phungquocthai.symphony.controller;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -28,6 +30,16 @@ public class SingerController {
 	public ResponseEntity<ApiResponse<SingerDTO>> findById(
 			@RequestParam(value = "id", required = true) Integer singerId) {
 		SingerDTO singer = singerService.getSinger(singerId);
+		ApiResponse<SingerDTO> apiResponse = ApiResponse.<SingerDTO>builder()
+				.result(singer)
+				.build();
+		return ResponseEntity.ok(apiResponse);
+	}
+	
+	@GetMapping("/user")
+	public ResponseEntity<ApiResponse<SingerDTO>> findByUserId(
+			@RequestParam(value = "id", required = true) Integer userId) {
+		SingerDTO singer = singerService.getSingerByUserId(userId);
 		ApiResponse<SingerDTO> apiResponse = ApiResponse.<SingerDTO>builder()
 				.result(singer)
 				.build();
@@ -64,6 +76,18 @@ public class SingerController {
 			@RequestParam(value = "id", required = true) Integer songId) {
 		singerService.deletePresent(singerId, songId);
 		return ResponseEntity.noContent().build();
+	}
+	
+	@PostMapping("/exclude")
+	public  ResponseEntity<ApiResponse<List<SingerDTO>>> getSingerExclude(
+			@RequestBody List<SingerDTO> list) {
+		List<Integer> ids = list.stream().map(SingerDTO::getSinger_id).collect(Collectors.toList());
+		List<SingerDTO> singers = singerService.findAllExlucde(ids);
+
+		ApiResponse<List<SingerDTO>> apiResponse = ApiResponse.<List<SingerDTO>>builder()
+				.result(singers)
+				.build();
+		return ResponseEntity.ok(apiResponse);
 	}
 	
 }

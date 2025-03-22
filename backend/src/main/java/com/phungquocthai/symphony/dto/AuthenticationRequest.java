@@ -14,7 +14,7 @@ import jakarta.validation.constraints.*;
 @Builder
 public class AuthenticationRequest {
 	@NotBlank(message = "Vui lòng nhập số điện thoại")
-    @Pattern(regexp = "^(03|05|07|08|09|01[2|6|8|9])+([0-9]{8})\\b$", message = "Số điện thoại không hợp lệ")
+//    @Pattern(regexp = "^(03|05|07|08|09|01[2|6|8|9])+([0-9]{8})\\b$", message = "Số điện thoại không hợp lệ")
     private String phone;
 
     @NotBlank(message = "Vui lòng nhập mật khẩu")

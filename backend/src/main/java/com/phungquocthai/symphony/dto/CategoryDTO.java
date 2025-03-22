@@ -14,12 +14,10 @@ import lombok.Setter;
 @Builder
 public class CategoryDTO {
 
-    private Integer categoryId;
+    private Integer category_id;
     
-    private String categoryName;
+    private String category_name;
     
     public CategoryDTO(Category category) {
-    	this.categoryId = category.getCategory_id();
-    	this.categoryName = category.getCategory_name();
     }
 }

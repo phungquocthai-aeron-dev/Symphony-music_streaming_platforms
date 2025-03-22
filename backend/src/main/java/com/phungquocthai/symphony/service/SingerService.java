@@ -60,6 +60,12 @@ public class SingerService {
 		return singerMapper.toDTO(singer);
 	}
 	
+	public SingerDTO getSingerByUserId(Integer userId) {
+		Singer singer = singerRepository.findByUserId(userId)
+				.orElseThrow(() -> new AppException(ErrorCode.SINGER_NOT_EXISTED));
+		return singerMapper.toDTO(singer);
+	}
+	
 	@PreAuthorize("hasRole('ADMIN')")
 	public List<SingerDTO> getSingers() {
 		List<Singer> singers = singerRepository.findAll();
@@ -78,6 +84,11 @@ public class SingerService {
 	
 	public List<SingerDTO> getBySongId(List<Integer> ids) {
 		List<Singer> singers = singerRepository.findAllBySongId(ids);
+		return singerMapper.toListDTO(singers);
+	}
+	
+	public List<SingerDTO> findAllExlucde(List<Integer> ids) {
+		List<Singer> singers = singerRepository.findAllBySongIdNotIn(ids);
 		return singerMapper.toListDTO(singers);
 	}
 }

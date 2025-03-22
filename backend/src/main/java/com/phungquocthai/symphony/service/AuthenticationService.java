@@ -150,7 +150,6 @@ public class AuthenticationService {
 		String token = "";
 		if(authenticated) token = generateToken(user);
 
-		
 		return AuthenticationResponse.builder()
 				.authenticated(authenticated)
 				.token(token)
@@ -159,7 +158,7 @@ public class AuthenticationService {
 	
 	private String generateToken(User user) {
 		JWSHeader header = new JWSHeader(JWSAlgorithm.HS512);
-		
+
 		JWTClaimsSet jwtClaimsSet = new JWTClaimsSet.Builder()
 				.subject(user.getUserId() + "")
 				.issuer("symphony.com")

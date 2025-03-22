@@ -14,26 +14,35 @@ import com.phungquocthai.symphony.entity.Song;
 
 @Repository
 public interface SongRepository extends JpaRepository<Song, Integer> {
-	@Query(value =  "select * from song natural join favorite where user_id =:userId", nativeQuery = true)
+	@Query(value =  "select s.* from song s natural join favorite f where f.user_id =:userId", nativeQuery = true)
 	List<Song> getFavoriteSongsOfUser(@Param("userId") Integer userId);
 	
-	@Query(value =  "SELECT s.*, MAX(l.listen_at) as lastListenAt "
-			+ "FROM song s JOIN listen l ON s.song_id = l.song_id "
-			+ "WHERE l.user_id = :userId "
-			+ "GROUP BY s.song_id "
-			+ "ORDER BY lastListenAt DESC "
-			+ "LIMIT :limit", nativeQuery = true)
-	List<Song> getRecentlyListenSongs(@Param("userId") Integer userId,
-			@Param("limit") Integer limit);
-	
+//	@Query(value =  "SELECT s.*, MAX(l.listen_at) as lastListenAt "
+//			+ "FROM song s JOIN listen l ON s.song_id = l.song_id "
+//			+ "WHERE l.user_id = :userId "
+//			+ "GROUP BY s.song_id "
+//			+ "ORDER BY lastListenAt DESC "
+//			+ "LIMIT :limit", nativeQuery = true)
+//	List<Song> getRecentlyListenSongs(@Param("userId") Integer userId,
+//			@Param("limit") Integer limit);
+//	
 	@Modifying
     @Transactional
 	@Query(value =  "INSERT INTO present (singer_id, song_id) VALUES (:singerId, :songId)", nativeQuery = true)
     int addSongToSinger(@Param("singerId") Integer singerId, @Param("songId") Integer songId);
 	
-	@Query(value = "SELECT * FROM song WHERE release_date >= date_sub(CURDATE(), INTERVAL 1 YEAR) ORDER BY release_date DESC LIMIT :limit", 
+	@Modifying
+    @Transactional
+	@Query(value =  "INSERT INTO category_song (category_id, song_id) VALUES (:categoryId, :songId)", nativeQuery = true)
+    int addSongToCategory(@Param("categoryId") Integer categoryId, @Param("songId") Integer songId);
+
+	
+	@Query(value = "SELECT * FROM song WHERE release_date >= date_sub(CURDATE(), INTERVAL 1 MONTH) ORDER BY release_date DESC LIMIT :limit", 
 	           nativeQuery = true)
 	List<Song> findSongsFromLastYear(@Param("limit") Integer limit);
+	
+	@Query(value = "SELECT * FROM song ORDER BY song_id DESC LIMIT 1", nativeQuery = true)
+	Optional<Song> getNewSong();
 
 	@Query(value = "SELECT DISTINCT s.song_id, s.song_name, s.song_img, s.listens, s.path, s.lyric, s.duration, s.release_date, s.author, s.category_id " +
             "FROM song s " +
@@ -53,6 +62,7 @@ public interface SongRepository extends JpaRepository<Song, Integer> {
 	@Query(value = "SELECT s.* " +
 			"FROM song s " +
             "NATURAL JOIN present p " +
+			"NATURAL JOIN category_song cs " +
             "NATURAL JOIN category c " +
 			"WHERE c.category_name = :categoryName " +
 			"LIMIT :limit", nativeQuery = true)
@@ -75,7 +85,7 @@ public interface SongRepository extends JpaRepository<Song, Integer> {
             "INNER JOIN category_song cs ON s.song_id = cs.song_id " +
             "WHERE cs.category_id IN (:ids)", 
     nativeQuery = true)
-	List<Song> findAllByCategoryId(@Param("ids") Iterable<Integer> ids);
+	List<Song> findAllByCategoryId(@Param("ids") List<Integer> ids);
 	
 	@Query(value = "SELECT s.* FROM song s " +
             "INNER JOIN category_song cs ON s.song_id = cs.song_id " +
@@ -115,5 +125,21 @@ public interface SongRepository extends JpaRepository<Song, Integer> {
 		    ORDER BY song_id, listen_date DESC, hour DESC
 			    """, nativeQuery = true)
 			List<Object[]> getHourlyListeningStats(@Param("songId") Integer songId);
+			
+	@Query(value = """
+	        SELECT s.* 
+	        FROM listen l 
+	        NATURAL JOIN song s
+	        WHERE l.user_id = :userId
+	        GROUP BY s.song_id
+			ORDER BY MAX(l.listen_at) DESC
+			LIMIT :limit
+	        """, nativeQuery = true)
+	    List<Song> findRecentlyListenedSongs(@Param("userId") Integer userId, @Param("limit") Integer limit);
 
+	@Modifying
+	@Transactional
+	@Query(value = "INSERT INTO listen (user_id, song_id) VALUES (:userId, :songId)", nativeQuery = true)
+	int addListened(@Param("userId") Integer userId, @Param("songId") Integer songId);
+	
 }

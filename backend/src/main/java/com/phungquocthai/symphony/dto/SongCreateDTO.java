@@ -1,6 +1,7 @@
 package com.phungquocthai.symphony.dto;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Set;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
@@ -39,9 +40,9 @@ public class SongCreateDTO {
     private Boolean isVip;
     
     @NotEmpty(message = "Vui lòng chọn thể loại cho bài hát")
-    private Set<Integer> categoryIds;
+    private List<Integer> categoryIds;
     
     @NotEmpty(message = "Vui lòng chọn ca sĩ thể hiện")
-    private Set<Integer> singersId;
+    private List<Integer> singersId;
 
 }

@@ -4,14 +4,17 @@ package com.phungquocthai.symphony.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-
 import com.phungquocthai.symphony.annotation.ValidFile;
 import com.phungquocthai.symphony.dto.ApiResponse;
 import com.phungquocthai.symphony.dto.CategoryDTO;
@@ -22,6 +25,8 @@ import com.phungquocthai.symphony.dto.SongDTO;
 import com.phungquocthai.symphony.dto.SongUpdateDTO;
 import com.phungquocthai.symphony.dto.TopSongDTO;
 import com.phungquocthai.symphony.service.SongService;
+
+import java.util.ArrayList;
 import java.util.List;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -43,6 +48,15 @@ public class SongController {
 		return ResponseEntity.ok(apiResponse);
 	}
 	
+	@GetMapping("/new")
+	public ResponseEntity<ApiResponse<SongDTO>> findNewSong() {
+		SongDTO song = songService.getNewSong();
+		ApiResponse<SongDTO> apiResponse = ApiResponse.<SongDTO>builder()
+				.result(song)
+				.build();
+		return ResponseEntity.ok(apiResponse);
+	}
+	
 	@GetMapping("/songs")
 	public ResponseEntity<ApiResponse<List<SongDTO>>> findAll() {
 		List<SongDTO> songs = songService.findAll();
@@ -54,27 +68,28 @@ public class SongController {
 	
 	@PostMapping(value = "/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 	public ResponseEntity<ApiResponse<SongDTO>> create(
-			@Valid @RequestParam SongCreateDTO dto,
+			@Valid @ModelAttribute SongCreateDTO dto,
 			
-			@ValidFile(maxSize = 50 * 1024 * 1024, // 50MB
-            	allowedContentTypes = {"mp3"},
-            	message = "File không hợp lệ")
+//			@ValidFile(maxSize = 50 * 1024 * 1024, // 50MB
+//            	allowedContentTypes = {"mp3"},
+//            	message = "File không hợp lệ")
 			@RequestPart MultipartFile musicFile,
 			
-		    @ValidFile(maxSize = 1024 * 1024, // 1MB
-            	allowedContentTypes = {"txt"},
-            	message = "File không hợp lệ")
+//		    @ValidFile(maxSize = 1024 * 1024, // 1MB
+//            	allowedContentTypes = {"txt"},
+//            	message = "File không hợp lệ")
 			@RequestPart MultipartFile lrcFile,
 			
-		    @ValidFile(maxSize = 1024 * 1024, // 1MB
-            	allowedContentTypes = {"txt"},
-            	message = "File không hợp lệ")
+//		    @ValidFile(maxSize = 1024 * 1024, // 1MB
+//            	allowedContentTypes = {"txt"},
+//            	message = "File không hợp lệ")
 			@RequestPart MultipartFile lyricFile,
 			
-		    @ValidFile(maxSize = 1024 * 1024, // 1MB
-            	allowedContentTypes = {"jpeg", "jpg", "png"},
-            	message = "File không hợp lệ")
+//		    @ValidFile(maxSize = 1024 * 1024, // 1MB
+//            	allowedContentTypes = {"jpeg", "jpg", "png"},
+//            	message = "File không hợp lệ")
 			@RequestPart MultipartFile songImgFile) {
+		log.info("A");
 		SongDTO song = songService.create(dto, musicFile, lyricFile, lrcFile, songImgFile);
 		return ResponseEntity.ok(
 				ApiResponse.<SongDTO>builder()
@@ -90,7 +105,7 @@ public class SongController {
 	}
 
 	@PostMapping("/update")
-	public ResponseEntity<ApiResponse<SongDTO>> update(
+	public void update(
 			@Valid @RequestPart SongUpdateDTO dto,
 			
 			@ValidFile(
@@ -112,17 +127,49 @@ public class SongController {
         		message = "File không hợp lệ",
         		required = false)
 			@RequestPart MultipartFile songImgFile) {
-		SongDTO song = songService.update(dto, lyricFile, lrcFile, songImgFile);
-		return ResponseEntity.ok(
-				ApiResponse.<SongDTO>builder()
-				.result(song)
-				.build()
-				);
+		songService.update(dto, lyricFile, lrcFile, songImgFile);
+	}
+	
+//	@PostMapping("/unfavorite")
+//	public ResponseEntity<Void> unfavorite(
+//			@RequestParam(value = "id", required = true) Integer songId,
+//			@AuthenticationPrincipal Jwt jwt) {
+//		
+//		if(jwt != null) {
+//			try {
+//				Integer userId = Integer.parseInt(jwt.getSubject());
+//				songService.removeFavorite(songId, userId);
+//		    } catch (NumberFormatException e) {
+//		        log.error(e.getMessage());
+//		    }
+//			
+//		}
+//		
+//		return ResponseEntity.noContent().build();
+//	}
+	
+	@PostMapping("/favorite")
+	public ResponseEntity<Void> favorite(
+			@RequestParam(value = "id", required = true) Integer songId,
+			@AuthenticationPrincipal Jwt jwt) {
+		
+		if(jwt != null) {
+			try {
+				Integer userId = Integer.parseInt(jwt.getSubject());
+				log.info(userId.toString());
+				songService.reverseFavorite(songId, userId);
+		    } catch (NumberFormatException e) {
+		        log.error(e.getMessage());
+		    }
+			
+		}
+		
+		return ResponseEntity.noContent().build();
 	}
 	
 	@GetMapping("/newSongs")
-	public ResponseEntity<ApiResponse<List<SongDTO>>> getNewSongs() {
-		List<SongDTO> songs = songService.getNewSongs(100);
+	public ResponseEntity<ApiResponse<List<SongDTO>>> getNewSongs(@RequestParam(value = "limit", defaultValue = "50") Integer limit) {
+		List<SongDTO> songs = songService.getNewSongs(limit);
 		return ResponseEntity.ok(
 				ApiResponse.<List<SongDTO>>builder()
 				.result(songs)
@@ -143,6 +190,7 @@ public class SongController {
 	@PostMapping("/listenedSong")
 	public ResponseEntity<Integer> listenedSong(@RequestParam(value = "id", required = true) Integer songId) {
 		Integer totalListens = songService.updateTotalListenOfSong(songId);
+		log.info("OKKKK");
 		return ResponseEntity.ok(totalListens);
 	}
 	
@@ -195,5 +243,43 @@ public class SongController {
 				);
 	}
 	
+	@GetMapping("/recomend")
+	public ResponseEntity<ApiResponse<List<SongDTO>>> recommedSongs(
+			@RequestParam(value = "ids") List<Integer> ids, 
+			@RequestParam(value = "limit", defaultValue = "6") Integer limit) {
+		List<SongDTO> songs = songService.recommedSongs(ids, limit);
+		
+		
+		ApiResponse<List<SongDTO>> apiResponse = ApiResponse.<List<SongDTO>>builder()
+				.result(songs)
+				.build();
+		return ResponseEntity.ok(apiResponse);
+	}
+
+//	@GetMapping("/recomend")
+//	public ResponseEntity<ApiResponse<List<SongDTO>>> getRecommendedSongs(@AuthenticationPrincipal Jwt jwt) {
+//		List<SongDTO> songs = new ArrayList<SongDTO>();
+//		
+//		if(jwt != null) {
+//			try {
+//				Integer userId = Integer.parseInt(jwt.getSubject());
+//				List<SongDTO> recentlyListen = songService.getRecentlyListenSongs(Integer.valueOf(userId), 1);
+//				if(recentlyListen != null) {
+//					songs = songService.recommend(recentlyListen.get(0));
+//					
+//				}
+//		    } catch (NumberFormatException e) {
+//		        log.error(e.getMessage());
+//		    }
+//			
+//		}
+//		
+//		return ResponseEntity.ok(
+//				ApiResponse.<List<SongDTO>>builder()
+//				.result(songs)
+//				.build()
+//				);
+//	}
+
 	// xoa file nhạc
 }

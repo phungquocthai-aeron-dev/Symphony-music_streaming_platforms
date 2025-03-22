@@ -2,7 +2,6 @@ package com.phungquocthai.symphony.service;
 
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -93,9 +92,18 @@ public class UserService {
 		return users;
 	}
 	
-	@PostAuthorize("returnObject.userId == authentication.name")
+//	@PostAuthorize("returnObject.userId == authentication.name")
 	public UserDTO getUserById(Integer id) {
-		return userMapper.toDTO(userRepository.findById(id)
-				.orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISRED)));
+		User entity = userRepository.findById(id)
+				.orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISRED));
+		UserDTO user = userMapper.toDTO(entity);
+		return user;
+	}
+	
+	public UserDTO getUserBySingerId(Integer id) {
+		User entity = userRepository.findBySingerId(id)
+				.orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISRED));
+		UserDTO user = userMapper.toDTO(entity);
+		return user;
 	}
 }
