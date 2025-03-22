@@ -3,7 +3,7 @@
         <div class="container-fluid">
             <div class="row w-100">
                 <div class="col-5 order-1 col-sm-2  order-sm-1 pt-1 pb-1 ps-4">
-                    <a href="/home">
+                    <a [routerLink]="['/home']">
                         <img id="logo" [src]="(isDarkTheme) ? pathLogoLightTheme : pathLogoDarkTheme " alt="logo"
                             style="width: 75%; min-width: 120px;">
                     </a>
@@ -19,13 +19,11 @@
                 </div>
                 <div class="col-7 order-2 col-sm-4  order-sm-3 p-0">
                     <div class="container d-flex justify-content-between flex-nowrap">
-                        <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-auto">
+                        <ul *ngIf="isLoggedIn" class="navbar-nav me-auto mb-2 mb-lg-0 ms-auto">
 
                             <!-- LOGGED IN -->
 
-                            <!-- <?php if (AUTHGUARD()->isUserLoggedIn()) : ?>
-
-                                <li class="nav-item text-nowrap clean-navbar-before">
+                                <li class="nav-item text-nowrap clean-navbar-before" (click)="ChangeTheme()">
                                     <button
                                         class="text-black-primary btn-sm bg-white-primary rounded-circle change_theme">
                                         <i class="fa-solid fa-moon refer" style="color: var(--black-color);"></i>
@@ -58,7 +56,7 @@
                                     </div>
                                 </li>
 
-                                <li class="nav-item clean-navbar">
+                                <!-- <li class="nav-item clean-navbar">
                                     <div class="dropdown me-3">
                                         <div class="dropdown-toggle fw-medium text-nowrap text-white-primary refer text-center"
                                             data-bs-toggle="dropdown">
@@ -71,36 +69,39 @@
                                                     <span class="ps-3 text-danger fw-bolder">2</span>
                                                 </span>
                                             </li>
-                                            <li class="change_theme-clean text-white-primary">
+                                            <li class="change_theme-clean text-white-primary" (click)="ChangeTheme()">
                                                 <span class="dropdown-item text-white-primary">Giao diện
                                                     <span class="ps-3">Dark</span>
                                                 </span>
                                             </li>
                                         </ul>
                                     </div>
-                                </li>
+                                </li> -->
                         </ul>
 
 
-                        <div class="dropdown">
-                            <div class="rounded-circle me-5 dropdown-toggle" data-bs-toggle="dropdown" id="avatar">
+                        <div *ngIf="isLoggedIn" class="dropdown">
+                            <div
+                            *ngIf="user"
+                            [style.background-image]="'url(http://localhost:8080/symphony' + user.avatar + ')'"
+                             class="rounded-circle me-5 dropdown-toggle" data-bs-toggle="dropdown" id="avatar">
                             </div>
                             <ul class="dropdown-menu dropdown-menu-end bg-dark_grey-color" style="width: 300px;">
                                 <li>
                                     <div class="d-flex p-3">
-                                        <img src="<?= $this->assets(AUTHGUARD()->user()->avatar ?? '/images/avatars/default-avatar.jpg') ?>?>"
+                                        <img *ngIf="user"
+                                            [src]="'http://localhost:8080/symphony' + user.avatar"
                                             class="rounded-circle avatarInMenuBar"
                                             style="width: 60px; height: 60px;" alt="">
                                         <div class="ms-4">
-                                            <h6 class="text-white-primary"><?= $this->e(AUTHGUARD()->user()->full_name) ?></h6>
+                                            <h6 *ngIf="user" class="text-white-primary">{{ user.fullName }}</h6>
                                             <div class="btn bg-orange-primary text-white-primary">Basic</div>
                                         </div>
                                     </div>
                                 </li>
                                 <li><a class="dropdown-item text-white-primary" href="/user">Hồ sơ cá nhân</a></li>
-                                <?php if (AUTHGUARD()->user()->role == 1): ?>
-                                    <li><a class="dropdown-item text-white-primary" href="/singer/<?= $this->e(AUTHGUARD()->singer()->singer_id); ?>">Hồ sơ ca sĩ</a></li>
-                                <?php endif; ?>
+                                    <li  *ngIf="user && user.role=='SINGER' && singer"><a class="dropdown-item text-white-primary"
+                                        [routerLink]="['/singer', singer.singer_id]">Hồ sơ ca sĩ</a></li>
                                 <li><a class="dropdown-item text-white-primary" href="/upgrade">Nâng cấp tài khoản</a></li>
                                 <li><a class="dropdown-item text-white-primary" href="">Liên hệ</a></li>
                                 <li>
@@ -108,24 +109,22 @@
                                         <span class="dropdown-item text-white-primary" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#deleteAccountModal">
                                             Xóa tài khoản
                                         </span>
-                                        <input type="text" value="<?= $_SESSION['sesskey'] ?>" name="CSRFToken" hidden readonly>
+                                        <input type="text" value="..." name="CSRFToken" hidden readonly>
                                     </form>
                                 </li>
                                 <li>
                                     <form action="/logout" method="POST">
-                                        <button type="submit" class="dropdown-item border-top border-2 text-orange-primary" href="login.php">Đăng xuất</button>
+                                        <button type="submit" class="dropdown-item border-top border-2 text-orange-primary" (click)="logout()" href="login.php">Đăng xuất</button>
                                     </form>
                                 </li>
                             </ul>
                         </div>
-
-
-                    <?php else: ?> -->
+                   
 
 
                         <!-- NO LOGIN -->
 
-
+                        <ul *ngIf="!isLoggedIn">
                         <li class="d-flex pt-2 flex-wrap justify-content-end">
                             <button
                             (click)="ChangeTheme()"

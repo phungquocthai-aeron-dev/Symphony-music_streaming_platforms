@@ -1,0 +1,157 @@
+<section>
+    <div id="menu-audio" class="fixed-bottom row">
+        <!-- LEFT MENU CONTROL -->
+        <div class="col-12 col-sm-1 col-lg-3 menu-left-audio">
+            <div id="music_playing_info" class="row">
+
+
+                <div class="col-6 col-lg-3">
+                    <img *ngIf="song" [src]="'http://localhost:8080/symphony' + song.song_img" alt="" style="height: 62px; width: 62px;"
+                        class="rounded-2">
+                </div>
+                <div class="col-6 col-lg-9 d-flex">
+                    <div class="menu-control-song-info">
+                        <h6 class="mt-3 limit-song-info">
+                            <a *ngIf="song" class="text-white-primary text-decoration-none refer" [routerLink]="['/song', song.song_id]">
+                                {{ song.songName }}
+                            </a>
+                        </h6>
+                        <p class="text-support fw-bolder limit-song-info" *ngIf="song" >
+                            <ng-container *ngFor="let singer of song.singers; let i = index; let isLast = last">
+                                <a class="refer text-decoration-none text-support" [routerLink]="['/singer', singer.singer_id]">
+                                  {{ singer.stageName }}
+                                </a>
+                                <span *ngIf="!isLast">, </span>
+                              </ng-container>
+                        </p>
+                    </div>
+                    <div *ngIf="song" class="ms-3 mt-4 menu-control-song-info" (click)="toggleFavorite()">
+                            <i class="fa-regular fa-heart fs-6 refer btn favorite-btn"
+                            [class.text-orange-primary]="song.favorite">
+                            </i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MAIN MENU CONTROL -->
+
+        <div class="col-11 col-sm-10 col-lg-6 menu-control-audio">
+            <div class="row">
+                <!-- TOP MENU AUDIO CONTROL -->
+                <div class="col-1 col-sm-3"></div>
+                <div class="col-9 col-sm-6 d-flex justify-content-between">
+                    <div class="btn btn-repeat ms-1 me-1" (click)="handleSelected('REPEAT')">
+                        <i class="fas fa-redo" [class.text-orange-primary]="checkOption('REPEAT')"></i>
+                    </div>
+                    <div class="btn btn-prev ms-1 me-1" (click)="handleSelected('PREVIOUS')">
+                        <i class="fa-solid fa-backward-step"></i>
+                    </div>
+                    <div id="play-music" class="btn btn-toggle-play rounded-circle ms-1 me-1" (click)="handleSelected('PLAYING')">
+                        <i class="fas fa-pause icon-pause" *ngIf="isPlaying"></i>
+                        <i class="fas fa-play icon-play" *ngIf="!isPlaying"></i>
+                    </div>
+                        <div class="btn btn-next ms-1 me-1" (click)="handleSelected('NEXT')">
+                            <i class="fa-solid fa-forward-step"></i>
+                        </div>
+                    <div class="btn btn-random ms-1 me-1" (click)="handleSelected('RANDOM')">
+                        <i class="fas fa-random" [class.text-orange-primary]="checkOption('RANDOM')"></i>
+                    </div>
+                </div>
+                <div class="col-2 col-sm-3"></div>
+
+                <!-- BOTTOM MENU AUDIO CONTROL -->
+
+                <div class="col-12 col-sm-2"></div>
+
+                <div class="col-12 col-sm-8 pt-2 pb-3 d-flex">
+                    <div class="text-white-primary" id="current-time" #currentTimeRef>
+                        {{ currentTime | timeFormat }}
+                    </div>
+                    <div class="range-container mt-1">
+
+                        <div id="progressBar" #progressBar></div>
+                        <input type="range" id="myRange" min="0" max="100" value="0" step="0.1" #inputProgress>
+
+                    </div>
+
+                    <div *ngIf="song" class="text-white-primary" id="audio-duration">
+                        {{ duration | timeFormat }}
+                    </div>
+
+                    <audio *ngIf="song" [src]="'http://localhost:8080/symphony' + song.path" preload="metadata" id="audio" #audio></audio>
+                </div>
+
+                <div class="col-12 col-sm-2">
+
+                </div>
+
+            </div>
+        </div>
+
+        <!-- RIGHT MENU CONTROL -->
+        <div class="col-1 col-lg-3 d-flex align-self-center justify-content-between">
+            <!-- LARGE SCREEN -->
+            <div class="btn clean-audio-control-before">
+                <i class="fa-solid fa-plus refer"></i>
+            </div>
+            <div class="btn clean-audio-control-before">
+                <i class="fa-solid fa-music refer"></i>
+            </div>
+            <div class="d-flex clean-audio-control-before" style="width: 50%;">
+                <div id="audio-status" class="btn" (click)="turnOffVolume()">
+                    <i class="fa-solid fa-volume-xmark" *ngIf="isMuted"></i>
+                    <i class="fa-solid fa-volume-high refer" *ngIf="!isMuted"></i>
+                </div>
+                <div class="range-container mt-3">
+                    <div id="progressVolume" #progressVolume></div>
+                    <input type="range" #inputVolume id="inputVolume" min="0" max="100" [value]="volume">
+                </div>
+            </div>
+            <div class="btn control-right-side clean-audio-control-before" (click)="toggleRightSide()">
+                <i class="fa-solid fa-list refer text-b-primary"></i>
+            </div>
+
+            <!-- NORMAL AND SMALL SCREEN -->
+
+            <div class="clean-audio-control">
+
+                <div class="dropdown me-3">
+                    <div class="dropdown-toggle fw-medium text-nowrap text-white-primary refer"
+                        data-bs-toggle="dropdown">
+                        <i class="fa-solid fa-bars refer"></i>
+                    </div>
+                    <ul class="dropdown-menu dropdown-menu-end bg-dark_grey-color" style="width: 100px;">
+                        <li>
+                            <div class="btn dropdown-item">
+                                <i class="fa-solid fa-plus refer"></i>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="btn dropdown-item">
+                                <i class="fa-solid fa-music refer"></i>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="d-flex" style="width: 80%;">
+                                <div id="audio-status-clean" class="btn">
+                                    <i class="fa-solid fa-volume-xmark"></i>
+                                </div>
+                                <div class="range-container mt-3">
+                                    <div id="progressVolume-clean"></div>
+                                    <input type="range" id="inputVolume-clean" min="0" max="100" value="20">
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="btn dropdown-item control-right-side-clean" (click)="toggleRightSide()">
+                                <i class="fa-solid fa-list refer"></i>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>

@@ -1,3 +1,4 @@
+import { CategoryDTO } from "./Category.dto";
 import { SingerDTO } from "./Singer.dto";
 
 export interface SongDTO {
@@ -12,7 +13,7 @@ export interface SongDTO {
     releaseDate: Date;
     author: string;
     isVip: boolean;
-    categoriesId: number[];
+    categories: CategoryDTO[];
     singers: SingerDTO[];
-    isFavorite: boolean;
+    favorite: boolean;
 }

@@ -1,0 +1,24 @@
+<div class="new-song d-flex p-2" data-index="">
+    <div class="new-song_img-container" style="width: 100px;">
+      <a [routerLink]="['/song', song.song_id]" (click)="toggleSendSong()" class="text-decoration-none d-block">
+        <img [src]="'http://localhost:8080/symphony' + song.song_img"
+          class="rounded-2" alt="" style="width: 67px; height: 67px;">
+      </a>
+    </div>
+    <div class="new-song-info">
+      <h6 class="new-song-name text-white-primary">
+        <a [routerLink]="['/song', song.song_id]" class="text-decoration-none text-white-primary refer">
+          {{ song.songName }}
+        </a>
+      </h6>
+      <p class="new-song-singer text-support m-0">
+        <ng-container *ngFor="let singer of song.singers; let i = index; let isLast = last">
+            <a class="refer text-decoration-none text-support" [routerLink]="['/singer', singer.singer_id]">
+              {{ singer.stageName }}
+            </a>
+            <span *ngIf="!isLast">, </span>
+          </ng-container>
+      </p>
+      <p class="new-song-time text-support m-0">{{ song.releaseDate| date:'dd/MM/yyyy' }}</p>
+    </div>
+  </div>

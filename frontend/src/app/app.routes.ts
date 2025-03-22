@@ -5,14 +5,26 @@ import { MainLayoutComponent } from './layouts/main-layout/main-layout.component
 import { RegisterComponent } from './features/auth/register/register.component';
 import { LoginGuard } from './core/guards/login.guard';
 import { AuthGuard } from './core/guards/auth.guard';
+import { SingerComponent } from './features/singer/singer.component';
+import { SongComponent } from './features/song/song.component';
+import { TopicComponent } from './features/topic/topic.component';
+import { ReleaseComponent } from './features/release/release.component';
+import { RecentComponent } from './features/recent/recent.component';
+import { FavoriteComponent } from './features/favorite/favorite.component';
 
 export const routes: Routes = [
-    { path: '', redirectTo: '/home', pathMatch: 'full' },
     { 
-        path: 'home',
+        path: '',
         component: MainLayoutComponent,
         children: [
-            {path: '', component: HomeComponent}
+            {path: '', redirectTo: '/home', pathMatch: 'full' },
+            {path: 'home', component: HomeComponent},
+            {path: 'singer/:id', component: SingerComponent},
+            {path: 'song/:id', component: SongComponent},
+            {path: 'topic', component: TopicComponent},
+            {path: 'recent', component: RecentComponent},
+            {path: 'hot', component: ReleaseComponent},
+            {path: 'favorite', component: FavoriteComponent}
         ]
      },
     { path: 'login', component: LoginComponent, canActivate: [LoginGuard]},

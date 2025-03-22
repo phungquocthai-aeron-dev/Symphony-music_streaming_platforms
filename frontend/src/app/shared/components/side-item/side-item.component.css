@@ -1,0 +1,18 @@
+i {
+    color: var(--text_dark_theme-color);
+}
+
+li:not(.active):hover,
+li:not(.active):hover {
+    background-color: var(--dark_grey-color) !important;
+}
+
+li.active {
+    background: linear-gradient(to right, var(--orange-color), var(--pink_strong-color)) !important;
+}
+
+h6 {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}

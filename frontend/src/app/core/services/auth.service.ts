@@ -7,9 +7,11 @@ import { map, catchError, tap, switchMap } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { environment } from '../../../environments/environment';
 import { ResponseData } from '../../shared/models/ResponseData';
-import { AuthenticationResponse } from '../../shared/models/Authentication.dto';
+import { Authentication, AuthenticationResponse } from '../../shared/models/Authentication.dto';
 import { UserRegistrationDTO } from '../../shared/models/UserRegistration.dto';
 import { UserDTO } from '../../shared/models/User.dto';
+import { HttpParams } from '@angular/common/http';
+import { SingerDTO } from '../../shared/models/Singer.dto';
 
 @Injectable({
   providedIn: 'root'
@@ -66,10 +68,25 @@ export class AuthService {
     if (!token) return null;
     
     try {
-      return this.jwtHelper.decodeToken(token);
+      const decodedToken = this.jwtHelper.decodeToken(token);
+      return {
+        userId: decodedToken.sub, // Lấy userId từ subject (sub)
+        phone: decodedToken.phone,
+        role: decodedToken.scope
+      };
     } catch (e) {
       return null;
     }
+  }
+
+  getUser(): Observable<ResponseData<UserDTO>> {
+    const params = new HttpParams().set('id', this.getUserInfo().userId);
+    return this.http.get<ResponseData<UserDTO>>(environment.apiUrl + 'user', { params });
+  }
+
+  getUserBySingerId(singerId: number): Observable<ResponseData<UserDTO>> {
+    const params = new HttpParams().set('id', singerId);
+    return this.http.get<ResponseData<UserDTO>>(environment.apiUrl + 'user/singer', { params });
   }
 
   // Đăng ký
@@ -86,21 +103,29 @@ export class AuthService {
   }
 
   // Đăng nhập và lưu JWT
-  login(credentials: { phone: string; password: string }): Observable<ResponseData<AuthenticationResponse>> {
-    return this.http.post<ResponseData<AuthenticationResponse>>(environment.apiUrl + 'auth/login', credentials).pipe(
-      tap((response) => {
-        if (response.result && response.result.authenticated) {
-          const jwtInfo = {
-            jwt: response.result.token
-          };
-          localStorage.setItem('SYMPHONY_USER', JSON.stringify(jwtInfo));
-          this.router.navigate(['/']);
-        } else {
-          console.log("Xác thực không thành công");
-        }
-      })
+  // login(credentials: { phone: string; password: string }): Observable<ResponseData<AuthenticationResponse>> {
+  //   return this.http.post<ResponseData<AuthenticationResponse>>(environment.apiUrl + 'auth/login', credentials).pipe(
+  //     tap((response) => {
+  //       if (response.result && response.result.authenticated) {
+  //         const jwtInfo = {
+  //           jwt: response.result.token
+  //         };
+  //         localStorage.setItem('SYMPHONY_USER', JSON.stringify(jwtInfo));
+  //         this.router.navigate(['/']);
+  //       } else {
+  //         console.log("Xác thực không thành công");
+  //       }
+  //     })
+  //   );
+  // }
+
+  login(auth: Authentication): Observable<ResponseData<AuthenticationResponse>> {  
+    return this.http.post<ResponseData<AuthenticationResponse>>(
+      environment.apiUrl + "auth/login",
+      auth
     );
   }
+  
   
 
   // Đăng xuất

@@ -1,0 +1,8 @@
+#content-new-songs {
+    margin-top: 100px;
+}
+
+.new-song:hover {
+    border-radius: 5px;
+    background-color: var(--dark_grey-color);
+}

@@ -1,0 +1,35 @@
+
+<main id="content" class="container-fluid bg-black-primary mt-5 pt-5">
+    <div class="row">
+        <div class="col-2 bg-black-primary">
+        </div>
+
+        <div id="content-option" class="col-10 p-4 pt-0">
+
+
+            <!-- SONGS RECENTLY -->
+
+            <div id="songs-option" class="container p-0 listen-recently mt-4">
+                <h3 class="text-center text-white-primary mb-5">NGHE GẦN ĐÂY</h3>
+                <div *ngIf="songs" class="row">
+                    <app-card  class="col-12 col-sm-6 col-md-3 col-lg-2 mb-2"
+                    *ngFor="let song of songs"
+                    [song]="song">
+                  </app-card>
+
+                </div>
+            </div>
+
+            <div *ngIf="isLoggedIn && !songs" id="no-list-songs-favorite">
+                <img id="empty-list-songs-img" src="assets/images/Empty-songs.png" alt="" class="mx-auto d-block" style="width: 350px;">
+                <h3 class="text-white-primary text-center mb-5">Chưa có bài hát nào được nghe gần đây!</h3>
+            </div>
+
+            <div *ngIf="!isLoggedIn" id="no-list-songs-favorite">
+                <img id="empty-list-songs-img" src="assets/images/Empty-songs.png" alt="" class="mx-auto d-block" style="width: 350px;">
+                <h3 class="text-white-primary text-center mb-5">Vui lòng đăng nhập để trải nghiệm tính năng này!</h3>
+            </div>
+
+        </div>
+    </div>
+</main>

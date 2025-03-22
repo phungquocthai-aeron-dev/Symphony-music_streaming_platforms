@@ -3,6 +3,7 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { NgIf } from '@angular/common';
 import { Authentication } from '../../../shared/models/Authentication.dto';
 import { AuthService } from '../../../core/services/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -20,6 +21,7 @@ export class LoginComponent {
 
   constructor(
     private authService: AuthService,
+    private router: Router,
   ){}
 
   get phone() {
@@ -40,9 +42,17 @@ export class LoginComponent {
       password: String(this.password?.value)
     }
 
-    this.authService.login({ phone: '123456789', password: 'password' }).subscribe({
-      next: (response) => console.log('Đăng nhập thành công:', response),
-      error: (error) => console.error('Lỗi đăng nhập:', error.message)
+    this.authService.login(authentication).subscribe({
+      next: (response) => {
+        if (response.code === 1000 && response.result.authenticated) {
+          const jwtInfo = { jwt: response.result.token };
+          localStorage.setItem('SYMPHONY_USER', JSON.stringify(jwtInfo));
+          this.router.navigate(['/']);
+        }
+      },
+      error: (err) => {
+        console.error('Đăng nhập thất bại', err);
+      }
     });
   }
 }

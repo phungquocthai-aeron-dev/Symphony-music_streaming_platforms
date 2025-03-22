@@ -1,0 +1,135 @@
+.card-hover-song {
+    position: absolute;
+    width: 25%;
+    height: 25%;
+    bottom: 10%;
+    right: 10%;
+    max-width: 50px;
+    max-height: 50px;
+    min-width: 30px;
+    min-height: 30px;
+    background-color: var(--orange-color);
+    color: var(--black-color);
+    display: none;
+}
+
+.card-song:hover .card-hover-song {
+    display: block;
+}
+
+.card-hover-song:hover {
+    transform: scale(1.1);
+    filter: brightness(1.2);
+    cursor: pointer;
+}
+
+.card-img-container {
+    position: relative;
+}
+
+.song-img-active-container {
+    width: 25%;
+    max-width: 350px;
+    min-width: 230px;
+}
+
+.song-img-active {
+    width: 100%;
+}
+
+.song-active-detail-info p {
+    font-size: 14px;
+}
+
+.song-active-lyric p {
+    font-size: 14px;
+    line-height: 14px;
+    margin-bottom: 12px;
+}
+
+.lyric-container {
+    overflow: hidden;
+    height: 130px;
+    transition: expanding 0.5s ease-out;
+}
+
+.expanded {
+    height: auto;
+}
+
+.content {
+    border-bottom: 3px solid var(--dark_grey-color);
+}
+
+main.container-fluid {
+    padding-top: 96px;
+}
+
+.carousel-item img {
+    height: 360px;
+}
+
+.card {
+    border: none;
+    position: relative;
+}
+
+.card_song-img {
+    transition: transform 0.4s ease-in-out;
+}
+
+.card-song:hover {
+    border-radius: 8px;
+    background-color: var(--dark_grey-color) !important;
+}
+
+.card-song:hover .card_song-img {
+    transform: scale(1.07);
+}
+
+.new-song:hover {
+    border-radius: 5px;
+    background-color: var(--dark_grey-color);
+}
+
+.active-song-status {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(40deg, var(--orange-color) 20%, var(--pink_strong-color));
+}
+
+.active-song-status:hover {
+    cursor: pointer;
+    filter: brightness(1.1);
+    scale: 1.1;
+}
+
+.clean-audio-control {
+    display: none;
+}
+
+#elastic {
+    cursor: pointer;
+}
+
+.song-active-banner {
+    background: linear-gradient(to bottom, var(--dark_grey-color) 55%, var(--black-color));
+    border-radius: 12px;
+}
+
+.avatar-vip {
+    position: absolute;
+    top: -3px;
+    left: -3px;
+    width: 46px;
+    height: 46px;
+    border: 2px solid var(--yellow-color);
+}
+
+.input-content-container {
+    width: 90%;
+}
+
+.input-content-container form {
+    width: 100%;
+}

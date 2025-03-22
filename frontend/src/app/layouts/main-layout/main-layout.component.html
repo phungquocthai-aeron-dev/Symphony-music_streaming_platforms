@@ -1,3 +1,8 @@
-<app-header></app-header>
+<app-header [user]="user" [singer]="singer"></app-header>
+<app-left-side></app-left-side>
+<app-right-side
+ [currentSong]="currentSong" [playlistSongs]="playlistSong" [recentSongs]="recentSong"
+  [isTurnOn]="turnRightSide" (optionPlaylist)="OptionPlaylist($event)"></app-right-side>
 <router-outlet></router-outlet>
+<app-audio-menu [isOptionPlaylist]="isOptionPlaylist" [song]="currentSong" [playlistSongs]="playlistSong" [recentSongs]="recentSong" (turnRightSide)="OptionTurnRightSide($event)"></app-audio-menu>
 <app-footer></app-footer>

@@ -1,0 +1,54 @@
+.right-side {
+    position: fixed;
+    top: 10%;
+    bottom: 10%;
+    background-color: var(--black-color);
+    z-index: 900;
+    width: 320px;
+    right: -330px;
+    transition: right 0.5s ease-in-out;
+    border: 1px solid var(--orange-color);
+}
+
+.right-side .container-song {
+    cursor: pointer;
+}
+
+.right-side-appear {
+    right: 0;
+}
+
+.option {
+    background-color: var(--dark_grey-color);
+}
+
+.option .active {
+    background-color: var(--grey-color);
+}
+
+.option-waiting,
+.option-recent {
+    font-size: 13px;
+    font-weight: 600;
+    background-color: var(--dark_grey-color);
+    color: var(--white-color);
+    padding: 6px 12px;
+    cursor: pointer;
+}
+
+.option-waiting:hover,
+.option-recent:hover {
+    opacity: 0.6;
+}
+
+.song-info {
+    font-size: 14px;
+}
+
+.playlist,
+.recentSongs {
+    height: 85%;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+

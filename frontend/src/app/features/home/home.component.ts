@@ -6,14 +6,16 @@ import { ListeningStatsDTO } from '../../shared/models/ListeningStats.dto';
 import { HomeService } from '../../core/services/home.service';
 import { ResponseData } from '../../shared/models/ResponseData';
 import { Subject, takeUntil } from 'rxjs';
-import { NgFor, NgIf } from '@angular/common';
+import { NgFor } from '@angular/common';
+import { CardComponent } from '../../shared/components/card/card.component';
+import { NewCardComponent } from '../../shared/components/new-card/new-card.component';
 
 @Component({
   selector: 'app-home',
   standalone: true,
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css'],
-  imports: [NgFor]
+  imports: [NgFor, CardComponent, NewCardComponent]
 })
 
 export class HomeComponent implements OnInit, OnDestroy {
@@ -60,12 +62,10 @@ export class HomeComponent implements OnInit, OnDestroy {
           if (response.code === 1000) {
             this.data = response.result as HomeDTO;
             this.mapHomeData(this.data);
-            console.log(this.data)
           } else {
             this.error = (response.message) ? response.message : "";
           }
           this.loading = false;
-          console.log(this.hotHitSongs)
         },
         error: (error) => {
           this.error = 'Failed to fetch home data';

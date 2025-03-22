@@ -1,1 +1,61 @@
-<p>left-side works!</p>
+<section>
+    <div class="row">
+        <div class="col-1 col-lg-2 fixed-top left-side ps-0">
+            <ul class="list-group">
+                <h5 class="ps-5 pt-4 pb-2 left-side-title">Khám phá</h5>
+                <li class="list-group-item left-side-item bg-black-primary ps-5 border-0 active" data-option="home">
+                    <a class="text-decoration-none text-white-primary"  [routerLink]="['/home']">
+                        <i class="left-side-icon pe-2 fa-solid fa-house"></i>
+                        <span class="left-side-info">
+                            Trang chủ
+                        </span>
+                    </a>
+                </li>
+                <li class="list-group-item left-side-item bg-black-primary ps-5 border-0" data-option="rank">
+                    <a class="text-decoration-none text-white-primary"  [routerLink]="['/ranking']">
+                        <i class="left-side-icon pe-2 fa-solid fa-ranking-star"></i>
+                        <span class="left-side-info">
+                            Top 100
+                        </span>
+                    </a>
+                </li>
+                <li class="list-group-item left-side-item bg-black-primary ps-5 border-0" data-option="newSongs">
+                    <a class="text-decoration-none text-white-primary"  [routerLink]="['/hot']">
+                        <i class="left-side-icon pe-2 fa-solid fa-star"></i>
+                        <span class="left-side-info">
+                            Mới phát hành
+                        </span>
+                    </a>
+                </li>
+                <li class="list-group-item left-side-item bg-black-primary ps-5 border-0" data-option="category">
+                    <a class="text-decoration-none text-white-primary" [routerLink]="['/topic']">
+                        <i class="left-side-icon pe-2 fa-solid fa-bookmark"></i>
+                        <span class="left-side-info">
+                            Thể loại
+                        </span>
+                    </a>
+                </li>
+
+                <h5 class="mt-5 ps-5 pb-2 left-side-title">Về Bạn</h5>
+                <li class="list-group-item left-side-item bg-black-primary ps-5 border-0" data-option="recentlyListen">
+                    <a class="text-decoration-none text-white-primary" [routerLink]="['/recent']">
+                        <i class="left-side-icon pe-2 fa-solid fa-clock"></i>
+                        <span class="left-side-info">
+                            Nghe gần đây
+                        </span>
+                    </a>
+                </li>
+                <li class="list-group-item left-side-item bg-black-primary ps-5 border-0" data-option="favorite">
+                    <a class="text-decoration-none text-white-primary"  [routerLink]="['/favorite']">
+                        <i class="left-side-icon pe-2 fa-regular fa-heart"></i>
+                        <span class="left-side-info">
+                            Yêu thích
+                        </span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div class="col-10">
+        </div>
+    </div>
+</section>

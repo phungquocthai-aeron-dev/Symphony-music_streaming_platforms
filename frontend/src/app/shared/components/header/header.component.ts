@@ -1,6 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { CookieService } from 'ngx-cookie-service';
 import { environment } from '../../../../environments/environment';
+import { AuthService } from '../../../core/services/auth.service';
+import { UserDTO } from '../../models/User.dto';
+import { NgIf } from '@angular/common';
+import { RouterModule } from '@angular/router';
+import { SingerDTO } from '../../models/Singer.dto';
 
 interface ThemeSave {
   isDarkTheme: boolean;
@@ -9,7 +14,8 @@ interface ThemeSave {
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
-  styleUrls: ['./header.component.css']
+  styleUrls: ['./header.component.css'],
+  imports: [NgIf, RouterModule]
 })
 export class HeaderComponent implements OnInit {
   private COOKIE_NAME = 'music-streaming-theme';
@@ -18,18 +24,30 @@ export class HeaderComponent implements OnInit {
   pathLogoLightTheme = environment.assetsPath + 'symphony-lighttheme-icon.png';
   isDarkTheme = true;
   private dataTheme: ThemeSave | null = null;
+  isLoggedIn: boolean = false;
 
-  constructor(private cookieService: CookieService) {
+  @Input() user!: UserDTO;
+  @Input() singer!: SingerDTO;
+
+  constructor(
+    private cookieService: CookieService,
+    private authService: AuthService
+  ) {
     const storedTheme = this.cookieService.get(this.COOKIE_NAME);
     this.dataTheme = storedTheme ? JSON.parse(storedTheme) : null;
   }
 
   ngOnInit(): void {
     this.loadConfig();
+    this.isLoggedIn = this.authService.isLoggedIn();
   }
 
   get assetsPath() {
     return environment.assetsPath;
+  }
+
+  logout() {
+    this.authService.logout();
   }
 
   loadConfig(): void {

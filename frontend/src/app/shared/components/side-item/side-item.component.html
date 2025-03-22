@@ -1,0 +1,53 @@
+<li *ngIf="haveData()" class="row container-song" [class.active]="isActive" [attr.data-songid]="song.song_id">
+    <div class="song col-8">
+      <div class="row">
+        <div class="col-3 song-img d-flex align-self-center">
+          <a [routerLink]="['/song/control/play', song.song_id]" (click)="playSong()">
+            <img [src]="'http://localhost:8080/symphony' + song.song_img" class="rounded-2" alt=""
+              style="width: 45px; height: 45px;">
+          </a>
+        </div>
+        <div class="col-9 song-info pe-0">
+          <h6 class="text-white-primary mt-2">
+            <a [routerLink]="['/song', song.song_id]" class="text-decoration-none text-white-primary" [class.refer]="!isActive">
+              {{ song.songName }}
+            </a>
+          </h6>
+          <p class="text-support fw-bolder mb-1" style="font-size: 12px;">
+            <ng-container *ngFor="let singer of song.singers; let i = index; let isLast = last">
+              <a class="refer text-decoration-none text-support" [routerLink]="['/singer', singer.singer_id]">
+                {{ singer.stageName }}
+              </a>
+              <span *ngIf="!isLast">, </span>
+            </ng-container>
+          </p>
+        </div>
+      </div>
+    </div>
+    <div class="other col-4 d-flex align-self-center">
+      <i class="fa-regular fa-heart fs-6 refer btn favorite-btn"
+        [class.text-orange-primary]="favoriteSong()"
+        (click)="toggleFavorite()"></i>
+      <div class="dropdown dropstart text-end ms-2">
+        <div class="dropdown-toggle text-center" data-bs-toggle="dropdown">
+          <i class="fa-solid fa-ellipsis fs-6 refer text-white-primary"></i>
+        </div>
+        <ul class="dropdown-menu bg-dark_grey-color">
+          <li>
+            <span class="dropdown-item text-white-primary btn w-100 d-block p-0">
+              <span class="favorite-btn w-100 d-block px-3 py-1" (click)="toggleFavorite()">
+                <i class="fa-solid fa-plus pe-2"></i>
+                {{ favoriteSong() ? 'Xóa khỏi thư viện' : 'Thêm vào thư viện' }}
+              </span>
+            </span>
+          </li>
+          <li>
+            <a class="dropdown-item text-white-primary" [routerLink]="['/song', song.song_id]">
+              <i class="fa-solid fa-circle-info pe-2"></i>
+              Chi tiết
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </li>

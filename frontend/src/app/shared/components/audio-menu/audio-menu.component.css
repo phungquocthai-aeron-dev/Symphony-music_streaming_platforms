@@ -1,0 +1,124 @@
+#menu-audio {
+    height: 90px;
+    padding: 12px 12px 6px 12px;
+    background-color: var(--black-color);
+    border-top: 1px solid var(--orange-color);
+    z-index: 1040;
+}
+
+#menu-audio i {
+    color: var(--text_dark_theme-color);
+    font-size: 20px;
+}
+
+
+#menu-audio p,
+#menu-audio h6 {
+    font-family: Inter, sans-serif, 'Open Sans' !important;
+}
+
+#menu-audio p {
+    font-size: 12px;
+    margin-bottom: 0;
+    z-index: 1000;
+}
+
+#play-music {
+    border: 2px solid var(--white-color);
+}
+
+#play-music:hover {
+    border: 2px solid var(--orange-color);
+}
+
+#play-music:active {
+    border: 2px solid var(--orange-color) !important;
+}
+
+#progressVolume,
+#progressVolume-clean {
+    width: 0;
+    height: 3px;
+    background: linear-gradient(to right, var(--orange-color), var(--pink_strong-color));
+    position: absolute;
+    top: 0px;
+    left: 0;
+    pointer-events: none;
+    z-index: 2;
+    border-radius: 4px;
+}
+
+.audioActive i {
+    color: var(--orange-color) !important;
+    font-weight: 600;
+}
+
+#progressBar {
+    width: 0;
+    height: 3px;
+    background: linear-gradient(to right, var(--orange-color), var(--pink_strong-color));
+    position: absolute;
+    top: 0px;
+    left: 0;
+    pointer-events: none;
+    z-index: 2;
+    border-radius: 4px;
+}
+
+#current-time {
+    width: 50px;
+}
+
+#audio-duration,
+#current-time {
+    font-size: 12px;
+    color: var(--text_dark_theme-color);
+    font-weight: 500;
+    padding: 0 12px 0 12px;
+    line-height: 14px;
+}
+
+.limit-song-info {
+    text-overflow: ellipsis;
+    text-wrap: nowrap;
+    max-width: 200px;
+    overflow: hidden;
+}
+
+.clean-audio-control {
+    display: none;
+}
+
+@media screen and (max-width: 992px) {
+
+    .menu-control-song-info {
+        display: none;
+    }
+
+    .clean-audio-control {
+        display: block;
+    }
+
+    .clean-audio-control-before {
+        display: none !important;
+    }
+
+}
+
+@media screen and (max-width: 576px) {
+    #music_playing_info {
+        display: none;
+    }
+
+    #menu-audio {
+        height: 76px;
+        padding: 4px 12px 10px 12px;
+        background-color: var(--black-color);
+        border-top: 1px solid var(--orange-color);
+        z-index: 1040;
+    }
+
+    #menu-audio i {
+        font-size: 14px;
+    }
+}

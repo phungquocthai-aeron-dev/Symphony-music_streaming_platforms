@@ -1,27 +1,360 @@
-<h1 class="text-white-primary">Home</h1>
-<div>
-    <ul>
-        <li class="text-white-primary" *ngFor="let song of hotHitSongs">{{ song.songName }}</li>
-    </ul>
-    
-</div>
-<h1 class="text-white-primary">Home</h1>
+<!-- CONTENT -->
 
-<h1 class="text-white-primary">Home Here</h1>
+<main id="content" class="container-fluid bg-black-primary ps-0">
+  <div class="row">
 
+    <div class="col-2 bg-black-primary">
+    </div>
 
-<!-- <ng-container *ngIf="!loading; else loadingTemplate">
-    <ng-container *ngIf="hotHitSongs.length > 0; else noDataTemplate">
-      <div *ngFor="let song of hotHitSongs">
-        {{ song.songName }}
+    <div class="col-10 content p-4 pt-0">
+
+      <!-- CAROUSEL -->
+      <div id="demo" class="carousel slide" data-bs-ride="carousel">
+
+        <!-- Indicators/dots -->
+        <div class="carousel-indicators">
+          <button type="button" data-bs-target="#demo" data-bs-slide-to="0" class="active"></button>
+          <button type="button" data-bs-target="#demo" data-bs-slide-to="1"></button>
+          <button type="button" data-bs-target="#demo" data-bs-slide-to="2"></button>
+          <button type="button" data-bs-target="#demo" data-bs-slide-to="3"></button>
+        </div>
+
+        <!-- The slideshow/carousel -->
+        <div class="carousel-inner">
+          <div class="carousel-item active">
+            <a href="https://www.youtube.com/watch?v=aGykpL5W-Gs&list=PL2s0wX3BiZGhnuAndQ0kCOEYUkJON4r7j&index=23">
+              <img [src]="'http://localhost:8080/symphony/images/other/slide_of_carousel1.jpg'" 
+                alt="Los Angeles"
+                class="d-block w-100">
+            </a>
+          </div>
+          <div class="carousel-item">
+            <a href="https://www.youtube.com/watch?v=5aKolb6XJLA">
+              <img [src]="'http://localhost:8080/symphony/images/other/slide_of_carousel2.jpg'" alt="Chicago"
+                class="d-block w-100">
+            </a>
+          </div>
+          <div class="carousel-item">
+            <a href="https://www.youtube.com/watch?v=G8D8xVwhRy8&list=PLt3LgMEKzFxy03fvdFk_rEtjfVJfD8pUq&index=11">
+              <img [src]="'http://localhost:8080/symphony/images/other/slide_of_carousel3.jpg'" alt="New York"
+                class="d-block w-100">
+            </a>
+          </div>
+          <div class="carousel-item">
+            <a href="https://www.youtube.com/watch?v=nFzKI9YrWLQ&list=PLy_TpcUT2LZs0BkTqKYtAn61FZgtT3XwP&index=4">
+              <img [src]="'http://localhost:8080/symphony/images/other/slide_of_carousel4.jpg'" alt="New York"
+                class="d-block w-100">
+            </a>
+          </div>
+        </div>
+
+        <!-- Left and right controls/icons -->
+        <button class="carousel-control-prev" type="button" data-bs-target="#demo" data-bs-slide="prev">
+          <span class="carousel-control-prev-icon"></span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#demo" data-bs-slide="next">
+          <span class="carousel-control-next-icon"></span>
+        </button>
       </div>
-    </ng-container>
-  </ng-container>
-  
-  <ng-template #loadingTemplate>
-    <div>Loading...</div>
-  </ng-template>
-  
-  <ng-template #noDataTemplate>
-    <div>No songs available</div>
-  </ng-template> -->
+
+
+      <!-- NEW SONGS tách -->
+
+      <div class="container mt-4 new-songs-container mt-4">
+        <div class="d-flex justify-content-between mb-3">
+          <h5 class="text-white-primary">MỚI PHÁT HÀNH</h5>
+          <a href="/home" class="text-decoration-none text-support fw-bolder refer">Tất cả
+            <i class="fa-solid fa-chevron-right"></i>
+          </a>
+        </div>
+        <div class="row">
+          <app-new-card class="col-12 col-md-6 col-lg-4 p-0"
+            *ngFor="let song of newSongs"
+            [song]="song">> 
+          </app-new-card>
+        </div>
+      </div>
+
+      <!-- TOP 100 RANKING -->
+      <!-- <?php if (!empty($top3SongsRanking) && count($top3SongsRanking) == 3):  ?> -->
+        <!-- <div class="container mt-4">
+          <div class="d-flex justify-content-between mb-3">
+            <h5 class="text-white-primary">TOP 100 BÀI HÁT THỊNH HÀNH</h5>
+            <a href="ranking.php" class="text-decoration-none text-support fw-bolder refer">Tất cả
+              <i class="fa-solid fa-chevron-right"></i>
+            </a>
+          </div>
+          <div class="row">
+            <div class="col-lg-4 order-lg-1 top-song-container d-flex flex-column justify-content-center">
+              <?php
+              $topSongMedal = ['/images/other/1st-medal-icon.png', '/images/other/2nd-medal-icon.png', '/images/other/3rd-medal-icon.png'];
+              $count = 0;
+              foreach ($top3SongsRanking as $topSong): ?>
+                <div class="d-flex text-white-primary top-song-item rounded-2 p-3">
+                  <div>
+                    <img src="<?= $this->assets($topSongMedal[$count++]); ?>" alt="" style="width: 10;">
+                  </div>
+                  <div class="me-3 ms-2">
+                    <img class="rounded-2" src="<?= $this->assets($topSong->song_img); ?>" alt="" style="width: 50px; height: 50px;">
+                  </div>
+                  <div class="top-song-info">
+                    <h6 class="top-song refer w-100"><?= $this->e($topSong->song_name); ?></h6>
+                    <p class="text-support top-singer">
+                      <?php
+                      $listSingerStageName = $topSong->getSingersOfSong();
+                      $numSinger = count($listSingerStageName);
+                      for ($i = 0; $i < $numSinger; $i++): ?>
+                        <a class="refer text-decoration-none text-support" href="/singer/<?= $listSingerStageName[$i]->singer_id; ?>"><?= $this->e($listSingerStageName[$i]->stage_name); ?></a>
+                        <?php if ($i + 1 != $numSinger): ?>
+                          <span>,</span>
+                        <?php endif; ?>
+                      <?php endfor; ?>
+                    </p>
+                  </div>
+                </div>
+              <?php endforeach; ?>
+
+              <div class="d-flex justify-content-center mt-3">
+                <a href="/ranking" class="text-white-primary text-decoration-none btn border refer">Xem Thêm</a>
+              </div>
+            </div>
+            <div class="col-lg-8 order-lg-2 order-first chart-ranking-container">
+              <canvas id="lineChart_ranking" class="w-100 h-100"></canvas>
+            </div>
+          </div>
+        </div> -->
+
+        <!-- <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script src="/js/chart.js"></script>
+        <script>
+          <?php
+          date_default_timezone_set('Asia/Ho_Chi_Minh');
+
+          function listSingerName($arr = [])
+          {
+            $n = count($arr);
+            $listStageName = [];
+
+            for ($i = 0; $i < $n; $i++) {
+              $listStageName[] = $arr[$i]->stage_name;
+            }
+
+            return implode(", ", $listStageName);
+          }
+
+          function dataListenJSON($topSong)
+          {
+            $data = [];
+
+            $statistic = $topSong->listeningStatistics();
+
+            $currentHour = intval(date('H'));
+            $count = 0;
+            $n = count($statistic);
+
+            for ($i = 0; $i < 24; $i++) {
+
+              $currentHour--;
+
+              if ($currentHour < 0) $currentHour = 23;
+
+              if ($count < $n) {
+                if ($currentHour == $statistic[$count]['hour']) {
+                  $data[$i] = intval($statistic[$count++]['total_listens_per_hour']);
+                } else {
+                  $data[$i] = 0;
+                }
+              } else {
+                $data[$i] = 0;
+              }
+            }
+
+            return json_encode($data);
+          }
+          ?>
+
+          const dataTopSong1 = <?= $this->e(dataListenJSON($top3SongsRanking[0])); ?>;
+
+          let TopSong1 = new TopSong('<?= $this->e($top3SongsRanking[0]->song_name); ?>',
+            '<?= $this->e(listSingerName($top3SongsRanking[0]->getSingersOfSong())); ?>',
+            '<?= $this->assets($top3SongsRanking[0]->song_img); ?>', dataTopSong1.reverse())
+
+
+
+          const dataTopSong2 = <?= $this->e(dataListenJSON($top3SongsRanking[1])); ?>;
+
+          let TopSong2 = new TopSong('<?= $this->e($top3SongsRanking[1]->song_name); ?> ',
+            '<?= $this->e(listSingerName($top3SongsRanking[1]->getSingersOfSong())); ?>',
+            '<?= $this->assets($top3SongsRanking[1]->song_img); ?>', dataTopSong2.reverse())
+
+
+
+          const dataTopSong3 = <?= $this->e(dataListenJSON($top3SongsRanking[2])); ?>;
+
+          let TopSong3 = new TopSong('<?= $this->e($top3SongsRanking[2]->song_name); ?>',
+            '<?= $this->e(listSingerName($top3SongsRanking[2]->getSingersOfSong())); ?>',
+            '<?= $this->assets($top3SongsRanking[2]->song_img); ?>', dataTopSong3.reverse())
+
+
+
+          ChartRanking.InitRanking(TopSong1, TopSong2, TopSong3)
+          if (dataTopSong1 != null && dataTopSong2 != null && dataTopSong3 != null) {
+            ChartRanking.DrawLineChart('lineChart_ranking')
+          }
+        </script> -->
+
+
+
+      <!-- VPOP tách -->
+
+      <div class="container vpop-songs listen-recently mt-4">
+        <div class="d-flex justify-content-between mb-3">
+          <h5 class="text-white-primary">V-POP</h5>
+          <a href="" class="text-decoration-none text-support fw-bolder refer">Tất cả
+            <i class="fa-solid fa-chevron-right"></i>
+          </a>
+        </div>
+        <div class="row">
+          <app-card  class="col-12 col-sm-6 col-md-3 col-lg-2 mb-2"
+            *ngFor="let song of vpopSongs"
+            [song]="song">
+          </app-card>
+        </div>
+      </div>
+
+      <!-- REMIX -->
+
+      <div class="container remix-songs listen-recently mt-4">
+        <div class="d-flex justify-content-between mb-3">
+          <h5 class="text-white-primary">NHẠC REMIX</h5>
+          <a href="" class="text-decoration-none text-support fw-bolder refer">Tất cả
+            <i class="fa-solid fa-chevron-right"></i>
+          </a>
+        </div>
+        <div class="row">
+          <app-card  class="col-12 col-sm-6 col-md-3 col-lg-2 mb-2"
+          *ngFor="let song of remixSongs"
+          [song]="song">
+        </app-card>
+        </div>
+      </div>
+
+                  <!-- US-UK -->
+
+                  <div class="container usuk-songs listen-recently mt-4">
+                    <div class="d-flex justify-content-between mb-3">
+                        <h5 class="text-white-primary">US - UK</h5>
+                        <a href="" class="text-decoration-none text-support fw-bolder refer">Tất cả
+                            <i class="fa-solid fa-chevron-right"></i>
+                        </a>
+                    </div>
+                    <div class="row">
+                      <app-card  class="col-12 col-sm-6 col-md-3 col-lg-2 mb-2"
+                      *ngFor="let song of usUkSongs"
+                      [song]="song">
+                    </app-card>
+                    </div>
+                </div>
+    
+                <!-- NHẠC TRỮ TÌNH -->
+    
+                <div class="container lyrical-songs listen-recently mt-4">
+                    <div class="d-flex justify-content-between mb-3">
+                        <h5 class="text-white-primary">NHẠC TRỮ TÌNH</h5>
+                        <a href="" class="text-decoration-none text-support fw-bolder refer">Tất cả
+                            <i class="fa-solid fa-chevron-right"></i>
+                        </a>
+                    </div>
+                    <div class="row">
+                      <app-card  class="col-12 col-sm-6 col-md-3 col-lg-2 mb-2"
+                      *ngFor="let song of lyricalSongs"
+                      [song]="song">
+                    </app-card>
+                    </div>
+                </div>
+    
+
+      <!-- SPONSORS -->
+
+      <div class="sponsor container mt-4">
+        <h5 class="text-white-primary">ĐỐI TÁC ÂM NHẠC</h5>
+        <div class="row p-5 pt-0">
+          <div class="col-12 col-sm-6 col-md-3 col-xl-2 mt-4">
+
+            <img style="width: 130px; height: 70px;"
+              [src]="'http://localhost:8080/symphony/images/sponsor/monstercat.jpg'" alt="" class="rounded-4">
+
+          </div>
+          <div class="col-12 col-sm-6 col-md-3 col-xl-2 mt-4">
+
+            <img style="width: 130px; height: 70px;"
+              [src]="'http://localhost:8080/symphony/images/sponsor/sony-music.png'" alt="" class="rounded-4">
+
+          </div>
+          <div class="col-12 col-sm-6 col-md-3 col-xl-2 mt-4">
+
+            <img style="width: 130px; height: 70px;"
+              [src]="'http://localhost:8080/symphony/images/sponsor/the-orchard.jpg'" alt="" class="rounded-4">
+
+          </div>
+          <div class="col-12 col-sm-6 col-md-3 col-xl-2 mt-4">
+
+            <img style="width: 130px; height: 70px;" [src]="'http://localhost:8080/symphony/images/sponsor/emprire.png'"
+              alt="" class="rounded-4">
+
+          </div>
+          <div class="col-12 col-sm-6 col-md-3 col-xl-2 mt-4">
+
+            <img style="width: 130px; height: 70px;"
+              [src]="'http://localhost:8080/symphony/images/sponsor/believe-entertainment.png'" alt=""
+              class="rounded-4">
+
+          </div>
+          <div class="col-12 col-sm-6 col-md-3 col-xl-2 mt-4">
+
+            <img style="width: 130px; height: 70px;"
+              [src]="'http://localhost:8080/symphony/images/sponsor/dongtay-promotion.jpg'" alt="" class="rounded-4">
+
+          </div>
+          <div class="col-12 col-sm-6 col-md-3 col-xl-2 mt-4">
+
+            <img style="width: 130px; height: 70px;"
+              [src]="'http://localhost:8080/symphony/images/sponsor/danal-entertainment.png'" alt="" class="rounded-4">
+
+          </div>
+          <div class="col-12 col-sm-6 col-md-3 col-xl-2 mt-4">
+
+            <img style="width: 130px; height: 70px;"
+              [src]="'http://localhost:8080/symphony/images/sponsor/mtp-entertainment.jpg'" alt="" class="rounded-4">
+
+          </div>
+          <div class="col-12 col-sm-6 col-md-3 col-xl-2 mt-4">
+
+            <img style="width: 130px; height: 70px;"
+              [src]="'http://localhost:8080/symphony/images/sponsor/universal_music.jpg'" alt="" class="rounded-4">
+
+          </div>
+          <div class="col-12 col-sm-6 col-md-3 col-xl-2 mt-4">
+
+            <img style="width: 130px; height: 70px;"
+              [src]="'http://localhost:8080/symphony/images/sponsor/sm-entertainment.jpg'" alt="" class="rounded-4">
+
+          </div>
+          <div class="col-12 col-sm-6 col-md-3 col-xl-2 mt-4">
+
+            <img style="width: 130px; height: 70px;" [src]="'http://localhost:8080/symphony/images/sponsor/genie.png'"
+              alt="" class="rounded-4">
+
+          </div>
+          <div class="col-12 col-sm-6 col-md-3 col-xl-2 mt-4">
+
+            <img style="width: 130px; height: 70px;"
+              [src]="'http://localhost:8080/symphony/images/sponsor/kakao-entertainment.png'" alt="" class="rounded-4">
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</main>

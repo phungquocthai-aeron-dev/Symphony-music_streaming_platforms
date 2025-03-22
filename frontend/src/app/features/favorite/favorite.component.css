@@ -1,0 +1,46 @@
+.song-img-active-container {
+    width: 25%;
+    max-width: 350px;
+    min-width: 230px;
+}
+
+.song-img-active {
+    width: 80%;
+}
+
+i.active {
+    color: var(--orange-color);
+}
+
+#content-favorite-songs ul li:not(:first-child):hover {
+    background-color: var(--dark_grey-color);
+}
+
+.song-active-banner {
+    background: linear-gradient(to bottom, var(--dark_grey-color) 55%, var(--black-color));
+    border-radius: 12px;
+}
+
+.row-song-favorite div:last-child {
+    margin-right: 50px;
+}
+
+ul {
+    list-style: none;
+}
+
+#empty-list-songs-img {
+    width: 20%;
+    max-width: 250px;
+    min-width: 200px;
+}
+
+@media screen and (max-width: 992px) {
+    #content-favorite-songs ul li:first-child {
+        display: none;
+    }
+
+    .favorite-song .row>div {
+        margin-top: 12px;
+    }
+}

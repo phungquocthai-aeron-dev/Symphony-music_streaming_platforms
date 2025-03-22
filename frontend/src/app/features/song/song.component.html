@@ -1,0 +1,100 @@
+<main id="content" class="container-fluid bg-black-primary">
+    <div class="row">
+
+        <div class="col-2 bg-black-primary">
+        </div>
+        <div class="col-10 content p-4 pt-0">
+            <div class="d-flex flex-wrap song-active-banner mb-5">
+                <div class="song-img-active-container pe-4">
+                    <img *ngIf="song" [src]="'http://localhost:8080/symphony' + song.song_img" alt=""
+                        class="song-img-active rounded-circle">
+                </div>
+                <div class="song-active-info d-flex flex-column-reverse pt-4">
+                    <p *ngIf="song" href="" class="text-white-primary">
+                        <ng-container *ngFor="let singer of song.singers; let i = index; let isLast = last">
+                            <a class="refer text-decoration-none text-white-primary" [routerLink]="['/singer', singer.singer_id]">
+                              {{ singer.stageName }}
+                            </a>
+                            <span *ngIf="!isLast">, </span>
+                          </ng-container>
+                    </p>
+                    <h1 *ngIf="song" class="text-white-primary">{{ song.songName }}</h1>
+                </div>
+            </div>
+
+            <div class="active-song-option mb-4 d-flex flex-wrap">
+                <span *ngIf="song" (click)="toggleSendSong()">
+                    <div class="active-song-status rounded-circle bg-orange-primary me-4 d-flex flex-column justify-content-center">
+                        <i class="fa-solid fa-play d-block mx-auto text-white-primary fs-3"></i>
+                        <!-- <i class="fa-solid fa-pause d-block mx-auto text-white-primary fs-3"></i> -->
+                    </div>
+                </span>
+                <div class="d-flex p-4 ps-0">
+                    <div class="btn rounded-circle bg-dark_grey-color me-3">
+                        <i class="fa-solid fa-plus text-white-primary"></i>
+                    </div>
+                    <i class="fa-regular fa-heart btn text-white-primary lh-base refer" (click)="toggleFavorite()"></i>
+                </div>
+            </div>
+
+            <div class="song-active-detail-info text-white-primary mb-5">
+                <h4 class="mb-4">Thông tin chi tiết</h4>
+                <p>
+                    <strong>Ca sĩ: </strong>
+                    <ng-container *ngIf="song">
+                    <ng-container *ngFor="let singer of song.singers; let i = index; let isLast = last">
+                        <a class="refer text-decoration-none text-white-primary" [routerLink]="['/singer', singer.singer_id]">
+                          {{ singer.stageName }}
+                        </a>
+                        <span *ngIf="!isLast">, </span>
+                    </ng-container>
+                    </ng-container>
+                </p>
+                <p>
+                    <strong>Nhạc sĩ: </strong>
+                    <span *ngIf="song">{{ this.song.author}}</span>
+                </p>
+                <p>
+                    <strong>Lượt nghe: </strong>
+                    <span *ngIf="song">{{this.song.total_listens | number:'1.0-0' }}</span>
+                </p>
+                <p>
+                    <strong>Ngày phát hành: </strong>
+                    <span *ngIf="song">{{this.song.releaseDate | date:'dd/MM/yyyy'}}</span>
+                </p>
+            </div>
+
+            <div class="song-active-lyric text-white-primary mb-5">
+                <h4 class="mb-4">Lời bài hát</h4>
+                <div *ngIf="!isLoadingLyric && lyricContent" class="lyric-container" [class.expanded]="isLyricExpanded">
+                    <p *ngFor="let line of lyricLines">{{ line }}</p>
+                </div>
+
+                <div *ngIf="isLoadingLyric" class="loading">Đang tải lời bài hát...</div>
+                <div *ngIf="!isLoadingLyric && !lyricContent && song?.lyric" class="lyric-error">
+                  Không thể tải lời bài hát.
+                </div>
+                <div *ngIf="!isLoadingLyric && !song?.lyric" class="no-lyric">
+                  Bài hát này chưa có lời.
+                </div>
+                <span id="elastic" (click)="toggleLyricExpansion()" class="refer">{{ getExpandButtonText() }}</span>
+            </div>
+
+
+            <div class="container song-suggestion mt-4 p-0">
+                <div class="d-flex justify-content-between mb-3">
+                    <h5 class="text-white-primary">CÓ THỂ BẠN MUỐN NGHE</h5>
+                    <a href="/home" class="text-decoration-none text-support fw-bolder refer">Tất cả
+                        <i class="fa-solid fa-chevron-right"></i>
+                    </a>
+                </div>
+                <div class="row">
+                    <app-card  class="col-12 col-sm-6 col-md-3 col-lg-2 mb-2"
+                      *ngFor="let song of songRecommend"
+                      [song]="song">
+                    </app-card>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>

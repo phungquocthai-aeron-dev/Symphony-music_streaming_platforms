@@ -1,0 +1,43 @@
+.content {
+    border-bottom: 3px solid var(--dark_grey-color);
+}
+
+main.container-fluid {
+    padding-top: 96px;
+}
+
+.carousel-item img {
+    height: 360px;
+}
+
+.top-song-info {
+    overflow: hidden;
+}
+
+.top-song,
+.top-singer {
+    text-overflow: ellipsis;
+    text-wrap: nowrap;
+    overflow: hidden;
+}
+
+.top-song-item:hover {
+    background-color: var(--dark_grey-color);
+    cursor: pointer;
+}
+
+@media screen and (max-width: 992px) {
+
+    .carousel-item img {
+        height: 250px;
+    }
+
+}
+
+@media screen and (max-width: 576px) {
+
+    .chart-ranking-container {
+        display: none;
+    }
+
+}

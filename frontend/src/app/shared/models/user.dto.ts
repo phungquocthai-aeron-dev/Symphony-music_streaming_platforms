@@ -6,3 +6,4 @@ export interface UserDTO {
     avatar: string;
     role: string;
   }
+  
