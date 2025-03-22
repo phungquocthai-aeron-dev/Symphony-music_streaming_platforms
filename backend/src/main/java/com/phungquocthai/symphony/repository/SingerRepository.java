@@ -14,7 +14,8 @@ import jakarta.transaction.Transactional;
 
 @Repository
 public interface SingerRepository extends JpaRepository<Singer, Integer> {
-	List<Singer> findByStageName(String stageName);
+	@Query(value = "SELECT * FROM singer WHERE stage_name LIKE :stageName", nativeQuery = true)
+	List<Singer> getByStageName(String stageName);
 	
 	@Modifying
 	@Transactional

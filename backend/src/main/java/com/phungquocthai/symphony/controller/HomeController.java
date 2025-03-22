@@ -95,9 +95,11 @@ public class HomeController {
 	
 	@GetMapping("/search")
 	public ResponseEntity<ApiResponse<SearchDTO>> searchSongs(
-			@RequestParam(value = "id") String key) {
+			@RequestParam(value = "s") String key) {
 		if(key == null) return ResponseEntity.noContent().build();
 		if(key.length() == 0) return ResponseEntity.noContent().build();
+		
+		key = "%" + key + "%";
 		
 		List<SongDTO> songs = songService.searchSongs(key);
 		List<SingerDTO> singers = singerService.findByStageName(key);

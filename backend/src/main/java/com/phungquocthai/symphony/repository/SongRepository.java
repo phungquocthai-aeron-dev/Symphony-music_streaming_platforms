@@ -44,9 +44,9 @@ public interface SongRepository extends JpaRepository<Song, Integer> {
 	@Query(value = "SELECT * FROM song ORDER BY song_id DESC LIMIT 1", nativeQuery = true)
 	Optional<Song> getNewSong();
 
-	@Query(value = "SELECT DISTINCT s.song_id, s.song_name, s.song_img, s.listens, s.path, s.lyric, s.duration, s.release_date, s.author, s.category_id " +
+	@Query(value = "SELECT DISTINCT s.* " +
             "FROM song s " +
-            "NATURAL JOIN present p " +
+            "NATURAL JOIN category_song p " +
             "NATURAL JOIN category c " +
             "WHERE s.song_name LIKE :key OR c.category_name LIKE :key " +
             "COLLATE utf8mb4_unicode_ci", nativeQuery = true)

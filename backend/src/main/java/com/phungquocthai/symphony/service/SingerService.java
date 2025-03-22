@@ -78,7 +78,7 @@ public class SingerService {
 	}
 	
 	public List<SingerDTO> findByStageName(String stageName) {
-		List<Singer> singers = singerRepository.findByStageName(stageName);
+		List<Singer> singers = singerRepository.getByStageName(stageName);
 		return singerMapper.toListDTO(singers);
 	}
 	

@@ -32,7 +32,7 @@ public class SecurityConfig {
 	private final String[] PUBLIC_GET_ENDPOINTS = {"/", "/home", "/singer/**", "/song/**",
 			"/auth/register", "/auth/login", "/user/singer/**", "/user\\?id=\\d+",
 			"/music/**", "/lyric/**", "/lrc/**", "/images/**", "/singer/exclude",
-			"/ranking", "/newSongs", "/category", "/favorite"};
+			"/ranking", "/newSongs", "/category", "/favorite", "/search/**"};
 	
 	private final String[] PUBLIC_POST_ENDPOINTS = {"/auth/login", "/auth/register", "/auth/logout",
 			"/auth/refresh", "/song/listenedSong",
