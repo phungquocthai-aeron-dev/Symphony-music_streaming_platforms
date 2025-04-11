@@ -1,0 +1,21 @@
+<section>
+    <div id="lyric" class="row" style=" height: calc(100vh - 90px);" [class.appear]="disabled">
+        <div class="col-12 col-sm-4 h-100" style="display: flex; align-items: center; justify-content: center; flex-direction: column;">
+            <img #cdThumb style="width: 80%;" class="rounded-circle" *ngIf="song" [src]="'http://localhost:8080/symphony/uploads' + song.song_img" alt="">
+            <h2 *ngIf="song" class="text-white-primary mt-2">{{ song.songName }}</h2>
+
+        </div>
+    
+        <div class="col-12 col-sm-8 text-white-primary h-100">
+            <div style="overflow-y: auto; height: 100%;">
+                <div *ngIf="!isLoadingLyric" class="lyric-container pt-5 pb-5">
+                    <p *ngFor="let line of lyricLines; let i = index" 
+                    [class.active]="i === activeIndex"
+                    [class.text-secondary]="i < activeIndex" #lyricLine>
+                        {{ line.text }}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

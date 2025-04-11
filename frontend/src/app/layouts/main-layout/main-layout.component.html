@@ -4,5 +4,15 @@
  [currentSong]="currentSong" [playlistSongs]="playlistSong" [recentSongs]="recentSong"
   [isTurnOn]="turnRightSide" (optionPlaylist)="OptionPlaylist($event)"></app-right-side>
 <router-outlet></router-outlet>
-<app-audio-menu [isOptionPlaylist]="isOptionPlaylist" [song]="currentSong" [playlistSongs]="playlistSong" [recentSongs]="recentSong" (turnRightSide)="OptionTurnRightSide($event)"></app-audio-menu>
+<app-lyric [disabled]="turnLyric" [isPlaying]="isPlaying" [songProgress]="songProgress"></app-lyric>
+<app-audio-menu 
+  [song]="currentSong" 
+  [playlistSongs]="playlistSong" 
+  [isOptionPlaylist]="isOptionPlaylist" 
+  [recentSongs]="recentSong" 
+  (turnRightSide)="OptionTurnRightSide($event)"
+  (turnLyric)="OptionTurnLyric($event)"
+  (playingSong)="OptionIsPlaying($event)"
+  (songProgress)="SongProgress($event)"
+></app-audio-menu>
 <app-footer></app-footer>

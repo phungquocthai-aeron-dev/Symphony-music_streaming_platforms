@@ -26,11 +26,15 @@ export class AudioMenuComponent implements OnInit, AfterViewInit, OnChanges {
   @ViewChild('progressBar') progressBar!: ElementRef<HTMLDivElement>;
 
   @Output() turnRightSide = new EventEmitter<boolean>();
+  @Output() turnLyric = new EventEmitter<boolean>();
+  @Output() playingSong = new EventEmitter<boolean>();
+  @Output() songProgress = new EventEmitter<number>();
 
   currentTime: number = 0; // s
 
   isPlaying: boolean = false;
   isTurnRightSide: boolean = false;
+  isTurnLyric: boolean = false;
   OptionStatus: string = "UNSELECTED";
   hasReported: boolean = false;
   volume: number = 20; // miền giá trị 0 đến 100
@@ -46,7 +50,8 @@ export class AudioMenuComponent implements OnInit, AfterViewInit, OnChanges {
     ) {}
 
     ngOnInit(): void {
-        console.log(this.song)
+        console.log(this.song);
+        this.dataShareService.changeData(this.song);
     }
 
     ngAfterViewInit(): void {
@@ -69,8 +74,6 @@ export class AudioMenuComponent implements OnInit, AfterViewInit, OnChanges {
       const progressBar = this.progressBar.nativeElement;
       const progressVolume = this.progressVolumeRef.nativeElement;
 
-      console.log(progressVolume)
-      console.log("FFFFFFFFFF")
       audio.addEventListener('loadedmetadata', () => {
         this.duration = audio.duration;
       });
@@ -108,6 +111,16 @@ export class AudioMenuComponent implements OnInit, AfterViewInit, OnChanges {
         }
       })
 
+      audio.addEventListener('play', () => {
+        this.isPlaying = true;
+        this.playingSong.emit(this.isPlaying);
+      })
+
+      audio.addEventListener('pause', () => {
+        this.isPlaying = false;
+        this.playingSong.emit(this.isPlaying);
+      })
+
       audio.addEventListener('ended', () => {
         this.isPlaying = false;
 
@@ -127,6 +140,8 @@ export class AudioMenuComponent implements OnInit, AfterViewInit, OnChanges {
       audio.ontimeupdate = () => {
 
         this.currentTime = Math.floor(audio.currentTime)
+        const time = Math.floor(audio.currentTime * 100) / 100;
+        this.songProgress.emit(time);
 
         if(isNaN(this.duration)) {
           this.duration = audio.duration;
@@ -367,10 +382,14 @@ export class AudioMenuComponent implements OnInit, AfterViewInit, OnChanges {
     }
   }
 
-  value = false;
-
   toggleRightSide() {
     this.isTurnRightSide = !this.isTurnRightSide;
     this.turnRightSide.emit(this.isTurnRightSide);
   }
+
+  toggleLyric() {
+    this.isTurnLyric = !this.isTurnLyric;
+    this.turnLyric.emit(this.isTurnLyric);
+  }
+
 }

@@ -3,10 +3,8 @@
 
         <div class="d-flex col-lg-5">
             <div class="product-song_img-container" style="width: 70px;">
-                <a [routerLink]="['/song', song.song_id]">
-                    <img *ngIf="song" [src]="'http://localhost:8080/symphony' + song.song_img"
-                        class="rounded-2 product-song-img" alt="" style="width: 55px; height: 55px;">
-                </a>
+                    <img *ngIf="song" (click)="toggleSendSong()" [src]="'http://localhost:8080/symphony/uploads' + song.song_img"
+                        class="rounded-2 product-song-img" alt="" style="width: 55px; height: 55px; cursor: pointer;">
             </div>
             <div class="product-song-info d-flex flex-column justify-content-between">
                 <h6 class="product-song-name text-white-primary refer mt-2">

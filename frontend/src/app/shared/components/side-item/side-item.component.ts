@@ -1,4 +1,4 @@
-import { Component, Input, EventEmitter, Output } from '@angular/core';
+import { Component, Input, EventEmitter, Output, ElementRef, ViewChild, OnChanges, SimpleChanges } from '@angular/core';
 import { SongDTO } from '../../models/Song.dto';
 import { AuthService } from '../../../core/services/auth.service';
 import { RouterModule } from '@angular/router';
@@ -12,11 +12,13 @@ import { DataShareService } from '../../../core/services/dataShare.service';
   styleUrls: ['./side-item.component.css'],
   imports: [RouterModule, NgIf, NgFor]
 })
-export class SideItemComponent {
+export class SideItemComponent implements OnChanges {
   @Input() song!: SongDTO;
   @Input() isActive: boolean = false;
   @Output() playSongEvent = new EventEmitter<number>();
   @Output() toggleFavoriteEvent = new EventEmitter<number>();
+  @ViewChild('item') itemElement!: ElementRef;
+  
 
   constructor(
     private authService: AuthService,
@@ -42,6 +44,21 @@ export class SideItemComponent {
           console.error(error)
         }
       })
+    }
+  }
+
+   ngOnChanges(changes: SimpleChanges) {
+      if (changes['isActive']) {
+        this.scrollToCenter();
+      }
+    }
+
+  scrollToCenter() {
+    if (this.itemElement && this.isActive) {
+      this.itemElement.nativeElement.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start'
+      });
     }
   }
 

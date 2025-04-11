@@ -24,7 +24,7 @@
 
                             <!-- LOGGED IN -->
 
-                                <li class="nav-item text-nowrap clean-navbar-before" (click)="ChangeTheme()">
+                                <li class="nav-item text-nowrap clean-navbar-before mt-2" (click)="ChangeTheme()">
                                     <button
                                         class="text-black-primary btn-sm bg-white-primary rounded-circle change_theme">
                                         <i class="fa-solid fa-moon refer" style="color: var(--black-color);"></i>
@@ -35,7 +35,7 @@
                                     </span>
                                 </li>
 
-                                <li class="nav-item clean-navbar-before">
+                                <li class="nav-item clean-navbar-before mt-2">
                                     <div class="dropdown me-3">
                                         <div class="dropdown-toggle fw-medium text-nowrap text-white-primary refer"
                                             data-bs-toggle="dropdown">
@@ -84,14 +84,14 @@
                         <div *ngIf="isLoggedIn" class="dropdown">
                             <div
                             *ngIf="user"
-                            [style.background-image]="'url(http://localhost:8080/symphony' + user.avatar + ')'"
+                            [style.background-image]="'url(http://localhost:8080/symphony/uploads' + user.avatar + ')'"
                              class="rounded-circle me-5 dropdown-toggle" data-bs-toggle="dropdown" id="avatar">
                             </div>
                             <ul class="dropdown-menu dropdown-menu-end bg-dark_grey-color" style="width: 300px;">
                                 <li>
                                     <div class="d-flex p-3">
                                         <img *ngIf="user"
-                                            [src]="'http://localhost:8080/symphony' + user.avatar"
+                                            [src]="'http://localhost:8080/symphony/uploads' + user.avatar"
                                             class="rounded-circle avatarInMenuBar"
                                             style="width: 60px; height: 60px;" alt="">
                                         <div class="ms-4">

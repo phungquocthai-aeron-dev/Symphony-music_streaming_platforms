@@ -3,8 +3,6 @@ import { SongDTO } from '../../models/Song.dto';
 import { AuthService } from '../../../core/services/auth.service';
 import { NgFor, NgIf } from '@angular/common';
 import { SideItemComponent } from '../side-item/side-item.component';
-import { DataShareService } from '../../../core/services/dataShare.service';
-import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-right-side',
@@ -22,16 +20,13 @@ export class RightSideComponent implements OnInit, OnChanges {
   
   activeSongId: number | null = null;
   isOptionPlaylist = true;
-  private paramSubscription!: Subscription;
   
 
   constructor(
-    private authService: AuthService,
-    private dataShareService: DataShareService) {}
+    private authService: AuthService) {}
 
   playSong(songId: number): void {
     this.activeSongId = songId;
-    console.log(`Đang phát bài hát có ID: ${songId}`);
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -52,7 +47,6 @@ export class RightSideComponent implements OnInit, OnChanges {
     const song = this.playlistSongs.find((s) => s.song_id === songId);
     if (song) {
       song.favorite = !song.favorite;
-      console.log(`Trạng thái yêu thích của ${song.songName}: ${song.favorite}`);
     }
   }
 

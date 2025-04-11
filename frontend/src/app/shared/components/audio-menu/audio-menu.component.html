@@ -6,7 +6,7 @@
 
 
                 <div class="col-6 col-lg-3">
-                    <img *ngIf="song" [src]="'http://localhost:8080/symphony' + song.song_img" alt="" style="height: 62px; width: 62px;"
+                    <img *ngIf="song" [src]="'http://localhost:8080/symphony/uploads' + song.song_img" alt="" style="height: 62px; width: 62px;"
                         class="rounded-2">
                 </div>
                 <div class="col-6 col-lg-9 d-flex">
@@ -79,7 +79,7 @@
                         {{ duration | timeFormat }}
                     </div>
 
-                    <audio *ngIf="song" [src]="'http://localhost:8080/symphony' + song.path" preload="metadata" id="audio" #audio></audio>
+                    <audio *ngIf="song" [src]="'http://localhost:8080/symphony/uploads' + song.path" preload="metadata" id="audio" #audio></audio>
                 </div>
 
                 <div class="col-12 col-sm-2">
@@ -95,7 +95,7 @@
             <div class="btn clean-audio-control-before">
                 <i class="fa-solid fa-plus refer"></i>
             </div>
-            <div class="btn clean-audio-control-before">
+            <div class="btn clean-audio-control-before" (click)="toggleLyric()">
                 <i class="fa-solid fa-music refer"></i>
             </div>
             <div class="d-flex clean-audio-control-before" style="width: 50%;">
@@ -128,7 +128,7 @@
                             </div>
                         </li>
                         <li>
-                            <div class="btn dropdown-item">
+                            <div class="btn dropdown-item" (click)="toggleLyric()">
                                 <i class="fa-solid fa-music refer"></i>
                             </div>
                         </li>

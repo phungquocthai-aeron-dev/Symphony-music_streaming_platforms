@@ -4,7 +4,7 @@
             <a class="refer text-decoration-none text-support" [routerLink]="['/singer', singer.singer_id]">
                 <img class="card-img-top card_singer-img rounded-3"
                 *ngIf="user"
-                [src]="'http://localhost:8080/symphony' + user.avatar"
+                [src]="'http://localhost:8080/symphony/uploads' + user.avatar"
                     alt="Card image">
             </a>
         </div>

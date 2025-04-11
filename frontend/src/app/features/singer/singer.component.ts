@@ -29,7 +29,7 @@ export class SingerComponent implements OnInit, OnDestroy {
   @ViewChild('close_create_modal', { static: false }) closeCreateButton!: ElementRef;
 
 
-  defaultSongImg:string = "http://localhost:8080/symphony/images/other/no-img.png";
+  defaultSongImg:string = "http://localhost:8080/symphony/uploads/images/other/no-img.png";
   songSelectedImg!: string;
   singerId: number | string | null = null;
   singer: SingerDTO = {} as SingerDTO;
@@ -252,8 +252,9 @@ export class SingerComponent implements OnInit, OnDestroy {
         this.lrcFile = null;
         this.lyricFile = null;
         this.songImgFile = null;
-        // Đóng modal
+        
         this.closeCreateButton.nativeElement.click();
+        if(this.singerId) this.loadSingerData(this.singerId);
       },
       error: (error) => {
         console.error('Lỗi khi upload:', error);

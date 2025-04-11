@@ -14,10 +14,11 @@ import { SingerService } from '../../core/services/singer.service';
 import { DataShareService } from '../../core/services/dataShare.service';
 import { Subscription } from 'rxjs';
 import { ResponseData } from '../../shared/models/ResponseData';
+import { LyricComponent } from "../../shared/components/lyric/lyric.component";
 
 @Component({
   selector: 'app-main-layout',
-  imports: [HeaderComponent, FooterComponent, RouterOutlet, LeftSideComponent, RightSideComponent, AudioMenuComponent],
+  imports: [HeaderComponent, FooterComponent, RouterOutlet, LeftSideComponent, RightSideComponent, AudioMenuComponent, LyricComponent],
   templateUrl: './main-layout.component.html'
 })
 
@@ -33,10 +34,13 @@ export class MainLayoutComponent implements OnInit {
   recentSong!: SongDTO[];
   playlistSong!: SongDTO[];
   turnRightSide: boolean = false;
+  turnLyric: boolean = false;
   user!: UserDTO;
   singer!: SingerDTO;
   private paramSubscription!: Subscription;
   isOptionPlaylist = true;
+  isPlaying: boolean = false;
+  songProgress: number = 0;
 
   ngOnInit(): void {
     this.paramSubscription = this.dataShareService.currentData.subscribe(data => {
@@ -53,6 +57,7 @@ export class MainLayoutComponent implements OnInit {
         }
       },
       error: (err) => {
+        this.authService.logout();
         console.error('Lỗi khi lấy bài hát:', err);
       }
     });
@@ -134,6 +139,18 @@ export class MainLayoutComponent implements OnInit {
 
   OptionTurnRightSide(value: boolean): void {
     this.turnRightSide = value;
+  }
+
+  OptionTurnLyric(value: boolean): void {
+    this.turnLyric = value;
+  }
+
+  OptionIsPlaying(value: boolean): void {
+    this.isPlaying = value;
+  }
+
+  SongProgress(value: number): void {
+    this.songProgress = value;
   }
 
   filteredPlaylist() {

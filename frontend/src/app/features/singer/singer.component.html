@@ -7,7 +7,7 @@
             <div class="d-flex flex-wrap user-active-banner mb-5">
                 <div class="user-img-active-container pe-4">
                     <img *ngIf="originUser"
-                    [src]="'http://localhost:8080/symphony' + originUser.avatar"
+                    [src]="'http://localhost:8080/symphony/uploads' + originUser.avatar"
                     alt=""
                         class="user-img-active rounded-circle">
                 </div>
@@ -81,7 +81,7 @@
 
                 <div *ngIf="!songs" id="no-list-songs-favorite">
                     <img id="empty-list-songs-img"
-                    src="http://localhost:8080/symphony/images/other/Empty-songs.png" alt="" class="mx-auto d-block">
+                    src="http://localhost:8080/symphony/uploads/images/other/Empty-songs.png" alt="" class="mx-auto d-block">
                     <h3 class="text-white-primary text-center">Ca sĩ hiện chưa có sản phẩm âm nhạc nào!</h3>
                 </div>
 

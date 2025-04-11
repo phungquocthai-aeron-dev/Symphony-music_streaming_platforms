@@ -8,7 +8,6 @@ import { CardComponent } from '../../shared/components/card/card.component';
 import { HttpClient } from '@angular/common/http';
 import { DataShareService } from '../../core/services/dataShare.service';
 import { Subscription } from 'rxjs';
-import { response } from 'express';
 import { AuthService } from '../../core/services/auth.service';
 
 
@@ -57,7 +56,7 @@ export class SongComponent implements OnInit, OnDestroy {
 
         // Tải file lời bài hát nếu có
         if (this.song.lyric) {
-          const lyricPath = 'http://localhost:8080/symphony' + this.song.lyric;
+          const lyricPath = 'http://localhost:8080/symphony/uploads' + this.song.lyric;
           this.loadLyricFile(lyricPath);
         }
         

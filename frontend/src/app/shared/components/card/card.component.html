@@ -2,7 +2,7 @@
                 <div class="card-img-container overflow-hidden rounded-3 ">
                   <a [routerLink]="['/song', song.song_id]" class="text-decoration-none">
                     <img class="card-img-top card_song-img rounded-3"
-                    [src]="'http://localhost:8080/symphony' + song.song_img"
+                    [src]="'http://localhost:8080/symphony/uploads' + song.song_img"
                       alt="Card image">
                     </a>
                     <div (click)="toggleSendSong()" class="card-hover-song rounded-circle text-center fs-5 lh-lg">

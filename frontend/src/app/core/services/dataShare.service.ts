@@ -18,7 +18,7 @@ export class DataShareService {
 
     private leftSideInfoSource = new BehaviorSubject<any>(null);
     leftSideInfo = this.leftSideInfoSource.asObservable();
-    
+
     changeData(data: SongDTO) {
       this.dataSource.next(data);
     }
@@ -34,4 +34,5 @@ export class DataShareService {
     changeLeftSideInfo(data: string) {
       this.leftSideInfoSource.next(data);
     }
+
   }

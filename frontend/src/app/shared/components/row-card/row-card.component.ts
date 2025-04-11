@@ -5,6 +5,7 @@ import { SongService } from '../../../core/services/song.service';
 import { RouterModule } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
 import { TimeFormatPipe } from '../../pipes/time-format.pipe';
+import { DataShareService } from '../../../core/services/dataShare.service';
 
 @Component({
   selector: 'app-row-card',
@@ -24,7 +25,8 @@ export class RowCardComponent {
 
   constructor(
     private songService: SongService,
-    private authService: AuthService
+    private authService: AuthService,
+    private eventSource: DataShareService
   ){}
 
   toggleFavorite() {
@@ -62,4 +64,7 @@ export class RowCardComponent {
     this.isDelete.emit(true);
   }
 
+  toggleSendSong() {
+    this.eventSource.changeData(this.song)
+  }
 }
