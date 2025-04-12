@@ -14,18 +14,6 @@ ul {
     list-style: none;
 }
 
-.top1-ranking {
-    color: var(--blue-color);
-}
-
-.top2-ranking {
-    color: var(--green-color);
-}
-
-.top3-ranking {
-    color: var(--pink_strong-color);
-}
-
 .chart-container {
     margin-top: 100px;
 }

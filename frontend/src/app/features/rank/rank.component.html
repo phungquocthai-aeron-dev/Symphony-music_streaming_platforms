@@ -11,10 +11,21 @@
                 <h2 class="text-center text-white-primary mb-5">BẢNG XẾP HẠNG</h2>
 
             <!-- Biểu đồ đường chưa vẽ -->
+                <div *ngIf="top3 && topSongs">
+                    <app-line-chart
+                    *ngIf="top3.length >= 3 && topSongs.length >= 3"
+                    [topSong1]="topSongs[0]"
+                    [topSong2]="topSongs[1]"
+                    [topSong3]="topSongs[2]"
+                    [topSong1Stats]="top3[0]"
+                    [topSong2Stats]="top3[1]"
+                    [topSong3Stats]="top3[2]"
+                    ></app-line-chart>
+                </div>
 
             </div>
 
-                <div id="list-songs-ranking">
+                <div id="list-songs-ranking" *ngIf="top3 && topSongs">
                     <div class="ranking-option mb-3 mt-5 d-flex flex-wrap">
                         <h3 class="text-white-primary h-100 m-0 lh-base me-3">Phát nhạc</h3>
                         <div class="active-song-status rounded-circle bg-orange-primary me-4 d-flex flex-column justify-content-center" style="width: 50px; height: 50px;">
@@ -39,13 +50,18 @@
                                 </div>
                             </div>
                         </li>
+                        <app-rank-card class="col-md-6 col-lg-12 "
+                            *ngFor="let song of topSongs; let i = index"
+                            [song]="song"
+                            [isOwner]="false"
+                            [_rank]="i+1"
+                        ></app-rank-card>
                     </ul>
                 </div>
 
                 <!-- Chưa xử lý dữ liệu -->
-                <app-rank-card *ngFor="let song of topSongs" [song]="song"></app-rank-card>
 
-                <div *ngIf="top3.length == 0" id="no-list-songs-favorite">
+                <div *ngIf="!top3" id="no-list-songs-favorite">
                     <img id="empty-list-songs-img" src="assets/images/Empty-songs.png" alt="" class="mx-auto d-block" style="width: 350px;">
                     <h3 class="text-white-primary text-center mb-5">Chưa có bài hát nào được nghe trong 1 giờ qua!</h3>
                 </div>

@@ -6,6 +6,8 @@ import { RouterModule } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
 import { TimeFormatPipe } from '../../pipes/time-format.pipe';
 import { DataShareService } from '../../../core/services/dataShare.service';
+import { TopSongDTO } from '../../models/TopSong.dto';
+
 
 @Component({
   selector: 'app-row-card',
@@ -14,11 +16,11 @@ import { DataShareService } from '../../../core/services/dataShare.service';
   styleUrl: './row-card.component.css'
 })
 export class RowCardComponent {
-  @Input() song!: SongDTO;
+  @Input() song!: SongDTO | TopSongDTO;
   @Input() isOwner: boolean = false;
   @Output() isEdit = new EventEmitter<boolean>();
   @Output() isDelete = new EventEmitter<boolean>();
-  @Output() songSelected = new EventEmitter<SongDTO>();
+  @Output() songSelected = new EventEmitter<SongDTO | TopSongDTO>();
   @Output() openModalEdit = new EventEmitter<void>();
 
 
@@ -46,7 +48,6 @@ export class RowCardComponent {
   }
 
   favoriteSong(): boolean {
-    console.log(this.song.favorite)
     return this.song.favorite;
   }
 

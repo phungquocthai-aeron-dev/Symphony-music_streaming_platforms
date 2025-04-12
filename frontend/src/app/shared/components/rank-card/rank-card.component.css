@@ -1,0 +1,15 @@
+.top1-ranking {
+    color: var(--blue-color);
+}
+
+.top2-ranking {
+    color: var(--green-color);
+}
+
+.top3-ranking {
+    color: var(--pink_strong-color);
+}
+
+.product-song:hover {
+    background-color: var(--dark_grey-color);
+}

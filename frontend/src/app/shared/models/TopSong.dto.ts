@@ -15,5 +15,5 @@ export interface TopSongDTO {
     total_listens_per_hour?: number;
     categoryIds: number[];
     singers: SingerDTO[];
-    isFavorite: boolean;
+    favorite: boolean;
 }

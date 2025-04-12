@@ -6,11 +6,12 @@ import { DataShareService } from '../../core/services/dataShare.service';
 import { ResponseData } from '../../shared/models/ResponseData';
 import { RankingDTO } from '../../shared/models/Ranking.dto';
 import { NgFor, NgIf } from '@angular/common';
+import { LineChartComponent } from '../../shared/components/line-chart/line-chart.component';
 import { RankCardComponent } from '../../shared/components/rank-card/rank-card.component';
 
 @Component({
   selector: 'app-rank',
-  imports: [NgFor, NgIf, RankCardComponent],
+  imports: [NgFor, NgIf, LineChartComponent, RankCardComponent],
   templateUrl: './rank.component.html',
   styleUrl: './rank.component.css'
 })
@@ -35,6 +36,9 @@ export class RankComponent implements OnInit {
       next: (response: ResponseData<RankingDTO>) => {
         this.top3 = response.result.top3;
         this.topSongs = response.result.topSong;
+
+        console.log(this.top3)
+        console.log(this.topSongs)
       },
       error: (error) => {
         console.error(error);

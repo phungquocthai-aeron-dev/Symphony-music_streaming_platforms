@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { SingerService } from '../../core/services/singer.service';
 import { SingerDTO } from '../../shared/models/Singer.dto';
@@ -13,6 +13,7 @@ import { CategoryDTO } from '../../shared/models/Category.dto';
 import { DataShareService } from '../../core/services/dataShare.service';
 import { FormControl, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Subscription } from 'rxjs';
+import { TopSongDTO } from '../../shared/models/TopSong.dto';
 
 declare var bootstrap: any;
 
@@ -177,9 +178,11 @@ export class SingerComponent implements OnInit, OnDestroy {
     return this.singer.singer_id === this.singerOwn.singer_id;
   }
 
-  onSongSelected(song: SongDTO) {
-    this.selectedSong = song;
-    this.songSelectedImg = 'http://localhost:8080/symphony' + song.song_img;
+  onSongSelected(song: SongDTO | TopSongDTO) {
+    if(!this.isTopSong(song)) {
+      this.selectedSong = song;
+      this.songSelectedImg = 'http://localhost:8080/symphony' + song.song_img;
+    }
   }
 
   onEdit() {
@@ -335,5 +338,9 @@ export class SingerComponent implements OnInit, OnDestroy {
     if (this.paramSubscription) {
       this.paramSubscription.unsubscribe();
     }
+  }
+
+  private isTopSong(song: SongDTO | TopSongDTO): song is TopSongDTO {
+    return 'total_listens_per_hour' in song;  // Kiểm tra xem có thuộc tính 'topRank' hay không
   }
 }

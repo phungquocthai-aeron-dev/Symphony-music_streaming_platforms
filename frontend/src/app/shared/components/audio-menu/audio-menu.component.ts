@@ -127,6 +127,7 @@ export class AudioMenuComponent implements OnInit, AfterViewInit, OnChanges {
         switch (this.OptionStatus) {
           case "REPEAT":
               this.playAudio();
+              this.hasReported = false;
               break;
           case "RANDOM":
               this.handleRandomOption();
@@ -246,16 +247,29 @@ export class AudioMenuComponent implements OnInit, AfterViewInit, OnChanges {
   }  
 
   handleRandomOption() {
+    let song: SongDTO;
+    let randomIndex;
+
     if(this.isOptionPlaylist) {
       if (this.playlistSongs.length) {
-        const randomIndex = Math.floor(Math.random() * this.playlistSongs.length);
+        
+        do {
+          randomIndex = Math.floor(Math.random() * this.playlistSongs.length);
+          song = this.playlistSongs[randomIndex];
+          // console.log(song.song_id + ";" + this.song.song_id)
+        } while(song.song_id === this.song.song_id && this.playlistSongs.length > 1);
+
         this.song = this.playlistSongs[randomIndex];
         this.dataShareService.changeData(this.playlistSongs[randomIndex])
       }
     }
     else {
       if (this.recentSongs.length) {
-        const randomIndex = Math.floor(Math.random() * this.recentSongs.length);
+        do {
+          randomIndex = Math.floor(Math.random() * this.recentSongs.length);
+          song = this.recentSongs[randomIndex];
+        } while(song.song_id === this.song.song_id && this.recentSongs.length > 1);
+        
         this.song = this.recentSongs[randomIndex];
         this.dataShareService.changeData(this.recentSongs[randomIndex])
       }

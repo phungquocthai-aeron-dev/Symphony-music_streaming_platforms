@@ -2,6 +2,7 @@ import { Injectable } from "@angular/core";
 import { BehaviorSubject } from "rxjs";
 import { SongDTO } from "../../shared/models/Song.dto";
 import { SingerDTO } from "../../shared/models/Singer.dto";
+import { TopSongDTO } from "../../shared/models/TopSong.dto";
 
 @Injectable({
     providedIn: 'root'
@@ -19,7 +20,7 @@ export class DataShareService {
     private leftSideInfoSource = new BehaviorSubject<any>(null);
     leftSideInfo = this.leftSideInfoSource.asObservable();
 
-    changeData(data: SongDTO) {
+    changeData(data: SongDTO | TopSongDTO) {
       this.dataSource.next(data);
     }
 

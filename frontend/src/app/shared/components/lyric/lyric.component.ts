@@ -43,7 +43,6 @@ export class LyricComponent implements OnInit, AfterViewInit, OnChanges {
 
           if (this.song.lyric) {
             const lyricPath = 'http://localhost:8080/symphony/uploads' + this.song.lrc;
-             console.log(lyricPath)
             this.loadLyricFile(lyricPath);
           }
         }
@@ -58,7 +57,6 @@ export class LyricComponent implements OnInit, AfterViewInit, OnChanges {
       }
 
       if(changes['songProgress']) {
-        console.log(this.songProgress);
         this.scrollToActiveLine();
       }
     }
