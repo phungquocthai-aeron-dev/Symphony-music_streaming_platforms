@@ -60,5 +60,5 @@ public class TopSongDTO {
     @NotEmpty(message = "Vui lòng chọn ca sĩ thể hiện")
     private List<SingerDTO> singers;
     
-    private boolean isFavorite;
+    private boolean favorite;
 }

@@ -43,7 +43,7 @@ public class HomeController {
 		List<SongDTO> usUkSongs = songService.getSongsByCategoryName(CategorySong.USUK.getValue(), 6);
 		List<SongDTO> remixSongs = songService.getSongsByCategoryName(CategorySong.REMIX.getValue(), 6);
 		List<SongDTO> lyricalSongs = songService.getSongsByCategoryName(CategorySong.LYRICAL.getValue(), 6);
-		List<SongDTO> newSongs = songService.getNewSongs(6);
+		List<SongDTO> newSongs = songService.getNewSongs(9);
 		
 		data.setHotHitSong(hotHitSong);
 		data.setVpopSongs(vpopSongs);

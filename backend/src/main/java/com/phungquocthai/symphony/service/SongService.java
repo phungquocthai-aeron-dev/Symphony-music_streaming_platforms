@@ -1,9 +1,11 @@
 package com.phungquocthai.symphony.service;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collections;
-
+import java.util.Date;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
@@ -113,17 +115,13 @@ public class SongService {
 	@PreAuthorize("hasRole('SINGER')")
 	public SongDTO create(SongCreateDTO dto, MultipartFile pathFile, MultipartFile lyricFile,
 			MultipartFile lrcFile, MultipartFile songImgFile) {
-		log.info("AB");
 		Song song = songCreateMapper.toEntity(dto);
-		log.info("BA");
 		
 		PathStorage musicStore = (dto.getIsVip()) ? PathStorage.MUSIC_VIP : PathStorage.MUSIC_NORMAL;
-		log.info("B");
 		String path = fileStorageService.storeFile(pathFile, musicStore);
 		String lyric = fileStorageService.storeFile(lyricFile, PathStorage.LYRIC);
 		String lrc = fileStorageService.storeFile(lrcFile, PathStorage.LRC);
 		String songImg = fileStorageService.storeFile(songImgFile, PathStorage.MUSIC_IMG);
-		log.info("C");
 		song.setPath(path);
 		song.setLyric(lyric);
 		song.setLrc(lrc);
@@ -204,8 +202,6 @@ public class SongService {
 				.orElseThrow(() -> new AppException(ErrorCode.SONG_NOT_EXISTED));
 		SongDTO song = songMapper.toDTO(songEntity);
 		String userIdLoggedIn = getUserIdIfLoggedIn();
-		log.info(userIdLoggedIn);
-		log.info("AAAAAAAAAAAAA");
 		if(userIdLoggedIn != null) {
 			try {
 				int userId = Integer.parseInt(userIdLoggedIn);
@@ -433,28 +429,106 @@ public class SongService {
 		return songs;
 	}
 	
+//	public List<TopSongDTO> getTopSong(Integer limit) {
+//		List<Object[]> rows = songRepository.getTopSongsLastHour(limit);
+//		List<TopSongDTO> songs = new ArrayList<TopSongDTO>();
+//		for (Object[] row : rows) {
+//		    Song songEntity = (Song) row[0];
+//		    TopSongDTO song = topSongMapper.toDTO(songEntity);
+//		    song.setTotal_listens_per_hour(((Long) row[1]).longValue());
+//		    songs.add(song);
+//		}
+//		String userIdLoggedIn = getUserIdIfLoggedIn();
+//		if(userIdLoggedIn != null) {
+//			try {
+//				int userId = Integer.parseInt(userIdLoggedIn);
+//				
+//				songs.forEach(song -> song.setFavorite(isFavoriteSong(song.getSong_id(), userId)));
+//
+//			} catch (NumberFormatException e) {
+//				log.error(e.getMessage());
+//			}
+//		}
+//		return null;
+//	}
+	
 	public List<TopSongDTO> getTopSong(Integer limit) {
-		List<Object[]> rows = songRepository.getTopSongsLastHour(limit);
-		List<TopSongDTO> songs = new ArrayList<TopSongDTO>();
-		for (Object[] row : rows) {
-		    Song songEntity = (Song) row[0];
-		    TopSongDTO song = topSongMapper.toDTO(songEntity);
-		    song.setTotal_listens_per_hour(((Long) row[1]).longValue());
-		    songs.add(song);
-		}
-		String userIdLoggedIn = getUserIdIfLoggedIn();
-		if(userIdLoggedIn != null) {
-			try {
-				int userId = Integer.parseInt(userIdLoggedIn);
-				
-				songs.forEach(song -> song.setFavorite(isFavoriteSong(song.getSong_id(), userId)));
+	    List<Object[]> rows = songRepository.getTopSongsLastHour(limit);
+	    List<TopSongDTO> songs = new ArrayList<>();
 
-			} catch (NumberFormatException e) {
-				log.error(e.getMessage());
-			}
-		}
-		return songs;
+	    for (Object[] row : rows) {
+	        // Mapping các cột theo thứ tự trong bảng song (11 cột) + 1 cột cuối là count
+	    	
+//	    	System.out.println((Integer) row[0] + (String) row[1] + (Integer) row[2] + (Boolean) row[3]
+//	    			+ (Boolean) row[3] + (String) row[4] + (String) row[5] + (String) row[6]
+//	    					+ (Date) row[7] + (String) row[8] + (String) row[9] + "AAAAAAAAA");
+	    	
+	        Song songEntity = new Song();
+	        songEntity.setSong_id((Integer) row[0]);
+	        songEntity.setAuthor((String) row[1]);
+	        songEntity.setDuration((Integer) row[2]);
+	        songEntity.setIsVip((Boolean) row[3]);
+	        songEntity.setLrc((String) row[4]);
+	        songEntity.setLyric((String) row[5]);
+	        songEntity.setPath((String) row[6]);
+	        if (row[7] instanceof java.sql.Date) {
+	            // Đối với java.sql.Date, sử dụng toLocalDate() trực tiếp
+	            songEntity.setReleaseDate(((java.sql.Date) row[7]).toLocalDate());
+	        } else if (row[7] instanceof java.util.Date) {
+	            // Đối với java.util.Date thông thường
+	            java.util.Date utilDate = (java.util.Date) row[7];
+	            songEntity.setReleaseDate(new java.sql.Date(utilDate.getTime()).toLocalDate());
+	        }
+	        songEntity.setSongName((String) row[8]);
+	        songEntity.setSong_img((String) row[9]);
+	        songEntity.setTotal_listens((Integer) row[10]);
+	        List<Singer> singers = singerRepository.findBySongId(songEntity.getSong_id());
+	        songEntity.setSingers(new LinkedHashSet<Singer>(singers));
+	        TopSongDTO song = topSongMapper.toDTO(songEntity);
+	        
+//	        song.setSong_id((Integer) row[0]);
+//	        song.setAuthor((String) row[1]);
+//	        song.setDuration((Integer) row[2]);
+//	        
+//	        
+//	        song.setIsVip((Boolean) row[3]);                     // is_vip
+//	        song.setLrc((String) row[4]);                        // lrc
+//	        song.setLyric((String) row[5]);                      // lyric
+//	        song.setPath((String) row[6]);                       // path
+//
+////	        // Xử lý release_date
+////	        if (row[7] instanceof java.sql.Date) {
+////	            song.setReleaseDate(((java.sql.Date) row[7]).toLocalDate());
+////	        } else if (row[7] instanceof java.util.Date) {
+////	            java.util.Date utilDate = (java.util.Date) row[7];
+////	            song.setReleaseDate(new java.sql.Date(utilDate.getTime()).toLocalDate());
+////	        } else {
+////	            log.warn("release_date không hợp lệ: " + row[7]);
+////	            continue;
+////	        }
+//
+//	        song.setSongName((String) row[8]);                   // song_name
+//	        song.setSong_img((String) row[9]);                   // song_img
+//	        song.setTotal_listens((Integer) row[10]);
+
+	        song.setTotal_listens_per_hour(((Long) row[11]).longValue());
+		    songs.add(song);
+	    }
+
+	    // Đánh dấu yêu thích nếu user đã login
+	    String userIdLoggedIn = getUserIdIfLoggedIn();
+	    if (userIdLoggedIn != null) {
+	        try {
+	            int userId = Integer.parseInt(userIdLoggedIn);
+	            songs.forEach(song -> song.setFavorite(isFavoriteSong(song.getSong_id(), userId)));
+	        } catch (NumberFormatException e) {
+	            log.error("Invalid user ID: " + e.getMessage());
+	        }
+	    }
+
+	    return songs;
 	}
+
 
 	public List<ListeningStatsDTO> listeningStatistics(Integer songId) {
 		List<Object[]> rows = songRepository.getHourlyListeningStats(songId);
@@ -462,7 +536,15 @@ public class SongService {
 		for (Object[] row : rows) {
 			ListeningStatsDTO song = new ListeningStatsDTO();
 		    song.setSong_id(((Integer) row[0]).intValue());
-		    song.setListen_date((LocalDate) row[1]);
+		    if (row[1] instanceof java.sql.Date) {
+	            // Đối với java.sql.Date, sử dụng toLocalDate() trực tiếp
+		    	song.setListen_date(((java.sql.Date) row[1]).toLocalDate());
+	        } else if (row[1] instanceof java.util.Date) {
+	            // Đối với java.util.Date thông thường
+	            java.util.Date utilDate = (java.util.Date) row[1];
+	            song.setListen_date(new java.sql.Date(utilDate.getTime()).toLocalDate());
+	        }
+		    
 		    song.setHour(((Integer) row[2]).intValue());
 		    song.setTotal_listens_per_hour(((Long) row[3]).longValue());
 		    songs.add(song);

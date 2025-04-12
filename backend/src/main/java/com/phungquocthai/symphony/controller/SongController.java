@@ -89,7 +89,6 @@ public class SongController {
 //            	allowedContentTypes = {"jpeg", "jpg", "png"},
 //            	message = "File không hợp lệ")
 			@RequestPart MultipartFile songImgFile) {
-		log.info("A");
 		SongDTO song = songService.create(dto, musicFile, lyricFile, lrcFile, songImgFile);
 		return ResponseEntity.ok(
 				ApiResponse.<SongDTO>builder()
@@ -190,7 +189,6 @@ public class SongController {
 	@PostMapping("/listenedSong")
 	public ResponseEntity<Integer> listenedSong(@RequestParam(value = "id", required = true) Integer songId) {
 		Integer totalListens = songService.updateTotalListenOfSong(songId);
-		log.info("OKKKK");
 		return ResponseEntity.ok(totalListens);
 	}
 	
@@ -218,7 +216,7 @@ public class SongController {
 
 	@GetMapping("/ranking")
 	public ResponseEntity<ApiResponse<RankingDTO>> getTopSong(
-			@RequestParam(value = "limit", defaultValue = "100") Integer limit) {
+			@RequestParam(value = "limit", defaultValue = "10") Integer limit) {
 		List<TopSongDTO> songs = songService.getTopSong(limit);
 		List<List<ListeningStatsDTO>> top = null;
 		

@@ -18,23 +18,18 @@ import java.util.UUID;
 @Service
 @Slf4j
 public class FileStorageService {
-	private final String baseStoragePath = "D:\\nienluan\\Symphony-music-streaming-platforms\\backend\\src\\main\\resources\\static";
+	private final String baseStoragePath = "D:\\nienluan\\Symphony-music-streaming-platforms\\backend\\uploads";
 	
 	    public String storeFile(MultipartFile file, PathStorage pathStorage) {
-	    	log.info("X");
-	        log.info("Starting to store file: {}", file.getOriginalFilename());
 
 	        Path fileStorageLocation = initializeStorageLocation(pathStorage);
 	        try {
 	            String fileName = UUID.randomUUID().toString() + 
 	                            getFileExtension(file.getOriginalFilename());
-	            log.info("Y");
 	            Path targetLocation = fileStorageLocation.resolve(fileName);
 	            Files.copy(file.getInputStream(), targetLocation);
-	            log.info("Z");
 	            return pathStorage.getPath() + fileName;
 	        } catch (Exception ex) {
-	        	log.info("T");
 	            throw new AppException(ErrorCode.FILE_STORAGE_FAILED);
 	        }
 	    }
@@ -62,14 +57,9 @@ public class FileStorageService {
 	    }
 
 	    private Path initializeStorageLocation(PathStorage pathStorage) {
-	    	String fullPath = baseStoragePath + pathStorage.getPath();
-	        log.info("Base path: {}", baseStoragePath);
-	        log.info("Sub path: {}", pathStorage.getPath());
-	        log.info("Full path to create: {}", fullPath);
 	    	
 	        Path location = Paths.get(baseStoragePath + pathStorage.getPath())
 	            .toAbsolutePath().normalize();
-	        log.info("File storage location: {}", location);
 	        try {
 	            Files.createDirectories(location);
 	        } catch (Exception ex) {

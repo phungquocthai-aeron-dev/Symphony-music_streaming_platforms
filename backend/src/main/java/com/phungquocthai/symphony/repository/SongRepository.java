@@ -41,7 +41,7 @@ public interface SongRepository extends JpaRepository<Song, Integer> {
 	           nativeQuery = true)
 	List<Song> findSongsFromLastYear(@Param("limit") Integer limit);
 	
-	@Query(value = "SELECT * FROM song ORDER BY song_id DESC LIMIT 1", nativeQuery = true)
+	@Query(value = "SELECT * FROM song ORDER BY release_date DESC, song_id DESC LIMIT 1", nativeQuery = true)	
 	Optional<Song> getNewSong();
 
 	@Query(value = "SELECT DISTINCT s.* " +
@@ -59,7 +59,7 @@ public interface SongRepository extends JpaRepository<Song, Integer> {
 			"WHERE c.category_id = :categoryId", nativeQuery = true)
 	List<Song> getSongsByCategory(@Param("categoryId") Integer categoryId);
 	
-	@Query(value = "SELECT s.* " +
+	@Query(value = "SELECT DISTINCT s.* " +
 			"FROM song s " +
             "NATURAL JOIN present p " +
 			"NATURAL JOIN category_song cs " +
@@ -104,16 +104,41 @@ public interface SongRepository extends JpaRepository<Song, Integer> {
 	@Query(value = "SELECT p.singer_id FROM present p WHERE song_id = :songId LIMIT 1", nativeQuery = true)
 	Optional<Integer> findFirstBySongId(@Param("songId") Integer songId);
 	
-	@Query(value = """
-		    SELECT s.*, COUNT(l.user_id) AS total_listens_per_hour
-		    FROM listen l INNER JOIN song s ON l.song_id = s.song_id
-		    WHERE l.listen_at < DATE_FORMAT(NOW(), "%Y-%m-%d %H:00:00")  
-		          AND l.listen_at >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 HOUR), "%Y-%m-%d %H:00:00")
-		    GROUP BY s.song_id
-		    ORDER BY total_listens_per_hour DESC, s.release_date DESC, s.duration DESC 
-		    LIMIT :limit
-		    """, nativeQuery = true)
-		List<Object[]> getTopSongsLastHour(@Param("limit") Integer limit);
+//	@Query(value = """
+//		    SELECT s.*, COUNT(l.user_id) AS total_listens_per_hour
+//		    FROM listen l INNER JOIN song s ON l.song_id = s.song_id
+//		    WHERE l.listen_at < DATE_FORMAT(NOW(), "%Y-%m-%d %H:00:00")  
+//		          AND l.listen_at >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 HOUR), "%Y-%m-%d %H:00:00")
+//		    GROUP BY s.song_id
+//		    ORDER BY total_listens_per_hour DESC, s.release_date DESC, s.duration DESC 
+//		    LIMIT :limit
+//		    """, nativeQuery = true)
+//		List<Object[]> getTopSongsLastHour(@Param("limit") Integer limit);
+		
+		@Query(value = """
+			    SELECT 
+			        s.song_id,
+			        s.author,
+			        s.duration,
+			        s.is_vip,
+			        s.lrc,
+			        s.lyric,
+			        s.path,
+			        s.release_date,
+			        s.song_name,
+			        s.song_img,
+			        s.listens,
+			        COUNT(l.user_id) AS total_listens_per_hour
+			    FROM listen l 
+			    INNER JOIN song s ON l.song_id = s.song_id
+			    WHERE l.listen_at < DATE_FORMAT(NOW(), "%Y-%m-%d %H:00:00")  
+			          AND l.listen_at >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 HOUR), "%Y-%m-%d %H:00:00")
+			    GROUP BY 
+			        s.song_id
+			    ORDER BY total_listens_per_hour DESC, s.release_date DESC, s.duration DESC 
+			    LIMIT :limit
+			    """, nativeQuery = true)
+			List<Object[]> getTopSongsLastHour(@Param("limit") Integer limit);
 
 	@Query(value = """
 		    SELECT song_id, DATE(listen_at) AS listen_date, 
@@ -139,7 +164,7 @@ public interface SongRepository extends JpaRepository<Song, Integer> {
 
 	@Modifying
 	@Transactional
-	@Query(value = "INSERT INTO listen (user_id, song_id) VALUES (:userId, :songId)", nativeQuery = true)
+	@Query(value = "INSERT INTO listen (user_id, listen_at, song_id) VALUES (:userId, NOW(), :songId)", nativeQuery = true)
 	int addListened(@Param("userId") Integer userId, @Param("songId") Integer songId);
 	
 }

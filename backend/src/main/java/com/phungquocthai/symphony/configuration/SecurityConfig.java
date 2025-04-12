@@ -29,10 +29,12 @@ public class SecurityConfig {
 	@Autowired
 	private CustomJwtDecoder customJwtDecoder;
 
-	private final String[] PUBLIC_GET_ENDPOINTS = {"/", "/home", "/singer/**", "/song/**",
-			"/auth/register", "/auth/login", "/user/singer/**", "/user\\?id=\\d+",
-			"/music/**", "/lyric/**", "/lrc/**", "/images/**", "/singer/exclude",
-			"/ranking", "/newSongs", "/category", "/favorite", "/search/**"};
+//	private final String[] PUBLIC_GET_ENDPOINTS = {"/", "/home", "/singer/**", "/song/**",
+//			"/auth/register", "/auth/login", "/user/singer/**", "/user\\?id=\\d+",
+//			"/music/**", "/lyric/**", "/lrc/**", "/images/**", "/singer/exclude",
+//			"/ranking", "/newSongs", "/category", "/favorite", "/search/**", "/uploads/**"};
+	
+	private final String[] PUBLIC_GET_ENDPOINTS = {"/**"};
 	
 	private final String[] PUBLIC_POST_ENDPOINTS = {"/auth/login", "/auth/register", "/auth/logout",
 			"/auth/refresh", "/song/listenedSong",
@@ -82,9 +84,7 @@ public class SecurityConfig {
         configuration.setAllowedOrigins(Arrays.asList("http://localhost:4200"));
         configuration.setAllowedOriginPatterns(Arrays.asList("*"));
 //        configuration.setAllowedMethods(Arrays.asList("*"));
-//        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "Accept"));
         configuration.setAllowCredentials(true);
-//        configuration.setAllowedHeaders(Arrays.asList("*"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "Accept"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
@@ -97,11 +97,9 @@ public class SecurityConfig {
         return (request, response, authException) -> {
             String path = request.getRequestURI();
             if (path.equals("/") || path.equals("/home")) {
-                // ✅ Nếu request vào "/" hoặc "/home", vẫn cho phép truy cập
                 response.setStatus(HttpServletResponse.SC_OK);
                 response.getWriter().write("Public Page Accessible");
             } else {
-                // ❌ Các API khác trả về 401 nếu JWT sai hoặc thiếu
                 response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
             }
         };
