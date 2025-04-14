@@ -51,6 +51,8 @@ export class MainLayoutComponent implements OnInit {
       next: (response) => {
         if (response.code === 1000) {
           this.currentSong = response.result;
+          this.dataShareService.changeData(this.currentSong);
+
           console.log('Bài hát hiện tại:', this.currentSong);
         } else {
           console.warn('Không lấy được bài hát:', response.message);
@@ -85,8 +87,7 @@ export class MainLayoutComponent implements OnInit {
           if (response.code === 1000) {
             this.recentSong = response.result;
             this.recentSong = this.filteredRecentSong();
-            console.log("AKS")
-            console.log(this.recentSong)
+
           if (this.currentSong) {
             this.recentSong.unshift(this.currentSong);
           }

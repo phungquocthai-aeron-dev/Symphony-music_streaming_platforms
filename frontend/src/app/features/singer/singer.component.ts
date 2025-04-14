@@ -14,6 +14,7 @@ import { DataShareService } from '../../core/services/dataShare.service';
 import { FormControl, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { TopSongDTO } from '../../shared/models/TopSong.dto';
+import { error } from 'node:console';
 
 declare var bootstrap: any;
 
@@ -63,6 +64,17 @@ export class SingerComponent implements OnInit, OnDestroy {
     duration: new FormControl('', Validators.required),
     total_listens: new FormControl('0', Validators.required),
     releaseDate: new FormControl('', Validators.required)
+  })
+
+  updateSongForm = new FormGroup({
+    songNameUpd: new FormControl('', Validators.required),
+    authorUpd: new FormControl('', Validators.required),
+    singersIdUpd: new FormControl([], Validators.required),
+    isVipUpd: new FormControl(false),
+    categoryIdsUpd: new FormControl([], Validators.required),
+    durationUpd: new FormControl('', Validators.required),
+    total_listensUpd: new FormControl('0', Validators.required),
+    releaseDateUpd: new FormControl('', Validators.required)
   })
 
   constructor(
@@ -205,7 +217,15 @@ export class SingerComponent implements OnInit, OnDestroy {
   }
 
   onSubmitDelete() {
-
+    console.log(this.selectedSong)
+    this.songService.deleteSong(this.selectedSong.song_id).subscribe({
+      next: (data) => {
+        if(this.singerId) this.loadSingerData(this.singerId);
+      },
+      error: (error) => {
+        console.error("Xoá bài hát thất bại!")
+      }
+    })
   }
 
   onSubmitCrate() {
@@ -229,7 +249,7 @@ export class SingerComponent implements OnInit, OnDestroy {
       if(this.singerId) formData.append('singersId', this.singerId.toString());
       if (this.createSongForm.value.singersId && this.createSongForm.value.singersId.length > 0) {
         this.createSongForm.value.singersId.forEach((id: number) => {
-          formData.append('singersId', id.toString());
+        formData.append('singersId', id.toString());
         });
       }
 
@@ -285,8 +305,16 @@ export class SingerComponent implements OnInit, OnDestroy {
     }
   }
 
+  // isCategorySelected(categoryId: number): boolean {
+  //   if(this.categories) return false;
+  //   return this.selectedSong.categories.some(cat => cat.category_id === categoryId);
+  // }
+
   isCategorySelected(categoryId: number): boolean {
-    if(this.categories) return false;
+    // Kiểm tra selectedSong và selectedSong.categories tồn tại
+    if (!this.selectedSong || !this.selectedSong.categories) {
+      return false;
+    }
     return this.selectedSong.categories.some(cat => cat.category_id === categoryId);
   }
 
@@ -339,6 +367,7 @@ export class SingerComponent implements OnInit, OnDestroy {
       this.paramSubscription.unsubscribe();
     }
   }
+  
 
   private isTopSong(song: SongDTO | TopSongDTO): song is TopSongDTO {
     return 'total_listens_per_hour' in song;  // Kiểm tra xem có thuộc tính 'topRank' hay không

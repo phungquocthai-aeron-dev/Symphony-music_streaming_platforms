@@ -103,7 +103,7 @@
                                             <div id="song-edit-img" class="mb-3">
                                                 <div class="song-edit-img-container rounded-4" style="max-width: 200px;" (click)="triggerFileInputEdit()">
                                                     <img
-                                                    [src]="songSelectedImg" alt=""
+                                                    [src]="'http://localhost:8080/symphony/uploads' + selectedSong.song_img" alt=""
                                                         class="song-img-active rounded-4 w-100" style="max-width: 200px;">
                                                     <div id="modal-edit" class="w-100 rounded-4 text-white-primary" style="max-width: 200px;">
                                                         <div class="d-flex flex-column justify-content-center h-100 w-100">
@@ -121,18 +121,24 @@
                                                 <label for="song_name" class="text-white-primary mb-3">Tên bài hát:</label>
                                                 <input required type="text"
                                                     class="form-control text-white-primary bg-black-primary no-outline shadow-none"
-                                                    id="song_name" name="songName"
-                                                    [value]="selectedSong.songName">
+                                                    id="song_name" name="songName" value="" formControlName="songNameUpd">
+                                                <!-- adv -->
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="isVip" class="form-check-label text-white-primary mb-3 me-2">Bài hát vip:</label>
+                                                <input required type="checkbox" 
+                                                    class="form-check-input"
+                                                    id="isVip" name="isVip" value="true" formControlName="isVipUpd">
                                                 <!-- adv -->
                                             </div>
                                             <div class="mb-3">
                                                 <label for="author" class="text-white-primary mb-3">Tác giả:</label>
                                                 <input required type="text"
                                                     class="form-control text-white-primary bg-black-primary no-outline shadow-none"
-                                                    id="author" name="author"
-                                                    [value]="selectedSong.author">
+                                                    id="author" name="author" value="" formControlName="authorUpd">
                                                 <!-- adv -->
                                             </div>
+                                    
                                             <div class="mb-3">
                                                 <label for="singers_present" class="text-white-primary mb-3">Ca sĩ thể hiện:</label>
 
@@ -145,7 +151,7 @@
                                                 disabled
                                               >
                                                                                               
-                                                <select class="form-select bg-black-primary text-white-primary" id="singers_present" name="singers_present[]" multiple>
+                                                <select formControlName="singersIdUpd" class="form-select bg-black-primary text-white-primary" id="singers_present" name="singers_present[]" multiple>
                                                     <option value="" disabled selected>Ca sĩ cùng thể hiện (nếu có)</option>
                                                     <option 
                                                         *ngFor="let singer of singerNotPresent" 
@@ -158,16 +164,30 @@
                                                 </select>
                                             </div>
                                             <div class="mb-3 mt-3">
-                                                <label for="lyric" class="text-white-primary mb-3">Lời bài hát:</label>
-                                                <input type="file"
+                                                <label for="path" class="text-white-primary mb-3">File bài hát:</label>
+                                                <input required type="file"
                                                     class="form-control text-white-primary bg-black-primary no-outline shadow-none"
-                                                    id="lyric" name="lyric" value="">
-                                               <!-- adv -->
+                                                    id="path" name="musicFile" (change)="onFileCreateChange($event, 'music')" accept=".mp3">
+                                                <!-- adv -->
+                                            </div>
+                                            <div class="mb-3 mt-3">
+                                                <label for="lrcFile" class="text-white-primary mb-3">File LRC bài hát:</label>
+                                                <input required type="file"
+                                                    class="form-control text-white-primary bg-black-primary no-outline shadow-none"
+                                                    id="lrcFile" name="lrcFile" (change)="onFileCreateChange($event, 'lrc')" accept=".lrc">
+                                                <!-- adv -->
+                                            </div>
+                                            <div class="mb-3 mt-3">
+                                                <label for="lyric" class="text-white-primary mb-3">Lời bài hát:</label>
+                                                <input required type="file"
+                                                    class="form-control text-white-primary bg-black-primary no-outline shadow-none"
+                                                    id="lyric" name="lyricFile" (change)="onFileCreateChange($event, 'lyric')" readonly  accept=".txt">
+                                                <!-- adv -->
                                             </div>
                                             <div class="mb-3">
                                                 <label for="category_id" class="text-white-primary mb-3">Thể loại:</label>
-                                                <select class="form-select bg-black-primary text-white-primary" aria-label="Default select example" id="category_id" name="category_name[]" multiple required>
-                                                        <option
+                                                <select formControlName="categoryIdsUpd" class="form-select bg-black-primary text-white-primary" aria-label="Default select example" id="category_id" name="categories[]" multiple required>
+                                                    <option
                                                         *ngFor="let category of categories" 
                                                         class="bg-black-primary text-white-primary" 
                                                         [value]="category.category_name"
@@ -178,11 +198,18 @@
                                                 </select>
                                                 <!-- adv -->
                                             </div>
-                                            <div class=" mb-3 mt-3">
-                                                <label for="duration" class="text-white-primary mb-3">Thời lượng(s):</label>
-                                                <input required type="number"
+                                            <div class="mb-3 mt-3">
+                                                <label for="releaseDate" class="text-white-primary mb-3">Ngày phát hành:</label>
+                                                <input required type="date" formControlName="releaseDateUpd" 
                                                     class="form-control text-white-primary bg-black-primary no-outline shadow-none"
-                                                    id="duration" name="duration" [value]="selectedSong.duration" min="0" min="0">
+                                                    id="releaseDate" placeholder="" name="releaseDate" [max]="maxDate" value="">
+                                                <!-- adv -->
+                                            </div>
+                                            <div class="mb-3 mt-3">
+                                                <label for="duration" class="text-white-primary mb-3">Thời lượng(s):</label>
+                                                <input formControlName="durationUpd" required type="number"
+                                                    class="form-control text-white-primary bg-black-primary no-outline shadow-none"
+                                                    id="duration" name="duration" value="" min="0">
                                                 <!-- adv -->
                                             </div>
                                             <input type="text" value="" name="CSRFToken" hidden readonly>
@@ -274,7 +301,7 @@
                                                                 <label for="lrcFile" class="text-white-primary mb-3">File LRC bài hát:</label>
                                                                 <input required type="file"
                                                                     class="form-control text-white-primary bg-black-primary no-outline shadow-none"
-                                                                    id="lrcFile" name="lrcFile" (change)="onFileCreateChange($event, 'lrc')" accept=".txt">
+                                                                    id="lrcFile" name="lrcFile" (change)="onFileCreateChange($event, 'lrc')" accept=".lrc">
                                                                 <!-- adv -->
                                                             </div>
                                                             <div class="mb-3 mt-3">
@@ -292,7 +319,6 @@
                                                                         *ngFor="let category of categories" 
                                                                         class="bg-black-primary text-white-primary" 
                                                                         [value]="category.category_id"
-                                                                        [selected]="isCategorySelected(category.category_id)"
                                                                     >
                                                                     {{ category.category_name }}
                                                                     </option>

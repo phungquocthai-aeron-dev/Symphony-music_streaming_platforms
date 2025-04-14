@@ -51,6 +51,21 @@ p {
     background: linear-gradient(to top, rgba(0, 0, 0, 1), transparent);
 }
 
+@keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  
+  .cd-thumb {
+    animation: spin 18s linear infinite;
+    animation-play-state: paused;
+  }
+  
+  .cd-thumb.playing {
+    animation-play-state: running;
+  }
+  
 @media screen and (max-width: 576px) {
     p {
         font-size: 12px;

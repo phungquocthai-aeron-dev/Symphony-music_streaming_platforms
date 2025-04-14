@@ -30,6 +30,8 @@ export class LyricComponent implements OnInit, AfterViewInit, OnChanges {
   cdThumbAnimation!: Animation;
   private previousActiveIndex: number = -1;
 
+  private dataLoaded = false;
+
 
   constructor(
     private dataShareService: DataShareService,
@@ -37,17 +39,16 @@ export class LyricComponent implements OnInit, AfterViewInit, OnChanges {
   ) {}
 
   ngOnInit(): void {
-      this.dataShareService.currentData.subscribe(data => {
-        if(data) {
-          this.song = data;
-
-          if (this.song.lyric) {
-            const lyricPath = 'http://localhost:8080/symphony/uploads' + this.song.lrc;
-            this.loadLyricFile(lyricPath);
-          }
-        }
-      })
-
+    this.dataShareService.currentData.subscribe(data => {
+      if(data) {
+        this.song = data;
+        this.dataLoaded = true;
+              // Tải lời bài hát
+              const lyricPath = 'http://localhost:8080/symphony/uploads' + this.song.lrc;
+              this.loadLyricFile(lyricPath);
+      
+      }
+    });
   }
 
     ngOnChanges(changes: SimpleChanges) {
@@ -61,25 +62,25 @@ export class LyricComponent implements OnInit, AfterViewInit, OnChanges {
       }
     }
 
-    activeLyricLine() {
-
+    ngAfterViewInit() {      
+      if (this.dataLoaded) {
+        this.initializeComponent();
+      }
     }
-
-  ngAfterViewInit() {
-    if(this.cdThumb) {
-      this.cdThumbAnimation = this.cdThumb.nativeElement.animate([
-        { transform: 'rotate(360deg)' }
-      ], {
-        duration: 18000,
-        iterations: Infinity,
-        easing: 'linear'
-      });
-  
-      this.pause();
-  
+    
+    private initializeComponent() {
+      // Không cần tạo animation bằng JavaScript nữa
       if(this.isPlaying) this.play();
+      else this.pause();
     }
-  }
+    
+    play() {
+      if(this.cdThumb) this.cdThumb.nativeElement.classList.add('playing');
+    }
+    
+    pause() {
+      if(this.cdThumb) this.cdThumb.nativeElement.classList.remove('playing');
+    }
 
   loadLyricFile(lyricPath: string) {
     this.isLoadingLyric = true;
@@ -130,13 +131,15 @@ export class LyricComponent implements OnInit, AfterViewInit, OnChanges {
   }
   
 
-  play() {
-    if(this.cdThumbAnimation) this.cdThumbAnimation.play();
-  }
+  // play() {
+  //   console.log(this.cdThumbAnimation)
+  //   console.log(this.cdThumb)
+  //   if(this.cdThumbAnimation) this.cdThumbAnimation.play();
+  // }
 
-  pause() {
-    if(this.cdThumbAnimation) this.cdThumbAnimation.pause();
-  }
+  // pause() {
+  //   if(this.cdThumbAnimation) this.cdThumbAnimation.pause();
+  // }
 
   private extractTimeTag(line: string): string | null {
     const match = line.match(/\[\d{2}:\d{2}(?:\.\d{1,2})?\]/);

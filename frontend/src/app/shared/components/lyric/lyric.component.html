@@ -1,7 +1,9 @@
 <section>
     <div id="lyric" class="row" style=" height: calc(100vh - 90px);" [class.appear]="disabled">
         <div class="col-12 col-sm-4 h-100" style="display: flex; align-items: center; justify-content: center; flex-direction: column;">
-            <img #cdThumb style="width: 80%;" class="rounded-circle" *ngIf="song" [src]="'http://localhost:8080/symphony/uploads' + song.song_img" alt="">
+            <ng-container *ngIf="song">
+            <img #cdThumb style="width: 80%;" class="rounded-circle cd-thumb" [src]="'http://localhost:8080/symphony/uploads' + song.song_img" alt="">
+            </ng-container>
             <h2 *ngIf="song" class="text-white-primary mt-2">{{ song.songName }}</h2>
 
         </div>

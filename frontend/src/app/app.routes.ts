@@ -13,13 +13,18 @@ import { RecentComponent } from './features/recent/recent.component';
 import { FavoriteComponent } from './features/favorite/favorite.component';
 import { SearchComponent } from './features/search/search.component';
 import { RankComponent } from './features/rank/rank.component';
+import { UpgradeComponent } from './features/upgrade/upgrade.component';
+import { ClauseComponent } from './features/clause/clause.component';
+import { IntroduceComponent } from './features/introduce/introduce.component';
+import { ErrorComponent } from './features/error/error.component';
+import { SimpleLayoutComponent } from './layouts/simple_layout/simple_layout.component';
 
 export const routes: Routes = [
     { 
         path: '',
         component: MainLayoutComponent,
         children: [
-            {path: '', redirectTo: '/home', pathMatch: 'full' },
+            {path: '', redirectTo: 'home', pathMatch: 'full' },
             {path: 'home', component: HomeComponent},
             {path: 'singer/:id', component: SingerComponent},
             {path: 'song/:id', component: SongComponent},
@@ -30,7 +35,17 @@ export const routes: Routes = [
             {path: 'search', component: SearchComponent},
             {path: 'ranking', component: RankComponent}
         ]
-     },
+    },
+    {
+        path: '',
+        component: SimpleLayoutComponent,
+        children: [
+            { path: 'upgrade', component: UpgradeComponent },
+            { path: 'clause', component: ClauseComponent },
+            { path: 'introduce', component: IntroduceComponent },
+        ]
+    },
     { path: 'login', component: LoginComponent, canActivate: [LoginGuard]},
     { path: 'register', component: RegisterComponent },
+    { path: '**', component: ErrorComponent }
 ];

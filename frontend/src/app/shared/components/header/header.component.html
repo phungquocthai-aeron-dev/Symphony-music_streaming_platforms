@@ -103,8 +103,8 @@
                                 <li><a class="dropdown-item text-white-primary" href="/user">Hồ sơ cá nhân</a></li>
                                     <li  *ngIf="user && user.role=='SINGER' && singer"><a class="dropdown-item text-white-primary"
                                         [routerLink]="['/singer', singer.singer_id]">Hồ sơ ca sĩ</a></li>
-                                <li><a class="dropdown-item text-white-primary" href="/upgrade">Nâng cấp tài khoản</a></li>
-                                <li><a class="dropdown-item text-white-primary" href="">Liên hệ</a></li>
+                                <li><a class="dropdown-item text-white-primary" [routerLink]="['/upgrade']">Nâng cấp tài khoản</a></li>
+                                <li><a class="dropdown-item text-white-primary" [routerLink]="['/contact']">Liên hệ</a></li>
                                 <li>
                                     <form action="/user/delete" method=post id="formDeleteAccount">
                                         <span class="dropdown-item text-white-primary" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#deleteAccountModal">

@@ -14,7 +14,7 @@ import { DataShareService } from '../../../core/services/dataShare.service';
   styleUrl: './audio-menu.component.css'
 })
 
-export class AudioMenuComponent implements OnInit, AfterViewInit, OnChanges {
+export class AudioMenuComponent implements AfterViewInit, OnChanges {
   @Input() song!: SongDTO;
   @Input() playlistSongs: SongDTO[] = [];
   @Input() isOptionPlaylist = true;
@@ -48,11 +48,6 @@ export class AudioMenuComponent implements OnInit, AfterViewInit, OnChanges {
       private songService: SongService,
       private dataShareService: DataShareService
     ) {}
-
-    ngOnInit(): void {
-        console.log(this.song);
-        this.dataShareService.changeData(this.song);
-    }
 
     ngAfterViewInit(): void {
 

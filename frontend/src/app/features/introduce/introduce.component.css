@@ -1,0 +1,18 @@
+#content {
+    margin-top: 70px;
+}
+
+.img-introduce {
+    opacity: 0.9;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.img-introduce img {
+    max-height: 360px;
+}
+
+.branch img {
+    max-width: 150px;
+
+}
