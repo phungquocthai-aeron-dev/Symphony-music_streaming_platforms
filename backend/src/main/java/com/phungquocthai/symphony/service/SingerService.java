@@ -42,14 +42,20 @@ public class SingerService {
 		return singerMapper.toDTO(singer);
 	}
 	
-	@PreAuthorize("hasRole('SINGER', 'ADMIN')")
+	@PreAuthorize("hasAnyRole('SINGER', 'ADMIN')")
 	public SingerDTO update(SingerUpdateDTO dto) {
+
 		Singer singer = singerRepository.findById(dto.getSinger_id())
 				.orElseThrow(() -> new AppException(ErrorCode.SINGER_NOT_EXISTED));
+		singer.setStageName(dto.getStageName());
+		singerRepository.save(singer);
+		log.info(dto.getStageName());
+		log.info(singer.getStageName());
+		
 		return singerMapper.toDTO(singer);
 	}
 	
-	@PreAuthorize("hasRole('SINGER', 'ADMIN')")
+	@PreAuthorize("hasAnyRole('SINGER', 'ADMIN')")
 	public void delete(Integer singerId) {
 		singerRepository.deleteById(singerId);
 	}
@@ -72,7 +78,7 @@ public class SingerService {
 		return singerMapper.toListDTO(singers);
 	}
 	
-	@PreAuthorize("hasRole('SINGER', 'ADMIN')")
+	@PreAuthorize("hasAnyRole('SINGER', 'ADMIN')")
 	public void deletePresent(Integer singerId, Integer songId) {
 		singerRepository.deletePresent(singerId, songId);
 	}

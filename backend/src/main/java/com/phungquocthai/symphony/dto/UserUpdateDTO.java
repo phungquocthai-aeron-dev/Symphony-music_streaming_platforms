@@ -30,8 +30,8 @@ public class UserUpdateDTO {
 	
 	@NotNull(message = "Vui lòng chọn giới tính")
 	private int gender;
-		
-	@NotNull(message = "Vui lòng xác thực quyền")
-	private String role;
+	
+	@NotNull(message = "Vui lòng chọn avatar")
+	private String avatar;
 
 }

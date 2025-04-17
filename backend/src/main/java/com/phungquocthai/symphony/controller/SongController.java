@@ -98,34 +98,36 @@ public class SongController {
 	}
 
 	@PostMapping("/delete")
-	public ResponseEntity<Void> delete(@RequestParam(value = "id", required = true) Integer songId) {
-		songService.delete(songId);
+	public ResponseEntity<Void> delete(
+			@RequestParam(value = "songId", required = true) Integer songId,
+			@RequestParam(value = "singerId", required = true) Integer singerId) {
+		songService.delete(singerId, songId);
 		return ResponseEntity.noContent().build();
 	}
 
 	@PostMapping("/update")
 	public void update(
-			@Valid @RequestPart SongUpdateDTO dto,
+			@Valid @ModelAttribute SongUpdateDTO dto,
 			
 			@ValidFile(
 				maxSize = 1024 * 1024, // 1MB
-        		allowedContentTypes = {"txt"},
+        		allowedContentTypes = {"lrc"},
         		message = "File không hợp lệ",
         		required = false)
-			@RequestPart MultipartFile lrcFile,
+			@RequestPart(required = false, value = "lrcFile") MultipartFile lrcFile,
 		
 			@ValidFile(
 				maxSize = 1024 * 1024, // 1MB
 				allowedContentTypes = {"txt"},
 				message = "File không hợp lệ",
 				required = false)
-			@RequestPart MultipartFile lyricFile,
+			@RequestPart(required = false, value = "lyricFile") MultipartFile lyricFile,
 		
 			@ValidFile(maxSize = 1024 * 1024, // 1MB
         		allowedContentTypes = {"jpeg", "jpg", "png"},
         		message = "File không hợp lệ",
         		required = false)
-			@RequestPart MultipartFile songImgFile) {
+			@RequestPart(required = false, value = "songImgFile") MultipartFile songImgFile) {
 		songService.update(dto, lyricFile, lrcFile, songImgFile);
 	}
 	

@@ -4,10 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -18,11 +21,16 @@ import org.springframework.web.multipart.MultipartFile;
 import com.phungquocthai.symphony.annotation.ValidFile;
 import com.phungquocthai.symphony.dto.ApiResponse;
 import com.phungquocthai.symphony.dto.LibraryDTO;
+import com.phungquocthai.symphony.dto.SingerDTO;
+import com.phungquocthai.symphony.dto.SingerUpdateDTO;
 import com.phungquocthai.symphony.dto.SongDTO;
 import com.phungquocthai.symphony.dto.UserDTO;
 import com.phungquocthai.symphony.dto.UserUpdateDTO;
+import com.phungquocthai.symphony.entity.User;
+import com.phungquocthai.symphony.repository.UserRepository;
 import com.phungquocthai.symphony.service.FavoriteService;
 import com.phungquocthai.symphony.service.PlaylistService;
+import com.phungquocthai.symphony.service.SingerService;
 import com.phungquocthai.symphony.service.SongService;
 import com.phungquocthai.symphony.service.UserService;
 
@@ -38,6 +46,9 @@ public class UserController {
 	private UserService userService;
 	
 	@Autowired
+	private SingerService singerService;
+	
+	@Autowired
 	private SongService songService;
 	
 	@Autowired
@@ -45,6 +56,7 @@ public class UserController {
 	
 	@Autowired
 	private PlaylistService playlistService;
+	
 	
 	@GetMapping
 	public ResponseEntity<ApiResponse<UserDTO>> findById(@RequestParam(value = "id", required = true) Integer userId) {
@@ -68,17 +80,27 @@ public class UserController {
 		return ResponseEntity.noContent().build();
 	}
 
-	@PostMapping("/update")
+	@PostMapping(value =  "/update", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 	public ResponseEntity<ApiResponse<UserDTO>> update(
-			@Valid @RequestPart UserUpdateDTO dto,
-			@ValidFile(maxSize = 1024 * 1024, // 1MB
-	            allowedContentTypes = {"jpeg", "jpg", "png"},
-	            message = "File không hợp lệ",
-	            required = false)
-			@RequestPart(required = false) MultipartFile avatar) {
+			@ModelAttribute UserUpdateDTO dto,
+			@ModelAttribute SingerUpdateDTO singerdto,
+//			@ValidFile(maxSize = 1024 * 1024, // 1MB
+//	            allowedContentTypes = {"jpeg", "jpg", "png"},
+//	            message = "File không hợp lệ",
+//	            required = false)
+			@RequestPart(required = false, value = "avatarFile") MultipartFile avatarFile,
+			@RequestParam(required = true) String password,
+			@RequestParam(required = false) String password_confirm,
+			@RequestParam(required = false) String newPassword) {
+		
+		UserDTO user = userService.update(dto, avatarFile, password, password_confirm, newPassword);
+		if(user != null) {
+			if(user.getRole().equals("ADMIN") || user.getRole().equals("SINGER")) singerService.update(singerdto);
+		}
+
 		return ResponseEntity.ok(
 				ApiResponse.<UserDTO>builder()
-				.result(userService.update(dto, avatar))
+				.result(user)
 				.build()
 				);
 	}

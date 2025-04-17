@@ -16,10 +16,12 @@ import com.phungquocthai.symphony.dto.UserDTO;
 import com.phungquocthai.symphony.dto.UserRegistrationDTO;
 import com.phungquocthai.symphony.dto.UserUpdateDTO;
 import com.phungquocthai.symphony.entity.User;
+import com.phungquocthai.symphony.entity.Vip;
 import com.phungquocthai.symphony.exception.AppException;
 import com.phungquocthai.symphony.mapper.UserMapper;
 import com.phungquocthai.symphony.mapper.UserRegistrationMapper;
 import com.phungquocthai.symphony.repository.UserRepository;
+import com.phungquocthai.symphony.repository.VipRepository;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -45,6 +47,9 @@ public class UserService {
 	
 	@Autowired
 	PasswordEncoder passwordEncoder;
+	
+	@Autowired
+	VipRepository vipRepository;
 
 	public UserDTO create(UserRegistrationDTO dto) {
 		if(userRepository.existsByPhone(dto.getPhone())) {
@@ -63,15 +68,38 @@ public class UserService {
 		return userDTO;
 	}
 	
-	@PreAuthorize("hasRole('ADMIN') or #dto.userId == authentication.name")
-	public UserDTO update(UserUpdateDTO dto, MultipartFile avatarFile) {
+//	@PreAuthorize("hasRole('ADMIN') or #dto.userId == authentication.name")
+	public UserDTO update(UserUpdateDTO dto, MultipartFile avatarFile,
+			String password, String password_confirm, String newPassword) {
+		
+		if(!password.equals(password_confirm)) return null;
+		
 		User user = userRepository.findById(dto.getId())
 				.orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISRED));
+		
+		boolean authenticated = passwordEncoder.matches(password, user.getPassword());
+		log.info(password);
+		if(!authenticated) return null;
+		
+		
+
 		if(avatarFile != null) {
 			String avatar = fileStorageService.storeFile(avatarFile, PathStorage.AVATAR);
 			user.setAvatar(avatar);
 		}
-		userMapper.updateEntity(user, dto);
+		
+		if(!newPassword.isBlank()) {
+			user.setPassword(passwordEncoder.encode(newPassword));
+		}
+		
+		user.setBirthday(dto.getBirthday());
+		user.setPhone(dto.getPhone());
+		user.setGender(dto.getGender());
+		user.setFullName(dto.getFullName());
+		
+		log.info(user.toString());
+		log.info("Info");
+		
 		userRepository.save(user);
 		return userMapper.toDTO(user);
 	}
@@ -105,5 +133,9 @@ public class UserService {
 				.orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISRED));
 		UserDTO user = userMapper.toDTO(entity);
 		return user;
+	}
+	
+	public List<Vip> getAllVipPakages() {
+		return vipRepository.findAll();
 	}
 }

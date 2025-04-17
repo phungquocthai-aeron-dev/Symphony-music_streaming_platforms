@@ -7,6 +7,8 @@ import java.util.List;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -71,8 +73,19 @@ public class User {
 	private List<Listen> listens;
 	
 	@OneToMany(mappedBy = "user")
+	@JsonManagedReference
 	private List<Subscription> subscriptions;
 	
 	@OneToMany(mappedBy = "user")
 	private List<Comment> comments;
+
+	@Override
+	public String toString() {
+		return "User [userId=" + userId + ", fullName=" + fullName + ", birthday=" + birthday + ", password=" + password
+				+ ", create_at=" + create_at + ", update_at=" + update_at + ", phone=" + phone + ", gender=" + gender
+				+ ", avatar=" + avatar + ", role=" + role + ", favorites=" + favorites + ", singer=" + singer
+				+ ", listens=" + listens + ", subscriptions=" + subscriptions + ", comments=" + comments + "]";
+	}
+	
+	
 }

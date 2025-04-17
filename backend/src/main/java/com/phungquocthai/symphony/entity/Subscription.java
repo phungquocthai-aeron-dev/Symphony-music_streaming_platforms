@@ -8,6 +8,10 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import java.time.LocalDate;
 
+import org.hibernate.annotations.CreationTimestamp;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 
 @Entity
 @Table(name = "subscripttion")
@@ -24,6 +28,7 @@ public class Subscription {
     
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
+    @JsonBackReference
     private User user;
     
     @ManyToOne(fetch = FetchType.LAZY)
@@ -43,5 +48,6 @@ public class Subscription {
     private String payment_id;
     
     @Column(name = "created_at")
+    @CreationTimestamp
     private LocalDate created_at;
 }

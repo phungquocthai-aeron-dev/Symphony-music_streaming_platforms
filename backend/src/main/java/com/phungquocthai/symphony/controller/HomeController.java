@@ -19,8 +19,10 @@ import com.phungquocthai.symphony.dto.SearchDTO;
 import com.phungquocthai.symphony.dto.SingerDTO;
 import com.phungquocthai.symphony.dto.SongDTO;
 import com.phungquocthai.symphony.dto.TopSongDTO;
+import com.phungquocthai.symphony.entity.Vip;
 import com.phungquocthai.symphony.service.SingerService;
 import com.phungquocthai.symphony.service.SongService;
+import com.phungquocthai.symphony.service.UserService;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -34,6 +36,9 @@ public class HomeController {
 	@Autowired
 	private SingerService singerService;
 	
+	@Autowired
+	private UserService userService;
+		
 	@GetMapping
 	public ResponseEntity<ApiResponse<HomeDTO>> getHome(@AuthenticationPrincipal Jwt jwt) {
 		HomeDTO data = new HomeDTO();
@@ -115,5 +120,17 @@ public class HomeController {
 				.build()
 				);
 	}
+	
+	@GetMapping("/vip")
+	public ResponseEntity<ApiResponse<List<Vip>>> getAllVipPakages() {
+		List<Vip> vips = userService.getAllVipPakages();
+		
+		return ResponseEntity.ok(
+				ApiResponse.<List<Vip>>builder()
+				.result(vips)
+				.build()
+				);
+	}
+	
 	
 }

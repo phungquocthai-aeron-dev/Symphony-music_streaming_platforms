@@ -2,6 +2,9 @@ package com.phungquocthai.symphony.entity;
 
 import java.math.BigDecimal;
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -35,5 +38,6 @@ public class Vip {
     private BigDecimal price;
     
     @OneToMany(mappedBy = "vip")
+    @JsonIgnore
     private List<Subscription> subscriptions;
 }

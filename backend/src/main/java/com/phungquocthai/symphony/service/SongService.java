@@ -1,10 +1,7 @@
 package com.phungquocthai.symphony.service;
 
-import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Random;
@@ -75,7 +72,7 @@ public class SongService {
 	
 	@Autowired
 	FavoriteRepository favoriteRepository;
-	
+		
 	public List<SongDTO> getFavoriteSongsOfUser(Integer userId) {
 		List<Song> songEntities = songRepository.getFavoriteSongsOfUser(userId); 
 		if(!songEntities.isEmpty()) {
@@ -132,27 +129,38 @@ public class SongService {
 		
 		int singersSize = dto.getSingersId().size();
 		for(int i = 0; i < singersSize; i++) {
-			System.out.println("INS");
 			songRepository.addSongToSinger(dto.getSingersId().get(i), songDTO.getSong_id());
 		}
 		
 		int categoriesSize = dto.getCategoryIds().size();
 		for(int i = 0; i < categoriesSize; i++) {
-			System.out.println("INSS");
 
 			songRepository.addSongToCategory(dto.getCategoryIds().get(i), songDTO.getSong_id());
 		}
 		
-		log.info("E");
 		return songDTO;
 	}
 
-	@PreAuthorize("hasRole('SINGER', 'ADMIN')")
-	public void delete(Integer songId) {
-		songRepository.deleteById(songId);
+	@PreAuthorize("hasAnyRole('SINGER', 'ADMIN')")
+	public void delete(Integer singerId, Integer songId) {
+		Song song = songRepository.findById(songId).orElseThrow();
+
+		singerRepository.deletePresent(singerId, songId);
+		Integer isOrphanhood = singerRepository.havePresent(songId);
+		if(isOrphanhood == null) {
+			songRepository.deleteById(songId);
+			
+			String pathStorage = "D:\\nienluan\\Symphony-music-streaming-platforms\\backend\\uploads";
+
+			fileStorageService.deleteFile(pathStorage + song.getSong_img());
+			fileStorageService.deleteFile(pathStorage + song.getLyric());
+			fileStorageService.deleteFile(pathStorage + song.getLrc());
+			fileStorageService.deleteFile(pathStorage + song.getPath());
+		}
+
 	}
 	
-	@PreAuthorize("hasRole('SINGER', 'ADMIN')")
+	@PreAuthorize("hasRole('SINGER')")
 	public SongDTO update(SongUpdateDTO dto, MultipartFile lyricFile,
 			MultipartFile lrcFile, MultipartFile songImgFile) {
 		
@@ -164,7 +172,7 @@ public class SongService {
 			song.setLyric(lyric);
 		}
 		
-		if(lyricFile != null) {
+		if(lrcFile != null) {
 			String lrc = fileStorageService.storeFile(lrcFile, PathStorage.LRC);
 			song.setLrc(lrc);
 		}
@@ -179,10 +187,22 @@ public class SongService {
 			song.getSingers().addAll(singers);
 		}
 		
+		song.setSongName(dto.getSongName());
+		song.setAuthor(dto.getAuthor());
+		song.setDuration(dto.getDuration());
+		song.setIsVip(dto.getIsVip());		
+				
 		if(dto.getCategoryIds() != null) {
-			if(!dto.getCategoryIds().isEmpty()) {
-				List<Category> categories = categoryRepository.findAllById(dto.getCategoryIds());
-				song.setCategories(categories.stream().collect(Collectors.toSet()));
+			for(Integer categoryId : dto.getCategoryIds()) {
+				Integer check = singerRepository.isCategoryOfSong(categoryId, dto.getSong_id());
+				if(check == null) singerRepository.addCategoryForSong(categoryId, dto.getSong_id());
+			}
+		}
+		
+		if(dto.getSingersId() != null) {
+			for(Integer singerId : dto.getCategoryIds()) {
+				Integer check = singerRepository.isPresented(singerId, dto.getSong_id());
+				if(check == null) singerRepository.addPresent(singerId, dto.getSong_id());
 			}
 		}
 		

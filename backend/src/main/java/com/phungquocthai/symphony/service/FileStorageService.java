@@ -43,18 +43,30 @@ public class FileStorageService {
 	        return filePath;
 	    }
 
-	    public void deleteFile(String fileName, PathStorage pathStorage) {
+	    public void deleteFile(String absoluteFilePath) {
 	        try {
-	            Path fileStorageLocation = initializeStorageLocation(pathStorage);
-	            Path filePath = fileStorageLocation.resolve(fileName).normalize();
-	            if (!filePath.startsWith(fileStorageLocation)) {
+	            // Chuyển chuỗi đường dẫn tuyệt đối thành đối tượng Path
+	            Path filePath = Paths.get(absoluteFilePath).toAbsolutePath().normalize();
+	            
+	            // Kiểm tra xem đường dẫn tệp có hợp lệ và nằm trong phạm vi thư mục cho phép (ví dụ: "D:/uploads/")
+	            Path basePath = Paths.get("D:/uploads/").toAbsolutePath().normalize();
+	            if (!filePath.startsWith(basePath)) {
 	                throw new AppException(ErrorCode.FILE_DELETE_PERMISSION_DENIED);
 	            }
-	            Files.deleteIfExists(filePath);
+
+	            // Kiểm tra xem tệp có tồn tại không, nếu có thì xóa
+	            if (Files.exists(filePath)) {
+	                Files.delete(filePath);
+	                log.info("File deleted successfully: {}", absoluteFilePath);
+	            } else {
+	                throw new AppException(ErrorCode.FILE_NOT_FOUND);
+	            }
 	        } catch (IOException ex) {
+	            log.error("Failed to delete file: {}", absoluteFilePath, ex);
 	            throw new AppException(ErrorCode.FILE_DELETE_FAILED);
 	        }
 	    }
+
 
 	    private Path initializeStorageLocation(PathStorage pathStorage) {
 	    	

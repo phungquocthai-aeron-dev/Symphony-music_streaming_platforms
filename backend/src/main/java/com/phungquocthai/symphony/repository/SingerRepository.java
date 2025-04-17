@@ -29,6 +29,21 @@ public interface SingerRepository extends JpaRepository<Singer, Integer> {
 			,nativeQuery = true)
 	void addPresent(@Param("singerId") Integer singerId, @Param("songId") Integer songId);
 	
+	@Query(value = "SELECT singer_id FROM present WHERE singer_id = :singerId AND song_id = :songId", nativeQuery = true)
+	Integer isPresented(@Param("singerId") Integer singerId, @Param("songId") Integer songId);
+	
+	@Query(value = "SELECT song_id FROM present WHERE song_id = :songId", nativeQuery = true)
+	Integer havePresent(@Param("songId") Integer songId);
+	
+	@Modifying
+	@Transactional
+	@Query(value =  "INSERT INTO category_song (category_id, song_id) VALUES (:categoryId, :songId)"
+			,nativeQuery = true)
+	void addCategoryForSong(@Param("categoryId") Integer categoryId, @Param("songId") Integer songId);
+	
+	@Query(value = "SELECT song_id FROM category_song WHERE category_id = :categoryId AND song_id = :songId", nativeQuery = true)
+	Integer isCategoryOfSong(@Param("categoryId") Integer categoryId, @Param("songId") Integer songId);
+	
 	@Query(value = "SELECT s.* FROM singer s " +
             "INNER JOIN present p ON s.singer_id = p.singer_id " +
             "WHERE p.song_id = :songId", 

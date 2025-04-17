@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository;
 import com.phungquocthai.symphony.entity.Subscription;
 
 @Repository
-public interface SubcriptionRepository extends JpaRepository<Subscription, Integer> {
+public interface SubscriptionRepository extends JpaRepository<Subscription, Integer> {
 
 }

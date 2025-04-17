@@ -2,6 +2,8 @@ package com.phungquocthai.symphony.exception;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -28,7 +30,7 @@ public class GlobalExceptionHandler {
     }
     
     @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity<ApiResponse<Object>> handleAppException(AppException ex) {
+    public ResponseEntity<ApiResponse<Object>> handleRuntimeException(AppException ex) {
     	ErrorCode errorCode = ex.getErrorCode();
     	ApiResponse<Object> apiResponse = new ApiResponse<Object>();
     	apiResponse.setCode(errorCode.getCode());
@@ -36,5 +38,16 @@ public class GlobalExceptionHandler {
     	
     	return ResponseEntity.badRequest().body(apiResponse);
     }
+    
+    @ExceptionHandler(AppException.class)
+    public ResponseEntity<ApiResponse<Object>> handleAppException(AppException ex) {
+        // Xử lý lỗi ở đây
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(ApiResponse.builder()
+                        .message(ex.getMessage())
+                        .build());
+    }
+
     
 }

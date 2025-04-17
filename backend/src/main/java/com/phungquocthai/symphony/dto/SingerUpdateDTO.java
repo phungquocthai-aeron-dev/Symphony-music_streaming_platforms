@@ -20,9 +20,6 @@ public class SingerUpdateDTO {
     
     @NotNull(message = "Vui lòng chọn nghệ danh")
     private String stageName;
-    
-    @NotNull(message = "Vui lòng chọn lượt theo dõi")
-    @Builder.Default
-    private int followers = 0;
+
    
 }
