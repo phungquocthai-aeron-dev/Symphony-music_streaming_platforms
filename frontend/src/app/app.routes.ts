@@ -18,6 +18,7 @@ import { ClauseComponent } from './features/clause/clause.component';
 import { IntroduceComponent } from './features/introduce/introduce.component';
 import { ErrorComponent } from './features/error/error.component';
 import { SimpleLayoutComponent } from './layouts/simple_layout/simple_layout.component';
+import { UserComponent } from './features/user/user.component';
 
 export const routes: Routes = [
     { 
@@ -33,7 +34,8 @@ export const routes: Routes = [
             {path: 'hot', component: ReleaseComponent},
             {path: 'favorite', component: FavoriteComponent},
             {path: 'search', component: SearchComponent},
-            {path: 'ranking', component: RankComponent}
+            {path: 'ranking', component: RankComponent},
+            {path: 'user', component: UserComponent}
         ]
     },
     {
@@ -47,5 +49,12 @@ export const routes: Routes = [
     },
     { path: 'login', component: LoginComponent, canActivate: [LoginGuard]},
     { path: 'register', component: RegisterComponent },
-    { path: '**', component: ErrorComponent }
+
+    { 
+        path: '',
+        component: SimpleLayoutComponent,
+        children: [
+            { path: '**', component: ErrorComponent }
+        ]
+    }
 ];

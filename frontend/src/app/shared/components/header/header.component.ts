@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, ElementRef, Input, NgZone, OnInit, ViewChild } from '@angular/core';
 import { CookieService } from 'ngx-cookie-service';
 import { environment } from '../../../../environments/environment';
 import { AuthService } from '../../../core/services/auth.service';
@@ -7,6 +7,8 @@ import { NgIf } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { SingerDTO } from '../../models/Singer.dto';
 import { FormsModule } from '@angular/forms';
+
+declare var webkitSpeechRecognition: any;
 
 interface ThemeSave {
   isDarkTheme: boolean;
@@ -20,14 +22,18 @@ interface ThemeSave {
 })
 
 export class HeaderComponent implements OnInit {
+  @ViewChild('voiceSearch') voiceSearchIcon!: ElementRef;
+
   private COOKIE_NAME = 'music-streaming-theme';
   search: string = '';
+  recognition: any;
 
   pathLogoDarkTheme = environment.assetsPath + 'symphony-darktheme-icon.png';
   pathLogoLightTheme = environment.assetsPath + 'symphony-lighttheme-icon.png';
   isDarkTheme = true;
   private dataTheme: ThemeSave | null = null;
   isLoggedIn: boolean = false;
+  isListening: boolean = false;
 
   @Input() user!: UserDTO;
   @Input() singer!: SingerDTO;
@@ -35,10 +41,42 @@ export class HeaderComponent implements OnInit {
   constructor(
     private cookieService: CookieService,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private ngZone: NgZone
   ) {
     const storedTheme = this.cookieService.get(this.COOKIE_NAME);
     this.dataTheme = storedTheme ? JSON.parse(storedTheme) : null;
+
+    if (typeof window !== 'undefined') {
+      const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+
+      if (!SpeechRecognition) {
+        console.error('Trình duyệt không hỗ trợ Web Speech API');
+        return;
+      }
+
+      this.recognition = new SpeechRecognition();
+      this.recognition.lang = 'vi-VN';
+      this.recognition.continuous = false;
+      this.recognition.interimResults = true;
+
+      this.recognition.onresult = (event: any) => {
+        const transcript = event.results[0][0].transcript;
+        this.ngZone.run(() => {
+          this.search = transcript;
+        });
+      };
+
+      this.recognition.onerror = (event: any) => {
+        console.error('Lỗi speech recognition:', event.error);
+      };
+
+      this.recognition.onend = () => {
+        if(this.isListening) this.handleSearch();
+        else this.ngZone.run(() => {this.search = "";});
+        
+      };
+    }
   }
 
   ngOnInit(): void {
@@ -90,11 +128,33 @@ export class HeaderComponent implements OnInit {
     }
   }
 
-  handleSearch() {
-    this.search = this.search.trim();
-    
-    this.router.navigate(['/search'], { 
-      queryParams: { s: this.search } 
+  startListening(): void {
+    this.search = "";
+    if (this.recognition) {
+
+      if(this.isListening) {
+        this.recognition.stop();
+        this.isListening = false;
+      }
+      else {
+        this.recognition.start();
+        this.isListening = true;
+      }
+    } else {
+      alert('Trình duyệt không hỗ trợ nhận diện giọng nói.');
+    }
+  }
+
+handleSearch() {
+  this.search = this.search.trim();
+  this.isListening = false;
+
+  if (this.search) {
+    this.router.navigateByUrl('/', {skipLocationChange: true}).then(() => {
+      this.router.navigate(['/search'], { 
+        queryParams: { s: this.search }
+      });
     });
   }
+}
 }

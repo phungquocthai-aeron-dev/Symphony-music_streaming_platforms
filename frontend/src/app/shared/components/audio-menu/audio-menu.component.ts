@@ -6,6 +6,7 @@ import { AuthService } from '../../../core/services/auth.service';
 import { SongService } from '../../../core/services/song.service';
 import { TimeFormatPipe } from '../../pipes/time-format.pipe';
 import { DataShareService } from '../../../core/services/dataShare.service';
+import { UserDTO } from '../../models/User.dto';
 
 @Component({
   selector: 'app-audio-menu',
@@ -16,6 +17,7 @@ import { DataShareService } from '../../../core/services/dataShare.service';
 
 export class AudioMenuComponent implements AfterViewInit, OnChanges {
   @Input() song!: SongDTO;
+  @Input() user!: UserDTO;
   @Input() playlistSongs: SongDTO[] = [];
   @Input() isOptionPlaylist = true;
   @Input() recentSongs: SongDTO[] = [];  @ViewChild('audio') audioRef!: ElementRef<HTMLAudioElement>;
@@ -53,7 +55,7 @@ export class AudioMenuComponent implements AfterViewInit, OnChanges {
 
       setTimeout(() => {
         if (!this.audioRef || !this.volumeRef || !this.progressRef || !this.progressBar || !this.progressVolumeRef) {
-          console.error("Lỗi: ViewChild chưa được khởi tạo.");
+          console.warn("ViewChild chưa được khởi tạo.");
           return;
         }
         this.loadData();
@@ -128,6 +130,8 @@ export class AudioMenuComponent implements AfterViewInit, OnChanges {
               this.handleRandomOption();
               break;
           default:
+              this.progressRef.nativeElement.value = "100"
+              this.progressBar.nativeElement.style.width = `100%`;
               this.OptionStatus = "UNSELECTED"
       }
       });
@@ -343,6 +347,10 @@ export class AudioMenuComponent implements AfterViewInit, OnChanges {
   }
 
   handleSelected(option: string): void {
+      if(option === this.OptionStatus) {
+        this.OptionStatus = "UNSELECTED";
+        return;
+      }
 
       switch (option) {
           case "NEXT":
@@ -369,6 +377,14 @@ export class AudioMenuComponent implements AfterViewInit, OnChanges {
               this.OptionStatus = "UNSELECTED"
       }
   
+  }
+
+  get loadAudio(): string {
+    if(!this.song.isVip) return "http://localhost:8080/symphony/uploads" + this.song.path;
+    if(this.user) {
+      if(this.song.isVip && ["VIP", "ADMIN", "SINGER"].includes(this.user.role)) return "http://localhost:8080/symphony/uploads" + this.song.path;
+    }
+    return "assets/other/advice.wav";
   }
 
   checkOption(option: string): boolean {

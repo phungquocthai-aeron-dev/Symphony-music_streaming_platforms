@@ -18,56 +18,25 @@
         <div class="col-sm-12 package-container mt-3 mb-3">
             <h3 class="text-center text-white-primary">CÁC GÓI CỦA CHÚNG TÔI</h3>
             <div class="row">
-                <div class="col-6 col-sm-6 mt-3">
-                    <div class="upgrade-package bg-dark_grey-color h-100 px-5 py-4 rounded-4">
+                <div class="row">
+                    <div class="col-6 col-sm-6 mt-3" *ngFor="let vip of vips">
+                      <div class="upgrade-package bg-dark_grey-color h-100 px-5 py-4 rounded-4">
                         <br>
-                        <h4 class="fw-bolder text-yellow">Vip</h4>
-                        <p class="text-white-primary">Chỉ từ 40.000đ/tháng</p>
+                        <h4 class="fw-bolder" [ngClass]="textColor()">{{ vip.vip_title }}</h4>
+                        <p class="text-white-primary">Chỉ từ {{ vip.price| number:'1.0-0' }}₫ trong {{ vip.duration_days }} ngày</p>
                         <hr class="text-white-primary">
+                  
                         <ul class="vip-role">
-                            <li class="text-white-primary">Nghe nhạc chất lượng cao</li>
-                            <li class="text-white-primary">Lưu trữ nhạc không giới hạn</li>
-                            <li class="text-white-primary">TÍnh năng nghe nhạc nâng cao</li>
-                            <li class="text-white-primary">Kho nhạc Vip</li>
+                          <li class="text-white-primary" *ngFor="let line of parseDescription(vip.description)">
+                            {{ line }}
+                          </li>
                         </ul>
-
-                        <div class="btn bg-yellow-color fw-bolder rounded-3">Đăng ký ngay</div>
+                  
+                        <div class="btn fw-bolder rounded-3" [ngClass]="bgColor()" (click)="selectVipPackage(vip)">Đăng ký ngay</div>
+                      </div>
                     </div>
-                </div>
-
-                <div class="col-6 col-sm-6 mt-3">
-                    <div class="upgrade-package bg-dark_grey-color h-100 px-5 py-4 rounded-4">
-                        <br>
-                        <h4 class="fw-bolder text-green">Student</h4>
-                        <p class="text-white-primary">Chỉ từ 12.000đ/tuần</p>
-                        <hr class="text-white-primary">
-                        <ul class="vip-role">
-                            <li class="text-white-primary">Nghe nhạc chất lượng cao</li>
-                            <li class="text-white-primary">TÍnh năng nghe nhạc nâng cao</li>
-                            <li class="text-white-primary">Kho nhạc Vip</li>
-                        </ul>
-
-                        <div class="btn bg-green-color fw-bolder rounded-3">Đăng ký ngay</div>
-                    </div>
-                </div>
-
-                <div class="col-6 col-sm-6 mt-3">
-                    <div class="upgrade-package bg-dark_grey-color h-100 px-5 py-4 rounded-4">
-                        <br>
-                        <h4 class="fw-bolder text-pink_strong">Diamond</h4>
-                        <p class="text-white-primary">Chỉ từ 400.000đ/năm</p>
-                        <hr class="text-white-primary">
-                        <ul class="vip-role">
-                            <li class="text-white-primary">Nghe nhạc chất lượng cao</li>
-                            <li class="text-white-primary">Lưu trữ nhạc không giới hạn</li>
-                            <li class="text-white-primary">TÍnh năng nghe nhạc nâng cao</li>
-                            <li class="text-white-primary">Kho nhạc Vip</li>
-                        </ul>
-
-                        <div class="btn bg-pink_strong-color fw-bolder rounded-3">Đăng ký ngay</div>
-                    </div>
-                </div>
-
+                  </div>
+                  
             </div>
         </div>
 

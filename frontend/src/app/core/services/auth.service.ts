@@ -2,7 +2,7 @@ import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { JwtHelperService } from '@auth0/angular-jwt';
-import { Observable, of, BehaviorSubject, throwError } from 'rxjs';
+import { Observable, of, BehaviorSubject, throwError, EMPTY } from 'rxjs';
 import { map, catchError, tap, switchMap } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { environment } from '../../../environments/environment';
@@ -70,7 +70,7 @@ export class AuthService {
     try {
       const decodedToken = this.jwtHelper.decodeToken(token);
       return {
-        userId: decodedToken.sub, // Lấy userId từ subject (sub)
+        userId: decodedToken.sub,
         phone: decodedToken.phone,
         role: decodedToken.scope
       };
@@ -80,13 +80,30 @@ export class AuthService {
   }
 
   getUser(): Observable<ResponseData<UserDTO>> {
-    const params = new HttpParams().set('id', this.getUserInfo().userId);
+    const userInfo = this.getUserInfo();
+    if(userInfo) {
+      const params = new HttpParams().set('id', userInfo.userId);
+    return this.http.get<ResponseData<UserDTO>>(environment.apiUrl + 'user', { params });
+    }
+    return EMPTY;
+  }
+
+  getUserById(id: number | string): Observable<ResponseData<UserDTO>> {
+    const params = new HttpParams().set('id', id);
     return this.http.get<ResponseData<UserDTO>>(environment.apiUrl + 'user', { params });
   }
 
   getUserBySingerId(singerId: number): Observable<ResponseData<UserDTO>> {
     const params = new HttpParams().set('id', singerId);
     return this.http.get<ResponseData<UserDTO>>(environment.apiUrl + 'user/singer', { params });
+  }
+
+  updateUser(formData: FormData): Observable<ResponseData<UserDTO>> {
+    const headers = new HttpHeaders().set(
+      "Authorization",
+      "Bearer " + this.getToken()
+    );
+    return this.http.post<ResponseData<UserDTO>>(environment.apiUrl + 'user/update', formData, { headers });
   }
 
   // Đăng ký

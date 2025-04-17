@@ -2,10 +2,11 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ResponseData } from '../../shared/models/ResponseData';
+import { environment } from '../../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class VNPayService {
-  private apiUrl = 'http://localhost:8080/api/payment';
+  private apiUrl = environment.apiUrl + 'api/payment';
 
   constructor(private http: HttpClient) {}
 
@@ -19,13 +20,16 @@ export class VNPayService {
   createPayment(
     amount: number,
     userId: number,
+    vipId: number,
     language?: string,
     bankCode?: string
   ): Observable<ResponseData<string>> {
     // Sử dụng params thay vì body
     let params = new HttpParams()
       .set('amount', amount.toString())
-      .set('userId', userId.toString());
+      .set('userId', userId.toString())
+      .set('vipId', vipId.toString())
+      ;
   
     // Thêm các tham số tùy chọn nếu có
     if (language) params = params.set('language', language);

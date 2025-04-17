@@ -6,6 +6,7 @@
 <router-outlet></router-outlet>
 <app-lyric [disabled]="turnLyric" [isPlaying]="isPlaying" [songProgress]="songProgress"></app-lyric>
 <app-audio-menu 
+  [user]="user"
   [song]="currentSong" 
   [playlistSongs]="playlistSong" 
   [isOptionPlaylist]="isOptionPlaylist" 

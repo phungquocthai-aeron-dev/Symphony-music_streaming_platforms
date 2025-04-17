@@ -71,7 +71,7 @@
                     <div class="range-container mt-1">
 
                         <div id="progressBar" #progressBar></div>
-                        <input type="range" id="myRange" min="0" max="100" value="0" step="0.1" #inputProgress>
+                        <input type="range" id="myRange" min="0" max="100" value="0" step="0.1" #inputProgress [value]="progress">
 
                     </div>
 
@@ -79,7 +79,7 @@
                         {{ duration | timeFormat }}
                     </div>
 
-                    <audio *ngIf="song" [src]="'http://localhost:8080/symphony/uploads' + song.path" preload="metadata" id="audio" #audio></audio>
+                    <audio *ngIf="song" [src]="loadAudio" preload="metadata" id="audio" #audio></audio>
                 </div>
 
                 <div class="col-12 col-sm-2">

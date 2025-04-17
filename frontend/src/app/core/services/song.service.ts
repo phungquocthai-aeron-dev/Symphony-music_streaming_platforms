@@ -44,34 +44,21 @@ export class SongService {
     return this.http.post<ResponseData<SongDTO>>(`${this.apiUrl}/create`, formData, { headers });
   }
 
-  deleteSong(songId: number): Observable<ResponseData<SongDTO>> {
-    const params = new HttpParams().set('songId', songId.toString());
+  deleteSong(songId: string, singerId: string): Observable<ResponseData<SongDTO>> {
+    const params = new HttpParams()
+      .set('songId', songId)
+      .set('singerId', singerId);
+  
     return this.http.post<ResponseData<SongDTO>>(`${this.apiUrl}/delete`, {}, { params });
   }
+  
 
-  songUpdate(
-    dto: SongUpdateDTO,
-    lrcFile?: File,
-    lyricFile?: File,
-    songImgFile?: File
-  ): Observable<ResponseData<SongDTO>> {
-    const formData = new FormData();
-  
-    // Truyền DTO vào FormData dưới dạng chuỗi JSON
-    formData.append('dto', JSON.stringify(dto));
-  
-    // Thêm các file vào nếu có
-    if (lrcFile) {
-      formData.append('lrcFile', lrcFile);
-    }
-    if (lyricFile) {
-      formData.append('lyricFile', lyricFile);
-    }
-    if (songImgFile) {
-      formData.append('songImgFile', songImgFile);
-    }
-  
-    return this.http.post<ResponseData<SongDTO>>(`${this.apiUrl}/update`, formData);
+  songUpdate(formData: FormData): Observable<ResponseData<SongDTO>> {  
+    const headers = new HttpHeaders().set(
+      "Authorization",
+      "Bearer " + this.token
+    );
+    return this.http.post<ResponseData<SongDTO>>(`${this.apiUrl}/update`, formData, { headers });
   }
 
   getNewSongs(limit = 50): Observable<ResponseData<SongDTO[]>> {

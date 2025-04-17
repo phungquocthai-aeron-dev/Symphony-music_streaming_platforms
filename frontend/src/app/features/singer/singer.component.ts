@@ -14,7 +14,6 @@ import { DataShareService } from '../../core/services/dataShare.service';
 import { FormControl, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { TopSongDTO } from '../../shared/models/TopSong.dto';
-import { error } from 'node:console';
 
 declare var bootstrap: any;
 
@@ -25,10 +24,11 @@ declare var bootstrap: any;
   styleUrl: './singer.component.css'
 })
 export class SingerComponent implements OnInit, OnDestroy {
-  @ViewChild('editModel', { static: false }) editModalRef!: ElementRef;
+  @ViewChild('editModal', { static: false }) editModalRef!: ElementRef;
   @ViewChild('inputSongCreate', { static: false }) inputSongCreate!: ElementRef<HTMLInputElement>;
   @ViewChild('inputSongEdit', { static: false }) inputSongEdit!: ElementRef<HTMLInputElement>;
   @ViewChild('close_create_modal', { static: false }) closeCreateButton!: ElementRef;
+  @ViewChild('close_update_modal', { static: false }) closeUpdateButton!: ElementRef;
 
 
   defaultSongImg:string = "http://localhost:8080/symphony/uploads/images/other/no-img.png";
@@ -51,6 +51,10 @@ export class SingerComponent implements OnInit, OnDestroy {
   lyricFile?: File | null;
   songImgFile?: File | null;
 
+  lrcFileUpd?: File | null;
+  lyricFileUpd?: File | null;
+  songImgFileUpd?: File | null;
+
   maxDate?: string;
 
   private paramSubscription!: Subscription;
@@ -66,15 +70,19 @@ export class SingerComponent implements OnInit, OnDestroy {
     releaseDate: new FormControl('', Validators.required)
   })
 
-  updateSongForm = new FormGroup({
-    songNameUpd: new FormControl('', Validators.required),
-    authorUpd: new FormControl('', Validators.required),
-    singersIdUpd: new FormControl([], Validators.required),
-    isVipUpd: new FormControl(false),
-    categoryIdsUpd: new FormControl([], Validators.required),
-    durationUpd: new FormControl('', Validators.required),
-    total_listensUpd: new FormControl('0', Validators.required),
-    releaseDateUpd: new FormControl('', Validators.required)
+  editSongForm = new FormGroup({
+    songName: new FormControl('', Validators.required),
+    author: new FormControl('', Validators.required),
+    singersId: new FormControl([], Validators.required),
+    isVip: new FormControl(false),
+    categoryIds: new FormControl<number[]>([], Validators.required),
+    duration: new FormControl('', Validators.required),
+    total_listens: new FormControl('0', Validators.required),
+    releaseDate: new FormControl('', Validators.required),
+    song_id: new FormControl('', Validators.required),
+    song_img: new FormControl('', Validators.required),
+    lrc: new FormControl('', Validators.required),
+    lyric: new FormControl('', Validators.required)
   })
 
   constructor(
@@ -181,9 +189,15 @@ export class SingerComponent implements OnInit, OnDestroy {
   }
 
   openModal() {
+    if (!this.editModalRef?.nativeElement) {
+      console.error('editModalRef chưa được gán!');
+      return;
+    }
+  console.log(this.editModalRef.nativeElement)
     const modal = new bootstrap.Modal(this.editModalRef.nativeElement);
     modal.show();
   }
+  
 
   isOwner(): boolean {
     if(!this.singerOwn) return false;
@@ -192,8 +206,35 @@ export class SingerComponent implements OnInit, OnDestroy {
 
   onSongSelected(song: SongDTO | TopSongDTO) {
     if(!this.isTopSong(song)) {
+      this.editSongForm.reset();
+      this.musicFile = null;
+      this.lrcFile = null;
+      this.lyricFile = null;
+      this.songImgFile = null;
+
       this.selectedSong = song;
-      this.songSelectedImg = 'http://localhost:8080/symphony' + song.song_img;
+      this.songSelectedImg = 'http://localhost:8080/symphony/uploads' + song.song_img;
+
+      if (this.selectedSong) {
+        this.editSongForm.patchValue({
+          songName: this.selectedSong.songName,
+          isVip: this.selectedSong.isVip,
+          author: this.selectedSong.author,
+          releaseDate: this.selectedSong.releaseDate.toString(),
+          duration: this.selectedSong.duration.toString(),
+          song_id: this.selectedSong.song_id.toString(),
+          song_img: this.selectedSong.song_img,
+          lyric: this.selectedSong.lyric,
+          lrc: this.selectedSong.lrc,
+        });
+      }
+
+      if (this.selectedSong.categories) {
+        const selectedCategoryIds = this.selectedSong.categories.map(cat => cat.category_id);
+        this.editSongForm.patchValue({ categoryIds: selectedCategoryIds });
+      }
+      
+      
     }
   }
 
@@ -212,23 +253,20 @@ export class SingerComponent implements OnInit, OnDestroy {
     }
   }
 
-  onSubmitEdit() {
-
-  }
-
   onSubmitDelete() {
-    console.log(this.selectedSong)
-    this.songService.deleteSong(this.selectedSong.song_id).subscribe({
-      next: (data) => {
-        if(this.singerId) this.loadSingerData(this.singerId);
-      },
-      error: (error) => {
-        console.error("Xoá bài hát thất bại!")
-      }
-    })
+    if(this.singerId) {
+      this.songService.deleteSong(this.selectedSong.song_id.toString(), this.singerId.toString()).subscribe({
+        next: (data) => {
+          if(this.singerId) this.loadSingerData(this.singerId);
+        },
+        error: (error) => {
+          console.error("Xoá bài hát thất bại!")
+        }
+      })
+    }
   }
 
-  onSubmitCrate() {
+  onSubmitCreate() {
     if (this.createSongForm.invalid) {
       Object.keys(this.createSongForm.controls).forEach(field => {
         const control = this.createSongForm.get(field);
@@ -281,8 +319,110 @@ export class SingerComponent implements OnInit, OnDestroy {
       },
       error: (error) => {
         console.error('Lỗi khi upload:', error);
-              }
+      }
     });
+  }
+
+  onSubmitUpdate() {
+    if (this.editSongForm.invalid) {
+      Object.keys(this.editSongForm.controls).forEach(field => {
+        const control = this.editSongForm.get(field);
+        control?.markAsTouched({ onlySelf: true });
+      });
+
+
+    }
+
+    const formData = new FormData();
+      formData.append('songName', this.editSongForm.value.songName || '');
+      formData.append('author', this.editSongForm.value.author || '');
+      formData.append('isVip', this.editSongForm.value.isVip ? 'true' : 'false');
+      formData.append('duration', this.editSongForm.value.duration || '');
+      formData.append('total_listens', this.editSongForm.value.total_listens || '0');
+      formData.append('releaseDate', this.editSongForm.value.releaseDate || '');  
+
+      formData.append('song_id', this.editSongForm.value.song_id || ''); 
+      formData.append('song_img', this.editSongForm.value.song_img || ''); 
+      formData.append('lrc', this.editSongForm.value.lrc || ''); 
+      formData.append('lyric', this.editSongForm.value.lyric || ''); 
+
+      if(this.selectedSong) {
+        this.selectedSong.singers.forEach((singer: SingerDTO) => {
+          if(this.singerId) formData.append('singersId', singer.singer_id.toString());
+        })
+        if (this.editSongForm.value.singersId && this.editSongForm.value.singersId.length > 0) {
+          this.editSongForm.value.singersId.forEach((id: number) => {
+          formData.append('singersId', id.toString());
+          });
+        }
+      }
+
+
+      if (this.editSongForm.value.singersId && this.editSongForm.value.singersId.length > 0) {
+        this.editSongForm.value.singersId.forEach((id: number) => {
+        formData.append('singersId', id.toString());
+        });
+      }
+
+      if (this.editSongForm.value.categoryIds && this.editSongForm.value.categoryIds.length > 0) {
+        this.editSongForm.value.categoryIds.forEach((id: number) => {
+          formData.append('categoryIds', id.toString());
+          console.log(id)
+        });
+      }
+  
+    // Thêm các file
+    if (this.lrcFile) {
+      formData.append('lrcFile', this.lrcFile);
+      formData.append('lrc', 'null');
+    }
+
+
+    if (this.lyricFile) {
+      formData.append('lyricFile', this.lyricFile);
+      formData.append('lyric', 'null');
+    }
+
+    if (this.songImgFile) {
+      formData.append('songImgFile', this.songImgFile);
+      formData.append('song_img', 'null');
+    }
+  
+    // Gửi request
+    this.songService.songUpdate(formData).subscribe({
+      next: (response) => {
+        console.log('Upload thành công:', response);
+        // Reset form và đóng modal
+        this.editSongForm.reset();
+        this.musicFile = null;
+        this.lrcFile = null;
+        this.lyricFile = null;
+        this.songImgFile = null;
+        
+        this.closeUpdateButton.nativeElement.click();
+        if(this.singerId) this.loadSingerData(this.singerId);
+      },
+      error: (error) => {
+        console.error('Lỗi khi upload:', error);
+      }
+    });
+  }
+
+  onFileUpdateChange(event: any, fileType: string) {
+    const file = event.target.files[0];
+    if (file) {
+      switch (fileType) {
+        case 'lrc':
+          this.lrcFileUpd = file;
+          break;
+        case 'lyric':
+          this.lyricFileUpd = file;
+          break;
+        case 'image':
+          this.songImgFileUpd = file;
+          break;
+      }
+    }
   }
 
   onFileCreateChange(event: any, fileType: string) {
@@ -310,13 +450,13 @@ export class SingerComponent implements OnInit, OnDestroy {
   //   return this.selectedSong.categories.some(cat => cat.category_id === categoryId);
   // }
 
-  isCategorySelected(categoryId: number): boolean {
-    // Kiểm tra selectedSong và selectedSong.categories tồn tại
-    if (!this.selectedSong || !this.selectedSong.categories) {
-      return false;
-    }
-    return this.selectedSong.categories.some(cat => cat.category_id === categoryId);
-  }
+  // isCategorySelected(categoryId: number): boolean {
+  //   // Kiểm tra selectedSong và selectedSong.categories tồn tại
+  //   if (!this.selectedSong || !this.selectedSong.categories) {
+  //     return false;
+  //   }
+  //   return this.selectedSong.categories.some(cat => cat.category_id === categoryId);
+  // }
 
   triggerFileInput(): void {
     this.inputSongCreate.nativeElement.click();

@@ -33,7 +33,9 @@ export class SearchComponent implements OnInit, OnDestroy {
 
     this.route.queryParams.subscribe(params => {
       this.searchQuery = params['s'] || '';
+      console.log(this.searchQuery)
       if (this.searchQuery) {
+        console.log(this.searchQuery)
         this.performSearch();
       }
     });
@@ -41,12 +43,14 @@ export class SearchComponent implements OnInit, OnDestroy {
 
   performSearch() {
     this.refreshData();
+    console.log(this.searchQuery)
 
     this.songService.search(this.searchQuery).subscribe({
       next: (response: ResponseData<SearchDTO>) => {
         const result = response.result;
         this.songs = result.songs;
         this.singers = result.singers;
+
       },
       error: (error) => {
         console.error(error);

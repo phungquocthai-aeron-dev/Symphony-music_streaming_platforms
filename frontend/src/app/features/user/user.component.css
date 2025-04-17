@@ -1,0 +1,46 @@
+#content-user {
+    margin-top: 100px;
+}
+
+.user-img-active-container {
+    width: 25%;
+    max-width: 350px;
+    min-width: 230px;
+}
+
+.user-img-active {
+    width: 100%;
+}
+
+.user-active-banner {
+    background: linear-gradient(to bottom, var(--dark_grey-color) 55%, var(--black-color));
+    border-radius: 12px;
+}
+
+#change-avatar {
+    position: relative;
+}
+
+.change-avatar-container:hover #modal-avatar {
+    display: block;
+}
+
+#modal-avatar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(30, 30, 30, 0.5);
+    display: none;
+}
+
+.btn-follow:hover {
+    color: var(--white-color) !important;
+    transform: scale(1.05);
+    border: 2px solid var(--white-color);
+}
+
+.btn-follow:hover i {
+    color: var(--white-color) !important;
+}
