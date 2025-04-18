@@ -1,9 +1,11 @@
 package com.phungquocthai.symphony.controller;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -34,6 +36,7 @@ import com.phungquocthai.symphony.service.SingerService;
 import com.phungquocthai.symphony.service.SongService;
 import com.phungquocthai.symphony.service.UserService;
 
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 
@@ -62,6 +65,14 @@ public class UserController {
 	public ResponseEntity<ApiResponse<UserDTO>> findById(@RequestParam(value = "id", required = true) Integer userId) {
 		ApiResponse<UserDTO> apiResponse = new ApiResponse<UserDTO>();
 		UserDTO user = userService.getUserById(userId);
+		apiResponse.setResult(user);
+		return ResponseEntity.ok(apiResponse);
+	}
+	
+	@GetMapping("/phone")
+	public ResponseEntity<ApiResponse<UserDTO>> findByPhone(@RequestParam(value = "phone", required = true) String phone) {
+		ApiResponse<UserDTO> apiResponse = new ApiResponse<UserDTO>();
+		UserDTO user = userService.findByPhone(phone);
 		apiResponse.setResult(user);
 		return ResponseEntity.ok(apiResponse);
 	}
@@ -189,5 +200,27 @@ public class UserController {
 				.build();
 		return ResponseEntity.ok(apiResponse);
 	}
+	
+	@PostMapping("/export")
+    public ResponseEntity<byte[]> exportToExcel() {
+    	
+    	byte[] excelData = new byte[0];;
+    	
+
+            try {
+				excelData = userService.exportToExcel();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+    	
+    	            
+            HttpHeaders headers = new HttpHeaders();
+            headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=danh_sach_nguoi_dung.xlsx");
+            
+            return ResponseEntity.ok()
+                    .headers(headers)
+                    .contentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
+                    .body(excelData);
+    }
 	
 }

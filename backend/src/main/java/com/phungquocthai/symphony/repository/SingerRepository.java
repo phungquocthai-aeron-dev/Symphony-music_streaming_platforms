@@ -14,8 +14,8 @@ import jakarta.transaction.Transactional;
 
 @Repository
 public interface SingerRepository extends JpaRepository<Singer, Integer> {
-	@Query(value = "SELECT * FROM singer WHERE stage_name LIKE :stageName", nativeQuery = true)
-	List<Singer> getByStageName(String stageName);
+	@Query("SELECT s FROM Singer s WHERE s.stageName LIKE %:stageName%")
+	List<Singer> getByStageName(@Param("stageName") String stageName);
 	
 	@Modifying
 	@Transactional
@@ -62,5 +62,7 @@ public interface SingerRepository extends JpaRepository<Singer, Integer> {
 	@Query(value = "SELECT * FROM singer WHERE singer_id NOT IN (:ids)", 
     nativeQuery = true)
 	List<Singer> findAllBySongIdNotIn(@Param("ids") Iterable<Integer> ids);
+	
+	List<Singer> findByStageNameContainingIgnoreCase(String keyword);
 
 }

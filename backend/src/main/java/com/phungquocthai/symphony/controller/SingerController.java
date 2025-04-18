@@ -1,9 +1,12 @@
 package com.phungquocthai.symphony.controller;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -55,9 +58,19 @@ public class SingerController {
 		return ResponseEntity.ok(apiResponse);
 	}
 	
-	@PostMapping("/delete")
-	public ResponseEntity<Void> delete(@RequestParam(value = "id", required = true) Integer singerId) {
-		singerService.delete(singerId);
+	@GetMapping("/stageName")
+	public ResponseEntity<ApiResponse<List<SingerDTO>>> findBýtagename(
+			@RequestParam(value = "stageName", required = true) String stageName) {
+		List<SingerDTO> singers = singerService.findByStageName(stageName);
+		ApiResponse<List<SingerDTO>> apiResponse = ApiResponse.<List<SingerDTO>>builder()
+				.result(singers)
+				.build();
+		return ResponseEntity.ok(apiResponse);
+	}
+	
+	@PostMapping("/disable")
+	public ResponseEntity<Void> disable(@RequestParam(value = "id", required = true) Integer singerId) {
+		singerService.disable(singerId);
 		return ResponseEntity.noContent().build();
 	}
 	
@@ -90,4 +103,25 @@ public class SingerController {
 		return ResponseEntity.ok(apiResponse);
 	}
 	
+	@PostMapping("/export")
+    public ResponseEntity<byte[]> exportToExcel() {
+    	
+    	byte[] excelData = new byte[0];;
+    	
+
+            try {
+				excelData = singerService.exportToExcel();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+    	
+    	            
+            HttpHeaders headers = new HttpHeaders();
+            headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=danh_sach_ca_si.xlsx");
+            
+            return ResponseEntity.ok()
+                    .headers(headers)
+                    .contentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
+                    .body(excelData);
+    }
 }

@@ -1,5 +1,6 @@
 package com.phungquocthai.symphony.service;
 
+import java.io.IOException;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -50,6 +51,9 @@ public class UserService {
 	
 	@Autowired
 	VipRepository vipRepository;
+	
+	@Autowired
+	ExcelExportUtil excelExportUtil;
 
 	public UserDTO create(UserRegistrationDTO dto) {
 		if(userRepository.existsByPhone(dto.getPhone())) {
@@ -104,9 +108,9 @@ public class UserService {
 		return userMapper.toDTO(user);
 	}
 	
-	@PreAuthorize("hasRole('ADMIN') or #dto.userId == authentication.name")
+	@PreAuthorize("hasRole('ADMIN') or #userId.toString() == authentication.name")
 	public void delete(Integer userId) {
-		userRepository.deleteById(userId);
+	    userRepository.deleteById(userId);
 	}
 
 	@PreAuthorize("hasRole('ADMIN')")
@@ -133,6 +137,16 @@ public class UserService {
 				.orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISRED));
 		UserDTO user = userMapper.toDTO(entity);
 		return user;
+	}
+	
+	@PreAuthorize("hasRole('ADMIN')")
+	public byte[] exportToExcel() throws IOException {
+        return excelExportUtil.exportToExcel(userMapper.toListDTO(userRepository.findAll()), null, "Danh sách người dùng");
+    }
+	
+	public UserDTO findByPhone(String phone) {
+		User user = userRepository.findByPhone(phone).orElseThrow();
+		return userMapper.toDTO(user);
 	}
 	
 	public List<Vip> getAllVipPakages() {

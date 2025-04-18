@@ -1,5 +1,6 @@
 package com.phungquocthai.symphony.service;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +36,9 @@ public class SingerService {
 	@Autowired
 	SingerCreateMapper singerCreateMapper;
 	
+	@Autowired
+	ExcelExportUtil excelExportUtil;
+	
 	@PreAuthorize("hasRole('ADMIN')")
 	public SingerDTO create(SingerCreateDTO dto) {
 		Singer singerData = singerCreateMapper.toEntity(dto);
@@ -60,11 +64,21 @@ public class SingerService {
 		singerRepository.deleteById(singerId);
 	}
 	
+	@PreAuthorize("hasRole('ADMIN')")
+	public void disable(Integer singerId) {
+		
+	}
+	
 	public SingerDTO getSinger(Integer singerId) {
 		Singer singer = singerRepository.findById(singerId)
 				.orElseThrow(() -> new AppException(ErrorCode.SINGER_NOT_EXISTED));
 		return singerMapper.toDTO(singer);
 	}
+	
+//	public List<SingerDTO> findByStageName(String stageName) {
+//		List<Singer> singers = singerRepository.findByStageNameContainingIgnoreCase(stageName);
+//		return singerMapper.toListDTO(singers);
+//	}
 	
 	public SingerDTO getSingerByUserId(Integer userId) {
 		Singer singer = singerRepository.findByUserId(userId)
@@ -97,4 +111,9 @@ public class SingerService {
 		List<Singer> singers = singerRepository.findAllBySongIdNotIn(ids);
 		return singerMapper.toListDTO(singers);
 	}
+	
+	@PreAuthorize("hasRole('ADMIN')")
+	public byte[] exportToExcel() throws IOException {
+        return excelExportUtil.exportToExcel(singerMapper.toListDTO(singerRepository.findAll()), null, "Danh sách ca sĩ");
+    }
 }
