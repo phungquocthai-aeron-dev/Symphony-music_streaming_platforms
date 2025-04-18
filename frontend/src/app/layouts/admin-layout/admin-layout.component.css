@@ -1,0 +1,137 @@
+:root {
+    --primary: #1e3a8a;
+    --secondary: #475569;
+    --accent: #f59e0b;
+    --light: #f8fafc;
+    --dark: #0f172a;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f0f4f8;
+}
+
+.sidebar {
+    background-color: var(--primary);
+    color: white;
+    height: 100vh;
+    position: fixed;
+    transition: all 0.3s;
+}
+
+.content {
+    margin-left: 250px;
+    transition: all 0.3s;
+}
+
+.sidebar-collapsed .sidebar {
+    margin-left: -250px;
+}
+
+.sidebar-collapsed .content {
+    margin-left: 0;
+}
+
+.nav-link {
+    color: rgba(255, 255, 255, 0.8);
+    border-radius: 5px;
+    margin: 5px 0;
+}
+
+.nav-link:hover, .nav-link.active {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: white;
+}
+
+.nav-link i {
+    margin-right: 10px;
+}
+
+.hotel-logo {
+    height: 50px;
+}
+
+.card {
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+.stat-card {
+    border-left: 5px solid var(--primary);
+}
+
+.room-available {
+    background-color: #dcfce7;
+    color: #166534;
+}
+
+.room-occupied {
+    background-color: #fee2e2;
+    color: #b91c1c;
+}
+
+.room-maintenance {
+    background-color: #fef3c7;
+    color: #92400e;
+}
+
+.room-reserved {
+    background-color: #dbeafe;
+    color: #1e40af;
+}
+
+.status-badge {
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.btn-primary {
+    background-color: var(--primary);
+    border-color: var(--primary);
+}
+
+.btn-primary:hover {
+    background-color: #1e40af;
+    border-color: #1e40af;
+}
+
+.profile-menu {
+    cursor: pointer;
+}
+
+.table th {
+    background-color: var(--primary);
+    color: white;
+}
+
+.search-wrapper {
+    position: relative;
+}
+
+.search-wrapper i {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    color: #6b7280;
+}
+
+.search-wrapper input {
+    padding-left: 35px;
+}
+
+.alert-section {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+a {
+    text-decoration: none;
+}

@@ -19,6 +19,9 @@ import { IntroduceComponent } from './features/introduce/introduce.component';
 import { ErrorComponent } from './features/error/error.component';
 import { SimpleLayoutComponent } from './layouts/simple_layout/simple_layout.component';
 import { UserComponent } from './features/user/user.component';
+import { StatisticComponent } from './features/admin/statistic/statistic.component';
+import { UsersComponent } from './features/admin/users/users.component';
+import { AdminLayoutComponent } from './layouts/admin-layout/admin-layout.component';
 
 export const routes: Routes = [
     { 
@@ -45,6 +48,14 @@ export const routes: Routes = [
             { path: 'upgrade', component: UpgradeComponent },
             { path: 'clause', component: ClauseComponent },
             { path: 'introduce', component: IntroduceComponent },
+        ]
+    },
+    {
+        path: 'admin',
+        component: AdminLayoutComponent,
+        children: [
+            { path: '', component: StatisticComponent },
+            { path: 'users', component: UsersComponent},
         ]
     },
     { path: 'login', component: LoginComponent, canActivate: [LoginGuard]},

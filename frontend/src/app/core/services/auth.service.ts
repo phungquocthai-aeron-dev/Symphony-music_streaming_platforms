@@ -11,7 +11,6 @@ import { Authentication, AuthenticationResponse } from '../../shared/models/Auth
 import { UserRegistrationDTO } from '../../shared/models/UserRegistration.dto';
 import { UserDTO } from '../../shared/models/User.dto';
 import { HttpParams } from '@angular/common/http';
-import { SingerDTO } from '../../shared/models/Singer.dto';
 
 @Injectable({
   providedIn: 'root'
@@ -79,6 +78,17 @@ export class AuthService {
     }
   }
 
+  deleteUser(userId: number): Observable<void> {
+    const headers = new HttpHeaders().set(
+      "Authorization",
+      "Bearer " + this.getToken()
+    );
+  
+    const params = new HttpParams().set('id', userId.toString());
+  
+    return this.http.post<void>(`${environment.apiUrl}users/delete`, null, { headers, params });
+  }
+
   getUser(): Observable<ResponseData<UserDTO>> {
     const userInfo = this.getUserInfo();
     if(userInfo) {
@@ -87,6 +97,28 @@ export class AuthService {
     }
     return EMPTY;
   }
+
+  getUsers(): Observable<ResponseData<UserDTO[]>> {
+    const headers = new HttpHeaders().set(
+      "Authorization",
+      "Bearer " + this.getToken()
+    );
+    return this.http.get<ResponseData<UserDTO[]>>(environment.apiUrl + 'user/users', { headers });
+  }
+
+  findUserByPhone(phone: string): Observable<ResponseData<UserDTO>> {
+    const headers = new HttpHeaders().set(
+      "Authorization",
+      "Bearer " + this.getToken()
+    );
+  
+    const params = new HttpParams().set('phone', phone);
+  
+    return this.http.get<ResponseData<UserDTO>>(
+      environment.apiUrl + 'user/phone',
+      { headers, params }
+    );
+  }  
 
   getUserById(id: number | string): Observable<ResponseData<UserDTO>> {
     const params = new HttpParams().set('id', id);
@@ -142,8 +174,6 @@ export class AuthService {
       auth
     );
   }
-  
-  
 
   // Đăng xuất
   logout(): void {
@@ -245,4 +275,16 @@ export class AuthService {
     );
   }
   
+exportUsers(): Observable<Blob> {
+  const headers = new HttpHeaders().set(
+    "Authorization",
+    "Bearer " + this.getToken()
+  );
+
+  return this.http.post(`${environment.apiUrl}user/export`, null, {
+    headers,
+    responseType: 'blob' // rất quan trọng để nhận file nhị phân
+  });
+}
+
 }

@@ -45,9 +45,6 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.fetchData();
     this.dataShareService.changeLeftSideInfo("Home");
     this.dataShareService.changeTitle("Trang chủ");
-
-    console.log(this.hotHitSongs)
-
   }
 
   ngOnDestroy(): void {
