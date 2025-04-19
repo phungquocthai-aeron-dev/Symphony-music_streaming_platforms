@@ -56,6 +56,7 @@ body {
     border-radius: 10px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s;
+    margin-bottom: 20px;
 }
 
 .card:hover {
@@ -64,33 +65,6 @@ body {
 
 .stat-card {
     border-left: 5px solid var(--primary);
-}
-
-.room-available {
-    background-color: #dcfce7;
-    color: #166534;
-}
-
-.room-occupied {
-    background-color: #fee2e2;
-    color: #b91c1c;
-}
-
-.room-maintenance {
-    background-color: #fef3c7;
-    color: #92400e;
-}
-
-.room-reserved {
-    background-color: #dbeafe;
-    color: #1e40af;
-}
-
-.status-badge {
-    padding: 5px 10px;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: bold;
 }
 
 .btn-primary {
@@ -107,31 +81,74 @@ body {
     cursor: pointer;
 }
 
+.chart-container {
+    position: relative;
+    height: 300px;
+    width: 100%;
+}
+
+.nav-tabs .nav-link {
+    color: var(--secondary);
+}
+
+.nav-tabs .nav-link.active {
+    color: var(--primary);
+    font-weight: bold;
+    background-color: white;
+}
+
+.period-selector {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.period-selector .btn-group {
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.period-selector .btn {
+    min-width: 80px;
+}
+
+.data-card {
+    background-color: white;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.summary-value {
+    font-size: 24px;
+    font-weight: bold;
+    color: var(--primary);
+}
+
+.summary-label {
+    font-size: 14px;
+    color: var(--secondary);
+}
+
+.stat-badge {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 15px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.trend-up {
+    background-color: #dcfce7;
+    color: #166534;
+}
+
+.trend-down {
+    background-color: #fee2e2;
+    color: #b91c1c;
+}
+
 .table th {
     background-color: var(--primary);
     color: white;
-}
-
-.search-wrapper {
-    position: relative;
-}
-
-.search-wrapper i {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    color: #6b7280;
-}
-
-.search-wrapper input {
-    padding-left: 35px;
-}
-
-.alert-section {
-    max-height: 300px;
-    overflow-y: auto;
-}
-
-a {
-    text-decoration: none;
 }

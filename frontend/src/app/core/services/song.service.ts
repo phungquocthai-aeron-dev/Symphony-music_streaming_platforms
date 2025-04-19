@@ -186,4 +186,8 @@ search(search: string): Observable<ResponseData<SearchDTO>> {
   return this.http.get<ResponseData<SearchDTO>>(`${environment.apiUrl}search`, { params });
 }
 
+getSongsByPlaylistId(playlistId: number): Observable<ResponseData<SongDTO[]>> {
+  const params = new HttpParams().set('id', playlistId);
+  return this.http.get<ResponseData<SongDTO[]>>(`${this.apiUrl}/playlist`, { params });
+}
 }

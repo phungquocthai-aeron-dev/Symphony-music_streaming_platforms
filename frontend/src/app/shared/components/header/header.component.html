@@ -103,14 +103,15 @@
                                         </div>
                                     </div>
                                 </li>
+                                <li><a class="dropdown-item text-white-primary" href="/admin">Quản lý hệ thống</a></li>
                                 <li><a class="dropdown-item text-white-primary" href="/user">Hồ sơ cá nhân</a></li>
                                     <li  *ngIf="user && user.role=='SINGER' && singer"><a class="dropdown-item text-white-primary"
                                         [routerLink]="['/singer', singer.singer_id]">Hồ sơ ca sĩ</a></li>
-                                <li><a class="dropdown-item text-white-primary" [routerLink]="['/upgrade']">Nâng cấp tài khoản</a></li>
+                                <li *ngIf="user"><a class="dropdown-item text-white-primary" *ngIf="user.role === 'USER'" [routerLink]="['/upgrade']">Nâng cấp tài khoản</a></li>
                                 <li><a class="dropdown-item text-white-primary" [routerLink]="['/contact']">Liên hệ</a></li>
-                                <li>
+                                <li *ngIf="user">
                                     <form action="/user/delete" method=post id="formDeleteAccount">
-                                        <span class="dropdown-item text-white-primary" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#deleteAccountModal">
+                                        <span *ngIf="user.role !== 'ADMIN'" class="dropdown-item text-white-primary" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#deleteAccountModal">
                                             Xóa tài khoản
                                         </span>
                                         <input type="text" value="..." name="CSRFToken" hidden readonly>

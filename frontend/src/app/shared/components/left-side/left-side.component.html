@@ -52,10 +52,19 @@
                 </li>
                 <li class="list-group-item left-side-item bg-black-primary ps-5 border-0"
                 [class.active]="checkCurrentPage('Favorite')" data-option="favorite">
-                    <a class="text-decoration-none text-white-primary"  [routerLink]="['/favorite']">
+                    <a class="text-decoration-none text-white-primary" [routerLink]="['/favorite']">
                         <i class="left-side-icon pe-2 fa-regular fa-heart"></i>
                         <span class="left-side-info">
                             Yêu thích
+                        </span>
+                    </a>
+                </li>
+                <li class="list-group-item left-side-item bg-black-primary ps-5 border-0"
+                [class.active]="checkCurrentPage('Library')" data-option="library">
+                    <a class="text-decoration-none text-white-primary" [routerLink]="['/library']">
+                        <i class="left-side-icon pe-2 fa-solid fa-book"></i>
+                        <span class="left-side-info">
+                            Thư viện
                         </span>
                     </a>
                 </li>

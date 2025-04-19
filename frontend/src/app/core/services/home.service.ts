@@ -16,4 +16,12 @@ export class HomeService {
   getData(): Observable<ResponseData<HomeDTO>> {
     return this.http.get<any>(this.apiUrl);
   }
+
+  thongKeLuotNgheTheoThang(thang: number, nam: number): Observable<ResponseData<any>> {
+    return this.http.get<ResponseData<any>>(`${environment.apiUrl}user/statistic/listenOfMonth?thang=${thang}&nam=${nam}`);
+  }
+
+  revenueStatisticByMonth(thang: number, nam: number): Observable<ResponseData<any>> {
+    return this.http.get<ResponseData<any>>(`${environment.apiUrl}user/statistic/revenueOfMonth?thang=${thang}&nam=${nam}`);
+  }
 }

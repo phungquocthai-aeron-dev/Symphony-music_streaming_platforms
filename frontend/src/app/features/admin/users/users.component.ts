@@ -6,6 +6,8 @@ import { DatePipe, DecimalPipe, NgFor, NgIf } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { UserDTO } from '../../../shared/models/User.dto';
 import { SingerDTO } from '../../../shared/models/Singer.dto';
+import { DataShareService } from '../../../core/services/dataShare.service';
+import { error } from 'console';
 
 
 @Component({
@@ -24,11 +26,15 @@ export class UsersComponent implements OnInit {
   constructor(
     private authService: AuthService,
     private singerService: SingerService,
-    private router: Router
+    private router: Router,
+    private dataShareService: DataShareService
   ) {}
 
   ngOnInit() {
+    this.dataShareService.changeLeftSideInfo("Users");
+    this.dataShareService.changeTitle("Quản lý người dùng");
     this.loadData();
+
   }
 
   loadData(): void {
@@ -65,17 +71,23 @@ export class UsersComponent implements OnInit {
         next: (data) => {
           this.users = [];
           this.users[0] = data.result;
+        }, 
+        error: () => {
+          this.users = [];
         }
       })
     }
   }
 
   searchSingers(): void {
-    if(this.userPhone.length > 0) {
+    if(this.stageName.length > 0) {
       this.singerService.findUserByStageName(this.stageName).subscribe({
         next: (data) => {
           this.singers = [];
           this.singers = data.result;
+        },
+        error: () => {
+          this.singers = []
         }
       })
     }

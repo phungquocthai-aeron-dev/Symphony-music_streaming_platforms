@@ -287,4 +287,43 @@ exportUsers(): Observable<Blob> {
   });
 }
 
+exportListenStatistic(year: number): Observable<Blob> {
+  const headers = new HttpHeaders().set(
+    "Authorization",
+    "Bearer " + this.getToken()
+  );
+
+  const params = new HttpParams().set('year', year.toString());
+
+  return this.http.post(
+    `${environment.apiUrl}user/statistic/exportListen`,
+    null,
+    {
+      headers,
+      params,
+      responseType: 'blob'
+    }
+  );
+}
+
+exportRevenueStatistic(year: number): Observable<Blob> {
+  const headers = new HttpHeaders().set(
+    "Authorization",
+    "Bearer " + this.getToken()
+  );
+
+  const params = new HttpParams().set('year', year.toString());
+
+  return this.http.post(
+    `${environment.apiUrl}user/statistic/exportRevenue`,
+    null,
+    {
+      headers,
+      params,
+      responseType: 'blob'
+    }
+  );
+}
+
+
 }

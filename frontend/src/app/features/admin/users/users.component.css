@@ -6,11 +6,6 @@
     --dark: #0f172a;
 }
 
-body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #f0f4f8;
-}
-
 .sidebar {
     background-color: var(--primary);
     color: white;
@@ -22,6 +17,8 @@ body {
 .content {
     margin-left: 250px;
     transition: all 0.3s;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f0f4f8;
 }
 
 .sidebar-collapsed .sidebar {
@@ -135,3 +132,8 @@ body {
 a {
     text-decoration: none;
 }
+
+::placeholder {
+    color: #999 !important;
+  }
+  

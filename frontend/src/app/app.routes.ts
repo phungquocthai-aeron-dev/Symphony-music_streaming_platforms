@@ -22,6 +22,7 @@ import { UserComponent } from './features/user/user.component';
 import { StatisticComponent } from './features/admin/statistic/statistic.component';
 import { UsersComponent } from './features/admin/users/users.component';
 import { AdminLayoutComponent } from './layouts/admin-layout/admin-layout.component';
+import { LibraryComponent } from './features/library/library.component';
 
 export const routes: Routes = [
     { 
@@ -38,7 +39,8 @@ export const routes: Routes = [
             {path: 'favorite', component: FavoriteComponent},
             {path: 'search', component: SearchComponent},
             {path: 'ranking', component: RankComponent},
-            {path: 'user', component: UserComponent}
+            {path: 'user', component: UserComponent},
+            {path: 'library', component: LibraryComponent}
         ]
     },
     {

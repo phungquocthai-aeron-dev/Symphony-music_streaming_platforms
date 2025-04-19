@@ -1,0 +1,97 @@
+.modal-dialog {
+    margin-top: 15%;
+}
+
+.card {
+    border: none;
+    position: relative;
+}
+
+.playlist-img-container {
+    transition: transform 0.4s ease-in-out;
+}
+
+.card-playlist:hover {
+    border-radius: 8px;
+    background-color: var(--dark_grey-color) !important;
+}
+
+.card-playlist:hover .playlist-img-container {
+    transform: scale(1.07);
+}
+
+.card-playlist:hover .card-hover-playlist {
+    display: block;
+}
+
+.card-img-container {
+    position: relative;
+}
+
+.card-hover-playlist {
+    position: absolute;
+    width: 25%;
+    height: 25%;
+    bottom: 10%;
+    right: 10%;
+    max-width: 50px;
+    max-height: 50px;
+    min-width: 30px;
+    min-height: 30px;
+    background-color: var(--orange-color);
+    color: var(--black-color);
+    display: none;
+}
+
+.card-hover-playlist:hover {
+    transform: scale(1.1);
+    filter: brightness(1.2);
+    cursor: pointer;
+}
+
+.song-img-active-container {
+    width: 25%;
+    max-width: 350px;
+    min-width: 230px;
+}
+
+.song-img-active {
+    width: 80%;
+}
+
+i.active {
+    color: var(--orange-color);
+}
+
+#have-list-songs-favorite ul li:not(:first-child):hover {
+    background-color: var(--dark_grey-color);
+}
+
+.song-active-banner {
+    background: linear-gradient(to bottom, var(--dark_grey-color) 55%, var(--black-color));
+    border-radius: 12px;
+}
+
+.row-song-favorite div:last-child {
+    margin-right: 50px;
+}
+
+ul {
+    list-style: none;
+}
+
+#empty-list-songs-img {
+    width: 20%;
+    max-width: 250px;
+    min-width: 200px;
+}
+
+@media screen and (max-width: 992px) {
+    #content-favorite-songs ul li:first-child {
+        display: none;
+    }
+
+    .favorite-song .row>div {
+        margin-top: 12px;
+    }
+}

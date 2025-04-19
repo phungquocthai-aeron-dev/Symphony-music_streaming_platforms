@@ -1,0 +1,83 @@
+<main id="content" class="container-fluid bg-black-primary pt-5 mt-5">
+    <div class="row">
+        <div class="col-2 bg-black-primary">
+        </div>
+
+        <div id="content-library" class="col-10 p-4 pt-0">
+            <h2 class="text-center text-white-primary">THƯ VIỆN</h2>
+
+            <!-- PLAYLIST EMPTY -->
+
+            <!-- <div id="no-playlist">
+                <img id="empty-list-songs-img" src="../../public/images/other/Empty-songs.png" alt="" class="mx-auto d-block">
+                <h3 class="text-white-primary text-center">Bạn chưa thêm bài hát yêu thích!</h3>
+            </div> -->
+
+            <div id="have-playlist">
+                <!-- PLAYLIST TITLE -->
+
+                <div class="d-flex library-title">
+                    <h3 class="text-white-primary me-4">PLAYLIST</h3>
+                    <div class="btn rounded-circle bg-dark_grey-color" data-bs-toggle="modal" data-bs-target="#myModal">
+                        <i class="fa-solid fa-plus text-white-primary"></i>
+                    </div>
+                    <div class="modal" id="myModal">
+                        <div class="modal-dialog modal-sm">
+                            <div class="modal-content bg-dark_grey-color">
+
+                                <!-- Modal Header -->
+                                <div class="modal-header border-0 d-flex justify-content-between">
+                                    <h4 class="modal-title text-white-primary">Tạo Playlist</h4>
+                                    <button type="button" class="btn ms-3 text-white-primary refer" data-bs-dismiss="modal">
+                                        <i class="fa-solid fa-xmark"></i>
+                                    </button>
+                                </div>
+
+                                <!-- Modal body -->
+                                <div class="modal-body">
+                                    <form (submit)="addPlaylist(); $event.preventDefault()">
+                                        <input
+                                          type="text"
+                                          [(ngModel)]="newPlaylistName"
+                                          name="playlistName"
+                                          class="form-control no-outline border-bottom shadow-none rounded-0 ps-0 bg-dark_grey-color text-white-primary"
+                                          autocomplete="off"
+                                          placeholder="Nhập tên playlist..."
+                                        />
+                                        <button type="submit" class="btn text-white-primary bg-orange-primary w-100 mt-3">Tạo</button>
+                                    </form>                                      
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PLAYLIST -->
+
+                <div class="row">
+                    <ng-container *ngIf="playlists.length > 0; else noPlaylist">
+                      <app-playlist-card 
+                        *ngFor="let playlist of playlists" 
+                        [playlist]="playlist" 
+                        class="col-12 col-sm-6 col-md-3 col-lg-2">
+                      </app-playlist-card>
+                    </ng-container>
+                  
+                    <ng-template #noPlaylist>
+                      <div id="no-playlist">
+                        <img id="empty-list-songs-img" src="../../assets/images/other/Empty-songs.png" alt="" class="mx-auto d-block">
+                        <h3 class="text-white-primary text-center">Bạn chưa thêm bài hát yêu thích!</h3>
+                      </div>
+                    </ng-template>
+                  </div>
+
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+</main>

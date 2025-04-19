@@ -1,0 +1,50 @@
+    <div class="card card-playlist mt-4" style="background-color: var(--black-color);">
+      <div class="card-img-container overflow-hidden rounded-3">
+        <a href="#" class="text-decoration-none">
+          <div class="d-flex flex-column playlist-img-container">
+            <ng-container *ngIf="songImages.length === 0; else hasImages">
+              <!-- Ảnh mặc định khi playlist không có bài hát -->
+              <img class="w-100 rounded-3" src="http://localhost:8080/symphony/uploads/images/other/no-img.png" alt="Default playlist image">
+            </ng-container>
+          
+            <ng-template #hasImages>
+              <ng-container *ngIf="songImages.length >= 4; else lessThanFour">
+                <div class="d-flex">
+                  <img class="card-img-top card_playlist-img rounded-0 w-50" src="http://localhost:8080/symphony/uploads/images/other/no-img.png" alt="Song image">
+                  <img class="card-img-top card_playlist-img rounded-0 w-50" src="http://localhost:8080/symphony/uploads/images/other/no-img.png" alt="Song image">
+                </div>
+                <div class="d-flex">
+                  <img class="card-img-top card_playlist-img rounded-0 w-50" src="http://localhost:8080/symphony/uploads/images/other/no-img.png" alt="Song image">
+                  <img class="card-img-top card_playlist-img rounded-0 w-50" src="http://localhost:8080/symphony/uploads/images/other/no-img.png" alt="Song image">
+                </div>
+              </ng-container>
+          
+              <ng-template #lessThanFour>
+                <img class="w-100 rounded-3" [src]="'http://localhost:8080/symphony/uploads' + songImages[0]" *ngIf="songImages.length > 0" alt="Song image">
+              </ng-template>
+            </ng-template>
+          </div>
+          
+        </a>
+        <div class="card-hover-playlist rounded-circle text-center fs-5 lh-lg">
+          <i class="fas fa-play icon-play"></i>
+        </div>
+      </div>
+      <div class="card-body ps-0 pe-0">
+        <div class="d-flex justify-content-between align-items-center w-100 px-1">
+          <h6 class="card-title card-playlist-name refer" style="color: var(--text_dark_theme-color);">
+            {{ playlist.playlistName }}
+          </h6>
+          <div class="dropdown">
+            <button class="btn btn-transparent p-0 m-0" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+              <i class="fa-solid fa-ellipsis-vertical text-white-primary"></i>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end bg-dark_grey-color shadow border-0 mt-1">
+              <li><button class="dropdown-item text-white-primary">Đổi tên</button></li>
+              <li><button class="dropdown-item text-white-primary">Xóa</button></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  
