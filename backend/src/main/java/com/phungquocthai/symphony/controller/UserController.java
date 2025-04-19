@@ -2,7 +2,9 @@ package com.phungquocthai.symphony.controller;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -26,11 +28,15 @@ import com.phungquocthai.symphony.dto.LibraryDTO;
 import com.phungquocthai.symphony.dto.SingerDTO;
 import com.phungquocthai.symphony.dto.SingerUpdateDTO;
 import com.phungquocthai.symphony.dto.SongDTO;
+import com.phungquocthai.symphony.dto.StatisticListenDTO;
+import com.phungquocthai.symphony.dto.StatisticRevenueDTO;
 import com.phungquocthai.symphony.dto.UserDTO;
 import com.phungquocthai.symphony.dto.UserUpdateDTO;
 import com.phungquocthai.symphony.entity.User;
 import com.phungquocthai.symphony.repository.UserRepository;
+import com.phungquocthai.symphony.service.ExcelExportUtil;
 import com.phungquocthai.symphony.service.FavoriteService;
+import com.phungquocthai.symphony.service.ListenService;
 import com.phungquocthai.symphony.service.PlaylistService;
 import com.phungquocthai.symphony.service.SingerService;
 import com.phungquocthai.symphony.service.SongService;
@@ -59,6 +65,12 @@ public class UserController {
 	
 	@Autowired
 	private PlaylistService playlistService;
+	
+	@Autowired
+	private ListenService listenService;
+	
+	@Autowired
+	ExcelExportUtil excelExportUtil;
 	
 	
 	@GetMapping
@@ -177,6 +189,120 @@ public class UserController {
 			
 		}
 	}
+	
+	@GetMapping("/statistic/listenOfMonth")
+    public ResponseEntity<ApiResponse<Map<String, Object>>> thongKeLuotNghe(
+            @RequestParam("thang") int thang,
+            @RequestParam("nam") int nam) {
+        
+        Integer soLuotNghe = listenService.thongKeTheoThang(thang, nam);
+        
+        Map<String, Object> response = new HashMap<>();
+        response.put("thang", thang);
+        response.put("nam", nam);
+        response.put("soLuotNghe", soLuotNghe);
+        
+        ApiResponse<Map<String, Object>> apiResponse = ApiResponse.<Map<String, Object>>builder()
+				.result(response)
+				.build();
+		return ResponseEntity.ok(apiResponse);
+	}
+	
+	@GetMapping("/statistic/revenueOfMonth")
+    public ResponseEntity<ApiResponse<Map<String, Object>>> RevenueStatistc(
+            @RequestParam("thang") int thang,
+            @RequestParam("nam") int nam) {
+        
+        Float revenue = userService.thongKeTheoThang(thang, nam);
+        
+        Map<String, Object> response = new HashMap<>();
+        response.put("thang", thang);
+        response.put("nam", nam);
+        response.put("revenue", revenue);
+        
+        ApiResponse<Map<String, Object>> apiResponse = ApiResponse.<Map<String, Object>>builder()
+				.result(response)
+				.build();
+		return ResponseEntity.ok(apiResponse);
+	}
+	
+	@PostMapping("/statistic/exportListen")
+    public ResponseEntity<byte[]> exportStatisticListenToExcel(@RequestParam() Integer year) {
+    	    	
+    	List<StatisticListenDTO> list = new ArrayList<StatisticListenDTO>();
+    	
+    	for(int i = 0; i < 12; i++) {
+    		StatisticListenDTO item = new StatisticListenDTO();
+    		Integer total = listenService.thongKeTheoThang(i+1, year);
+    		item.setMonth(i+1);
+    		item.setYear(year);
+    		item.setTotalListen(total);
+    		list.add(item);
+    	}
+    	
+    	byte[] excelData = new byte[0];;
+    	
+    	if (list == null || list.isEmpty()) {
+    		excelData = new byte[0];
+        }
+    	else {
+            try {
+				excelData = excelExportUtil.exportToExcel(list, null, "Thống kê lượt nghe theo tháng năm " + year);
+
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+    	}
+    	            
+            // Thiết lập header cho response
+            HttpHeaders headers = new HttpHeaders();
+            headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=thong_ke_luot_nghe.xlsx");
+            
+            // Trả về file Excel
+            return ResponseEntity.ok()
+                    .headers(headers)
+                    .contentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
+                    .body(excelData);
+    }
+    
+    @PostMapping("/statistic/exportRevenue")
+    public ResponseEntity<byte[]> exportRevenueListenToExcel(@RequestParam() Integer year) {
+    	    	
+    	List<StatisticRevenueDTO> list = new ArrayList<StatisticRevenueDTO>();
+    	
+    	for(int i = 0; i < 12; i++) {
+    		StatisticRevenueDTO item = new StatisticRevenueDTO();
+    		Float total = userService.thongKeTheoThang(i+1, year);
+    		item.setMonth(i+1);
+    		item.setYear(year);
+    		item.setTotalRevenue(total);
+    		list.add(item);
+    	}
+    	
+    	byte[] excelData = new byte[0];;
+    	
+    	if (list == null || list.isEmpty()) {
+    		excelData = new byte[0];
+        }
+    	else {
+            try {
+				excelData = excelExportUtil.exportToExcel(list, null, "Thống kê doanh thu theo tháng năm " + year);
+
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+    	}
+    	            
+            // Thiết lập header cho response
+            HttpHeaders headers = new HttpHeaders();
+            headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=thong_ke_doanh_thu.xlsx");
+            
+            // Trả về file Excel
+            return ResponseEntity.ok()
+                    .headers(headers)
+                    .contentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
+                    .body(excelData);
+    }
 	
 	@GetMapping("/recently")
 	public ResponseEntity<ApiResponse<List<SongDTO>>> recentlyListenSongs(

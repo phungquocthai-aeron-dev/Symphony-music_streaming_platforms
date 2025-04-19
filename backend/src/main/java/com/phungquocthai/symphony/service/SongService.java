@@ -381,6 +381,23 @@ public class SongService {
 	    return songMapper.toListDTO(new ArrayList<Song>(songs.subList(0, size)));
 	}
 	
+	public List<SongDTO> findByPlaylistId(Integer playlistId) {
+		List<Song> songEntities = songRepository.findByPlaylistId(playlistId);
+		List<SongDTO> songs = songMapper.toListDTO(songEntities);
+		String userIdLoggedIn = getUserIdIfLoggedIn();
+		if(userIdLoggedIn != null) {
+			try {
+				int userId = Integer.parseInt(userIdLoggedIn);
+				
+				songs.forEach(song -> song.setFavorite(isFavoriteSong(song.getSong_id(), userId)));
+
+			} catch (NumberFormatException e) {
+				log.error(e.getMessage());
+			}
+		}
+		return songs;
+	}
+	
 	public List<SongDTO> getHotHitSong(Integer limit) {
 		List<Song> songEntities = songRepository.findHotHit(limit);
 		List<SongDTO> songs = songMapper.toListDTO(songEntities);

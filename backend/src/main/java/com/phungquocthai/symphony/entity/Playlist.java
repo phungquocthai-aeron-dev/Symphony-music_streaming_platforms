@@ -2,6 +2,9 @@ package com.phungquocthai.symphony.entity;
 
 import java.time.LocalDate;
 import java.util.Set;
+
+import org.hibernate.annotations.CreationTimestamp;
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,6 +26,7 @@ public class Playlist {
     private Integer playlist_id;
     
     @Column(name = "create_at")
+	@CreationTimestamp
     private LocalDate create_at;
     
     @Column(name = "playlist_name", length = 255)

@@ -149,6 +149,10 @@ public class UserService {
 		return userMapper.toDTO(user);
 	}
 	
+    public Float thongKeTheoThang(int thang, int nam) {
+        return userRepository.thongKeTheoThang(thang, nam);
+    }
+	
 	public List<Vip> getAllVipPakages() {
 		return vipRepository.findAll();
 	}

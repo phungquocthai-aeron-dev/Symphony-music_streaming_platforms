@@ -7,8 +7,9 @@ import org.springframework.stereotype.Service;
 
 import com.phungquocthai.symphony.dto.PlaylistDTO;
 import com.phungquocthai.symphony.entity.Playlist;
-import com.phungquocthai.symphony.mapper.PlaylistMapper;
+import com.phungquocthai.symphony.entity.User;
 import com.phungquocthai.symphony.repository.PlaylistRepository;
+import com.phungquocthai.symphony.repository.UserRepository;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -22,10 +23,49 @@ public class PlaylistService {
 	PlaylistRepository playlistRepository;
 	
 	@Autowired
-	PlaylistMapper playlistMapper;
-	
+    UserRepository userRepository;
+
 	public List<PlaylistDTO> getPlaylistOfUser(Integer userId) {
-		List<Playlist> entities = playlistRepository.getByUserId(userId);
-		return playlistMapper.toListDTO(entities);
+	    List<Playlist> entities = playlistRepository.getByUserId(userId);
+	    
+	    return entities.stream()
+	                   .map(PlaylistDTO::new)
+	                   .toList();
 	}
+
+	public PlaylistDTO createPlaylist(PlaylistDTO playlistDTO, Integer userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        Playlist playlist = Playlist.builder()
+                .playlist_name(playlistDTO.getPlaylistName())
+                .user(user)
+                .build();
+
+        Playlist saved = playlistRepository.save(playlist);
+
+        return PlaylistDTO.builder()
+                .playlistId(saved.getPlaylist_id())
+                .playlistName(saved.getPlaylist_name())
+                .createAt(saved.getCreate_at())
+                .build();
+    }
+	
+	public void update(Integer id, String playlistnName) {
+		Playlist playlist = playlistRepository.findById(id).orElseThrow();
+		playlist.setPlaylist_name(playlistnName);
+		playlistRepository.save(playlist);
+	}
+	
+	public void deletePlaylistWithSongs(Integer playlistId) {
+        playlistRepository.deletePlaylistWithSongs(playlistId);
+    }
+
+    public void addSongToPlaylist(Integer playlistId, Integer songId) {
+        playlistRepository.addSongToPlaylist(playlistId, songId);
+    }
+
+    public void removeSongFromPlaylist(Integer playlistId, Integer songId) {
+        playlistRepository.removeSongFromPlaylist(playlistId, songId);
+    }
 }

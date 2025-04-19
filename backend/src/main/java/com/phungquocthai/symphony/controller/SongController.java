@@ -66,6 +66,15 @@ public class SongController {
 		return ResponseEntity.ok(apiResponse);
 	}
 	
+	@GetMapping("/playlist")
+	public ResponseEntity<ApiResponse<List<SongDTO>>> findByPlaylistId(@RequestParam(value = "id", required = true) Integer playlistId) {
+		List<SongDTO> songs = songService.findByPlaylistId(playlistId);
+		ApiResponse<List<SongDTO>> apiResponse = ApiResponse.<List<SongDTO>>builder()
+				.result(songs)
+				.build();
+		return ResponseEntity.ok(apiResponse);
+	}
+	
 	@PostMapping(value = "/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 	public ResponseEntity<ApiResponse<SongDTO>> create(
 			@Valid @ModelAttribute SongCreateDTO dto,
@@ -255,6 +264,7 @@ public class SongController {
 				.build();
 		return ResponseEntity.ok(apiResponse);
 	}
+	
 
 //	@GetMapping("/recomend")
 //	public ResponseEntity<ApiResponse<List<SongDTO>>> getRecommendedSongs(@AuthenticationPrincipal Jwt jwt) {

@@ -17,4 +17,7 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 	
 	@Query(value = "SELECT * FROM user NATURAL JOIN singer WHERE singer_id = :singerId", nativeQuery = true)
 	Optional<User> findBySingerId(@Param("singerId") Integer singerId);
+	
+    @Query(value = "SELECT thong_ke_doanh_thu_theo_thang(:thang, :nam)", nativeQuery = true)
+    Float thongKeTheoThang(@Param("thang") int thang, @Param("nam") int nam);
 }
