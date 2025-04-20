@@ -34,6 +34,44 @@
         display: none;
     }
 
+    
+    .cursor-pointer {
+    cursor: pointer;
+    }
+    
+    .theme-color-dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    margin-top: 10px;
+    z-index: 1000;
+    display: none;
+    min-width: 200px;
+    }
+    
+    .theme-color-dropdown.show {
+    display: block;
+    }
+    
+    .color-option {
+    width: 30px;
+    height: 30px;
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    }
+    
+    .color-option:hover {
+    transform: scale(1.1);
+    border: 2px solid rgba(0, 0, 0, 0.3);
+    }
+    
+    .color-option.active {
+    border: 2px solid #fff;
+    box-shadow: 0 0 0 2px var(--primary-color);
+    }
+    
+
     @media screen and (max-width: 992px) {
         /* HEADER */
 

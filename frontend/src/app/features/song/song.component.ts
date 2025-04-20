@@ -3,17 +3,19 @@ import { SongDTO } from '../../shared/models/Song.dto';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { SongService } from '../../core/services/song.service';
 import { ResponseData } from '../../shared/models/ResponseData';
-import { DatePipe, DecimalPipe, NgFor, NgIf } from '@angular/common';
+import { DatePipe, DecimalPipe, NgClass, NgFor, NgIf } from '@angular/common';
 import { CardComponent } from '../../shared/components/card/card.component';
 import { HttpClient } from '@angular/common/http';
 import { DataShareService } from '../../core/services/dataShare.service';
 import { Subscription } from 'rxjs';
 import { AuthService } from '../../core/services/auth.service';
+import { PlaylistService } from '../../core/services/playlist.service';
+import { PlaylistDTO } from '../../shared/models/Playlist.dto';
 
 
 @Component({
   selector: 'app-song',
-  imports: [NgIf, NgFor, RouterModule, CardComponent, DatePipe, DecimalPipe],
+  imports: [NgIf, NgFor, RouterModule, CardComponent, DatePipe, DecimalPipe, NgClass],
   templateUrl: './song.component.html',
   styleUrl: './song.component.css'
 })
@@ -34,7 +36,8 @@ export class SongComponent implements OnInit, OnDestroy {
     private songService: SongService,
     private http: HttpClient,
     private eventSource: DataShareService,
-    private authService: AuthService
+    private authService: AuthService,
+    private playlistService: PlaylistService
   ) {}
 
   ngOnInit() {
@@ -51,6 +54,7 @@ export class SongComponent implements OnInit, OnDestroy {
     this.songService.getSongById(songId).subscribe({
       next: (response: ResponseData<SongDTO>) => {
         this.song = response.result;
+        console.log(this.song)
         this.eventSource.changeTitle(this.song.songName);
 
 
@@ -125,6 +129,31 @@ export class SongComponent implements OnInit, OnDestroy {
         }
       })
     }
+  }
+
+  addSongToPlaylist() {
+    let playlist: PlaylistDTO;
+  
+    const subscription = this.eventSource.currentPlaylist.subscribe(data => {
+      if (data) {
+        playlist = data;
+        this.playlistService.addSongToPlaylist(playlist.playlistId, this.song.song_id).subscribe({
+          next: (data) => {
+            alert(data.result);
+            subscription.unsubscribe();
+          },
+          error: (err) => {
+            alert('Thêm vào playlist thất bại!');
+            subscription.unsubscribe();
+          }
+        });
+      } else {
+        subscription.unsubscribe();
+      }
+    });  
+    this.eventSource.changeSongPlaylist(null);
+  
+  
   }
 
   ngOnDestroy() {

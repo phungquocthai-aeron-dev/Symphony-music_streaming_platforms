@@ -8,6 +8,9 @@ import { RankingDTO } from '../../shared/models/Ranking.dto';
 import { NgFor, NgIf } from '@angular/common';
 import { LineChartComponent } from '../../shared/components/line-chart/line-chart.component';
 import { RankCardComponent } from '../../shared/components/rank-card/rank-card.component';
+import { AuthService } from '../../core/services/auth.service';
+import { PlaylistDTO } from '../../shared/models/Playlist.dto';
+import { PlaylistService } from '../../core/services/playlist.service';
 
 @Component({
   selector: 'app-rank',
@@ -18,10 +21,14 @@ import { RankCardComponent } from '../../shared/components/rank-card/rank-card.c
 export class RankComponent implements OnInit {
   top3: ListeningStatsDTO[][] = [];
   topSongs: TopSongDTO[] = [];
+  playlists: PlaylistDTO[] = [];
+  
 
   constructor(
     private songService: SongService,
-    private dataShareService: DataShareService
+    private authService: AuthService,
+    private dataShareService: DataShareService,
+    private playlistService: PlaylistService
   ) {}
 
   ngOnInit(): void {
@@ -44,5 +51,18 @@ export class RankComponent implements OnInit {
         console.error(error);
       }
     });
+
+    const user = this.authService.getUserInfo()
+    if(user) {
+      this.playlistService.getPlaylistByUserId(user.userId).subscribe({
+        next: (res) => {
+          this.playlists = res.result;
+        },
+        error: (err) => {
+          console.error('Lỗi load playlist:', err);
+          alert('Tải danh sách playlist thất bại!');
+        }
+      });
+    }
   }
 }

@@ -90,6 +90,11 @@ ul {
     background-color: var(--grey-color);
 }
 
+.custom-modal-position {
+    margin-top: 15Y0px;
+  }
+  
+
 @media screen and (max-width: 992px) {
     #content-favorite-songs ul li:first-child {
         display: none;

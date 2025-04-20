@@ -30,10 +30,10 @@
                     </div>
                 </span>
                 <div class="d-flex p-4 ps-0">
-                    <div class="btn rounded-circle bg-dark_grey-color me-3">
+                    <div class="btn rounded-circle bg-dark_grey-color me-3" (click)="addSongToPlaylist()">
                         <i class="fa-solid fa-plus text-white-primary"></i>
                     </div>
-                    <i class="fa-regular fa-heart btn text-white-primary lh-base refer" (click)="toggleFavorite()"></i>
+                    <i *ngIf="song" class="fa-regular fa-heart btn lh-base refer" [ngClass]="song.favorite ? 'text-orange-primary' : 'text-white-primary'" (click)="toggleFavorite()"></i>
                 </div>
             </div>
 

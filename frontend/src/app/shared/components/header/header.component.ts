@@ -12,6 +12,7 @@ declare var webkitSpeechRecognition: any;
 
 interface ThemeSave {
   isDarkTheme: boolean;
+  mainColor: string;
 }
 
 @Component({
@@ -27,10 +28,12 @@ export class HeaderComponent implements OnInit {
   private COOKIE_NAME = 'music-streaming-theme';
   search: string = '';
   recognition: any;
+  isThemeMenuOpen = false;
 
   pathLogoDarkTheme = environment.assetsPath + 'symphony-darktheme-icon.png';
   pathLogoLightTheme = environment.assetsPath + 'symphony-lighttheme-icon.png';
   isDarkTheme = true;
+  mainColor = "#ff6337";
   private dataTheme: ThemeSave | null = null;
   isLoggedIn: boolean = false;
   isListening: boolean = false;
@@ -95,12 +98,13 @@ export class HeaderComponent implements OnInit {
   loadConfig(): void {
     if (this.dataTheme) {
       this.isDarkTheme = this.dataTheme.isDarkTheme;
+      this.mainColor = this.dataTheme.mainColor;
       this.applyTheme();
     }
   }
 
   saveConfig(): void {
-    this.dataTheme = { isDarkTheme: this.isDarkTheme };
+    this.dataTheme = { isDarkTheme: this.isDarkTheme, mainColor: this.mainColor };
     this.cookieService.set(this.COOKIE_NAME, JSON.stringify(this.dataTheme), { expires: 30, path: '/' }); // Lưu 30 ngày
   }
 
@@ -143,6 +147,11 @@ export class HeaderComponent implements OnInit {
     } else {
       alert('Trình duyệt không hỗ trợ nhận diện giọng nói.');
     }
+  }
+
+  selectColor(colorCode: string): void {
+    document.documentElement.style.setProperty('--orange-color', colorCode);
+    this.mainColor = colorCode;
   }
 
 handleSearch() {

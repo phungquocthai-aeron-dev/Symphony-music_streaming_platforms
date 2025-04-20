@@ -54,28 +54,16 @@
                                 </a>
                             </li>
                             <li>
-                                        <span class="dropdown-item text-white-primary btn w-100 d-block p-0">
-                                            <span class="favorite-btn w-100 d-block px-3 py-1" (click)="toggleFavorite()">
-                                              <i class="fa-solid fa-plus pe-2"></i>
-                                              {{ favoriteSong() ? 'Xóa khỏi thư viện' : 'Thêm vào thư viện' }}
-                                            </span>
-                                          </span>
-                            </li>
-
-                                <li *ngIf="isOwner" (click)="onEdit()" (click)="onSelectSong()">
-                                    <span class="dropdown-item text-white-primary btn" data-bs-toggle="modal" data-bs-target="#songModalEdit">
-                                        <i class="fa-solid fa-pen-to-square pe-2"></i>
-                                        Chỉnh sửa
-                                    </span>
-                                </li>
-                                <li *ngIf="isOwner" (click)="onDelete()" (click)="onSelectSong()">
-                                    <span class="dropdown-item text-white-primary btn w-100 d-block p-0">
-                                            <span class="delete-song w-100 d-block px-3 py-1" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#deleteSongModal">
-                                                <i class="fa-solid fa-trash pe-2"></i>
-                                                Xóa bài hát
-                                            </span>
-                                    </span>
-                                </li>
+                                <button
+                                  class="dropdown-item text-white-primary"
+                                  data-bs-toggle="modal"
+                                  data-bs-target="#addToPlaylistModal"
+                                  (click)="loadUserPlaylists()"
+                                >
+                                  <i class="fa-solid fa-plus pe-2"></i>
+                                  Thêm vào playlist
+                                </button>
+                              </li>
                         </ul>
                     </div>
                 </div>
@@ -84,3 +72,27 @@
     </div>
 </li>
 
+<div class="modal fade" id="addToPlaylistModal" tabindex="-1" aria-labelledby="addToPlaylistLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content bg-dark_grey-color text-white border-0">
+        <div class="modal-header">
+          <h5 class="modal-title" id="addToPlaylistLabel">Chọn playlist</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div *ngIf="userPlaylists.length === 0" class="text-muted">Không có playlist nào</div>
+          <ul class="list-group list-group-flush bg-dark_grey-color">
+            <li
+              *ngFor="let pl of userPlaylists"
+              class="list-group-item list-group-item-action text-white border-0 bg-dark_grey-color"
+              style="cursor: pointer;"
+              (click)="addSongToPlaylist(pl.playlistId)"
+              data-bs-dismiss="modal"
+            >
+              {{ pl.playlistName }}
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>

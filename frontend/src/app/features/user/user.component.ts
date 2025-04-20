@@ -99,7 +99,6 @@ export class UserComponent implements OnInit {
   }
 
   onSubmit(): void {
-    console.log("A")
     if (this.userForm.invalid) {
       Object.keys(this.userForm.controls).forEach(field => {
         const control = this.userForm.get(field);
@@ -142,9 +141,7 @@ export class UserComponent implements OnInit {
     this.isLoaded = false;
   
     this.authService.updateUser(formData).subscribe({
-      next: (response) => {
-        console.log('Cập nhật thành công:', response);
-        
+      next: (response) => {        
 
         if (this.userForm.value.newPassword && this.userForm.value.newPassword.length > 0) {
           this.isLoaded = true;

@@ -1,3 +1,7 @@
 .product-song:hover {
     background-color: var(--dark_grey-color);
 }
+
+.list-group .list-group-item:hover {
+    background-color: var(--grey-color) !important;
+}

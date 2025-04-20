@@ -26,19 +26,51 @@
                         <ul *ngIf="isLoggedIn" class="navbar-nav me-auto mb-2 mb-lg-0 ms-auto">
 
                             <!-- LOGGED IN -->
-
-                                <li class="nav-item text-nowrap clean-navbar-before mt-2" (click)="ChangeTheme()">
-                                    <button
+                            <li class="nav-item text-nowrap clean-navbar-before mt-2 position-relative">
+                                <div class="d-flex align-items-center">
+                                    <button 
+                                        (click)="ChangeTheme()" 
                                         class="text-black-primary btn-sm bg-white-primary rounded-circle change_theme">
-                                        <i class="fa-solid fa-moon refer" style="color: var(--black-color);"></i>
-                                        <i class="fa-solid fa-sun d-none" style="color: var(--black-color);"></i>
+                                        <i class="fa-solid fa-moon refer" *ngIf="!isDarkTheme" style="color: var(--black-color);"></i>
+                                        <i class="fa-solid fa-sun refer" *ngIf="isDarkTheme" style="color: var(--black-color);"></i>
                                     </button>
+                                    <span 
+                                        class="ms-2 fw-medium text-nowrap text-white-primary refer cursor-pointer"
+                                        (click)="isThemeMenuOpen = !isThemeMenuOpen">
+                                        GIAO DIỆN <i class="fa-solid fa-caret-down ms-1"></i>
+                                    </span>
+                                </div>
+                                
+                                <!-- Dropdown menu cho việc chọn màu -->
+                                <div class="theme-color-dropdown" [class.show]="isThemeMenuOpen">
+                                    <div class="p-3 bg-dark_grey-color shadow rounded">
+                                        <h6 class="mb-2 text-white-primary">Chọn màu giao diện</h6>
+                                        <div class="d-flex flex-wrap gap-2">
+                                            <div class="color-option rounded-circle" style="background-color: #9826f2;" (click)="selectColor('#9826f2')"></div>
+                                            <div class="color-option rounded-circle" style="background-color: #ff6337;" (click)="selectColor('#ff6337')"></div>
+                                            <div class="color-option rounded-circle" style="background-color: #00ff91;" (click)="selectColor('#00ff91')"></div>
+                                            <div class="color-option rounded-circle" style="background-color: #fde41c;" (click)="selectColor('#fde41c')"></div>
+                                            <div class="color-option rounded-circle" style="background-color: #0064f1;" (click)="selectColor('#0064f1')"></div>
+                                            <div class="color-option rounded-circle" style="background-color: #ff0068;" (click)="selectColor('#ff0068')"></div>
+                                            <div class="color-option rounded-circle" style="background-color: #fb6dfa;" (click)="selectColor('#fb6dfa')"></div>
+                                            <div class="color-option rounded-circle" style="background-color: #00fbff;" (click)="selectColor('#00fbff')"></div>
+                                            <div class="color-option rounded-circle" style="background-color: #f10000;" (click)="selectColor('#f10000')"></div>
+                                            <div class="color-option rounded-circle" style="background-color: #73ff00;" (click)="selectColor('#73ff00')"></div>
+                                            <div class="color-option rounded-circle" style="background-color: #fdd566;" (click)="selectColor('#fdd566')"></div>
+                                            <div class="color-option rounded-circle" style="background-color: #a2a59b;" (click)="selectColor('#a2a59b')"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+
+                                <li class="nav-item clean-navbar-before mt-2 refer ms-3" [routerLink]="['/introduce']">
+                                        <i class="fa-solid fa-rocket text-white-primary lh-lg ms-3 refer"></i>
                                     <span class="ms-2 fw-medium text-nowrap text-white-primary refer">
-                                        GIAO DIỆN
+                                        GIỚI THIỆU
                                     </span>
                                 </li>
 
-                                <li class="nav-item clean-navbar-before mt-2">
+                                <!-- <li class="nav-item clean-navbar-before mt-2">
                                     <div class="dropdown me-3">
                                         <div class="dropdown-toggle fw-medium text-nowrap text-white-primary refer"
                                             data-bs-toggle="dropdown">
@@ -58,7 +90,7 @@
                                             </li>
                                         </ul>
                                     </div>
-                                </li>
+                                </li> -->
 
                                 <!-- <li class="nav-item clean-navbar">
                                     <div class="dropdown me-3">

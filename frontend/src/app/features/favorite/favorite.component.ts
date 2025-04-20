@@ -6,6 +6,8 @@ import { NgFor, NgIf } from '@angular/common';
 import { RowCardComponent } from '../../shared/components/row-card/row-card.component';
 import { ResponseData } from '../../shared/models/ResponseData';
 import { DataShareService } from '../../core/services/dataShare.service';
+import { PlaylistService } from '../../core/services/playlist.service';
+import { PlaylistDTO } from '../../shared/models/Playlist.dto';
 
 @Component({
   selector: 'app-favorite',
@@ -15,13 +17,15 @@ import { DataShareService } from '../../core/services/dataShare.service';
 })
 export class FavoriteComponent implements OnInit {
   songs: SongDTO[] = [];
+  playlists: PlaylistDTO[] = [];
   isLoggedIn = false;
   quantity = 0;
 
   constructor(
     private songService: SongService,
     private authService: AuthService,
-    private dataShareService: DataShareService
+    private dataShareService: DataShareService,
+    private playlistService: PlaylistService
   ) {}
 
   ngOnInit(): void {
@@ -42,6 +46,19 @@ export class FavoriteComponent implements OnInit {
         console.error(error)
       }      
     })
+
+    const user = this.authService.getUserInfo()
+    if(user) {
+      this.playlistService.getPlaylistByUserId(user.userId).subscribe({
+        next: (res) => {
+          this.playlists = res.result;
+          console.log(this.playlists)
+        },
+        error: (err) => {
+          console.error('Lỗi load playlist:', err);
+        }
+      });
+    }
   }
 
 }
