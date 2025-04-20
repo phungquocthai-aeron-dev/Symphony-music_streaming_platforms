@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.phungquocthai.symphony.dto.PlaylistDTO;
 import com.phungquocthai.symphony.entity.Playlist;
@@ -57,8 +58,15 @@ public class PlaylistService {
 		playlistRepository.save(playlist);
 	}
 	
+	@Transactional
 	public void deletePlaylistWithSongs(Integer playlistId) {
-        playlistRepository.deletePlaylistWithSongs(playlistId);
+        playlistRepository.delete_playlist(playlistId);
+    }
+	
+	public boolean isSongInPlaylist(Integer playlistId, Integer songId) {
+		Integer playlist_id = playlistRepository.isSongInPlaylist(playlistId, songId);
+		if(playlist_id == null) return false;
+        return true;
     }
 
     public void addSongToPlaylist(Integer playlistId, Integer songId) {

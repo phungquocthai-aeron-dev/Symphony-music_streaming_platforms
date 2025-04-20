@@ -18,16 +18,20 @@ public interface PlaylistRepository extends JpaRepository<Playlist, Integer> {
 	@Query("SELECT p FROM Playlist p WHERE p.user.userId = :userId")
 	List<Playlist> getByUserId(@Param("userId") Integer userId);
 	
-	@Transactional
 	@Modifying
 	@Procedure(name = "delete_playlist")
-    void deletePlaylistWithSongs(@Param("p_playlist_id") Integer playlistId);
+    void delete_playlist(@Param("p_playlist_id") Integer playlistId);
 	
 	@Modifying
     @Transactional
     @Query(value = "INSERT INTO playlist_song (playlist_id, song_id) VALUES (:playlistId, :songId)", 
            nativeQuery = true)
     void addSongToPlaylist(@Param("playlistId") Integer playlistId, @Param("songId") Integer songId);
+	
+
+	@Query(value = "SELECT playlist_id FROM playlist_song WHERE playlist_id = :playlistId AND song_id = :songId", 
+		       nativeQuery = true)
+	Integer isSongInPlaylist(@Param("playlistId") Integer playlistId, @Param("songId") Integer songId);
 	
 	@Modifying
     @Transactional

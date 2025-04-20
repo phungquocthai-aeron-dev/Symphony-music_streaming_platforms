@@ -67,9 +67,16 @@ public class PlaylistController {
     public ResponseEntity<ApiResponse<String>> addSongToPlaylist(
             @RequestParam("playlistId") Integer playlistId,
             @RequestParam("songId") Integer songId) {
+    	
+    	if(playlistService.isSongInPlaylist(playlistId, songId)) {
+            ApiResponse<String> response = new ApiResponse<>();
+    		response.setResult("Bài hát đã tồn tại trong playlist");
+            return ResponseEntity.ok(response);
+    	}
+    	
         playlistService.addSongToPlaylist(playlistId, songId);
         ApiResponse<String> response = new ApiResponse<>();
-        response.setResult("Song added to playlist successfully");
+        response.setResult("Thêm bài hát thành công");
         return ResponseEntity.ok(response);
     }
 
