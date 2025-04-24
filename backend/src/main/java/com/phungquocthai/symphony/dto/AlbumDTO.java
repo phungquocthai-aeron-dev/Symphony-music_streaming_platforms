@@ -19,7 +19,6 @@ public class AlbumDTO {
 	@NotNull(message = "Id không được để trống")
     private Integer albumId;
     
-    @NotNull(message = "Vui lòng chọn ngày phát hành")
     private LocalDate releaseDate;
     
     @NotNull(message = "Vui lòng chọn tên album")

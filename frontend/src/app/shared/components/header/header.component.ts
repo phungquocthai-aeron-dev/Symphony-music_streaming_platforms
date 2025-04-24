@@ -49,7 +49,6 @@ export class HeaderComponent implements OnInit {
   ) {
     const storedTheme = this.cookieService.get(this.COOKIE_NAME);
     this.dataTheme = storedTheme ? JSON.parse(storedTheme) : null;
-
     if (typeof window !== 'undefined') {
       const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
 
@@ -130,6 +129,7 @@ export class HeaderComponent implements OnInit {
       document.documentElement.style.setProperty('--dark_grey-color', '#1e1e1e');
       document.documentElement.style.setProperty('--light_grey-color', '#d9dce1');
     }
+    document.documentElement.style.setProperty('--orange-color', this.mainColor);
   }
 
   startListening(): void {
@@ -150,8 +150,9 @@ export class HeaderComponent implements OnInit {
   }
 
   selectColor(colorCode: string): void {
-    document.documentElement.style.setProperty('--orange-color', colorCode);
     this.mainColor = colorCode;
+    document.documentElement.style.setProperty('--orange-color', colorCode);
+    this.saveConfig();
   }
 
 handleSearch() {

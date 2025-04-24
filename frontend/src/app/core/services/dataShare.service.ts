@@ -4,6 +4,7 @@ import { SongDTO } from "../../shared/models/Song.dto";
 import { SingerDTO } from "../../shared/models/Singer.dto";
 import { TopSongDTO } from "../../shared/models/TopSong.dto";
 import { PlaylistDTO } from "../../shared/models/Playlist.dto";
+import { AlbumDTO } from "../../shared/models/Album.dto";
 
 @Injectable({
     providedIn: 'root'
@@ -26,6 +27,12 @@ export class DataShareService {
 
     private currentPlaylistSource = new BehaviorSubject<any>(null);
     currentPlaylist = this.currentPlaylistSource.asObservable();
+
+    private dataAddSongAlbum = new BehaviorSubject<any>(null);
+    currentSongToAlbum = this.dataAddSongAlbum.asObservable();
+
+    private currentAlbumSource = new BehaviorSubject<any>(null);
+    currentAlbum = this.currentAlbumSource.asObservable();
 
     changeData(data: SongDTO | TopSongDTO) {
       this.dataSource.next(data);
@@ -51,4 +58,11 @@ export class DataShareService {
       this.currentPlaylistSource.next(data);
     }
 
+    changeSongAlbum(data: SongDTO | TopSongDTO | null) {
+      this.dataAddSongAlbum.next(data);
+    }
+
+    changeCurrentAlbum(data: AlbumDTO) {
+      this.currentAlbumSource.next(data);
+    }
   }

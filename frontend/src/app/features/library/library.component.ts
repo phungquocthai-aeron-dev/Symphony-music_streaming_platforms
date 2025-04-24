@@ -18,13 +18,14 @@ import { RowCardComponent } from '../../shared/components/row-card/row-card.comp
   imports: [CommonModule, FormsModule, PlaylistCardComponent, RowCardComponent]
 })
 export class LibraryComponent implements OnInit {
-  @ViewChild('closeButtonRef',  { static: false }) closeFormUpdate!: ElementRef;
+  @ViewChild('closeButtonRef',  { static: false }) closeFormCreate!: ElementRef;
   
   playlists: PlaylistDTO[] = [];
   newPlaylistName: string = '';
   userId: number;
   songs: SongDTO[] = [];
   quantity = 0;
+  playlist!: PlaylistDTO;
 
   constructor(
     private playlistService: PlaylistService,
@@ -53,8 +54,12 @@ export class LibraryComponent implements OnInit {
     this.playlistService.createPlaylist(this.userId, trimmedName).subscribe(response => {
       this.playlists.push(response.result);
       this.newPlaylistName = '';
-      this.closeFormUpdate.nativeElement.click();
+      this.closeFormCreate.nativeElement.click();
     });
+  }
+
+  playlistSelect(playlist: PlaylistDTO) {
+    this.playlist = playlist;
   }
 
   showSongs(songs: SongDTO[]) {

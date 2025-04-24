@@ -12,7 +12,7 @@
                         class="user-img-active rounded-circle">
                 </div>
                 <div class="song-active-info d-flex flex-column-reverse pt-4">
-                    <p *ngIf="singer" class="text-decoration-none text-white-primary">{{ singer.followers | number:'1.0-0' }} người theo dõi</p>
+                    <p *ngIf="singer" class="text-decoration-none text-white-primary">{{ singer.followers | number:'1.0-0' }} lượt nghe</p>
                     <h1 *ngIf="singer" class="text-white-primary">{{ singer.stageName }}</h1>
                 </div>
             </div>
@@ -24,12 +24,12 @@
                     <!-- <i class="fa-solid fa-pause d-block mx-auto text-white-primary fs-5"></i> -->
                 </div>
 
-                    <div *ngIf="!isOwner()" class="d-flex flex-column justify-content-center mb-3">
+                    <!-- <div *ngIf="!isOwner()" class="d-flex flex-column justify-content-center mb-3">
                         <div class="btn btn-follow text-white-primary border-1 me-3" style="border-color: var(--white-color);">
                             <i class="fa-solid fa-user-plus"></i>
                             Theo dõi
                         </div>
-                    </div>
+                    </div> -->
 
                 <div class="dropdown d-flex flex-column justify-content-center mb-3">
                     <div class="btn rounded-circle bg-dark_grey-color dropdown-toggle" data-bs-toggle="dropdown">
@@ -48,7 +48,7 @@
 
                 <div *ngIf="songs" id="singer-product">
                     <div id="have-list-songs-product">
-                        <h5 class="text-white-primary mt-4">BÀI HÁT NỔI BẬT</h5>
+                        <h4 class="text-white-primary mt-4">BÀI HÁT NỔI BẬT</h4>
 
                         <ul class="text-support ps-0 row">
                             <li class="mt-3 p-2 rounded-2">
@@ -72,6 +72,7 @@
                             [isOwner]="isOwner()"
                             (isEdit)="onEdit()"
                             (openModal)="openModal()"
+                            [singerAlbums]="albums"
                             ></app-row-card>
                         </ul>
                     </div>
@@ -239,7 +240,7 @@
                                                         <div class="col-sm-4">
                                                             <div id="song-info-img" class="mb-3">
                                                                 <div class="song-info-img-container rounded-4" (click)="triggerFileInput()" style="max-width: 200px;">
-                                                                    <img  [src]="defaultSongImg" alt=""
+                                                                    <img [src]="defaultSongImg" alt=""
                                                                         class="song-img-active rounded-4 w-100" style="max-width: 200px;">
                                                                     <div id="modal-song" class="w-100 rounded-4 text-white-primary" style="max-width: 200px;">
                                                                         <div class="d-flex flex-column justify-content-center h-100 w-100">
@@ -381,4 +382,116 @@
         </div>
 
     </div>
+
+
+        <div class="row">
+          <div class="col-2 bg-black-primary">
+          </div>
+      
+          <div id="content-library" class="col-10 p-4 pt-0">      
+            <div id="have-album mb-5">
+              <!-- ALBUM TITLE -->
+              <div class="d-flex library-title">
+                <h4 class="text-white-primary me-4">ALBUM</h4>
+                <div class="btn rounded-circle bg-dark_grey-color" data-bs-toggle="modal" data-bs-target="#albumModal">
+                  <i class="fa-solid fa-plus text-white-primary"></i>
+                </div>
+      
+                <div class="modal" id="albumModal" style="margin-top: 20vh;">
+                  <div class="modal-dialog modal-lg">
+                    <div class="modal-content bg-dark_grey-color">
+                      <!-- Modal Header -->
+                      <div class="modal-header border-0 d-flex justify-content-between">
+                        <h4 class="modal-title text-white-primary">Tạo Album</h4>
+                        <button type="button" class="btn ms-3 text-white-primary refer" data-bs-dismiss="modal" #closeButtonAlbumRef>
+                          <i class="fa-solid fa-xmark"></i>
+                        </button>
+                      </div>
+      
+                      <!-- Modal body -->
+                      <div class="modal-body d-flex">
+                        <img [src]="defaultAlbumImg" alt="" class="song-img-active rounded-4 w-100" style="max-width: 200px; max-height: 200px; min-height: 190px;">
+                        <div class="ms-5 w-100">
+                            <form action="">
+                                <label class="text-white-primary mb-1">Tên album</label>
+                                <input
+                                  type="text"
+                                  [(ngModel)]="newAlbumName"
+                                  name="albumName"
+                                  class="form-control no-outline border-bottom shadow-none rounded-1 p-1 bg-black-primary text-white-primary mb-3"
+                                  autocomplete="off"
+                                  placeholder="Nhập tên album..."
+                                  required
+                                />
+                              
+                                <label class="text-white-primary mb-1">Chọn ảnh bìa</label>
+                                <input
+                                  type="file"
+                                  (change)="onFileAlbumImgChange($event)"
+                                  accept="image/*"
+                                  required
+                                  class="form-control bg-black-primary text-white-primary border-0 round-1"
+                                />
+                              
+                                <button type="submit" class="btn text-white-primary bg-orange-primary w-100 mt-3" (click)="addAlbum()">Tạo</button>
+                              </form>
+                        </div>
+                      </div>
+      
+                    </div>
+                  </div>
+                </div>
+              </div>
+      
+              <!-- ALBUMS -->
+              <div class="row">
+                <ng-container *ngIf="albums.length > 0; else noAlbum">
+                  <app-album-card
+                    class="col-12 col-sm-6 col-md-3 col-lg-2"
+                    *ngFor="let album of albums"
+                    [album]="album"
+                    (albumDetail)="showAlbumSongs($event)"
+                    (deleted)="removeAlbum($event)"
+                    (renamed)="updateAlbumName($event)"
+                    (albumSelect)="albumSelect($event)">
+                  </app-album-card>
+                </ng-container>
+      
+                <ng-template #noAlbum>
+                  <div id="no-album">
+                    <img id="empty-list-songs-img" src="../../assets/images/other/Empty-songs.png" alt="" class="mx-auto d-block">
+                    <h3 class="text-white-primary text-center">Bạn chưa thêm album nào!</h3>
+                  </div>
+                </ng-template>
+              </div>
+            </div>
+      
+            <div *ngIf="quantity > 0 && album" id="have-list-songs-album mt-5">
+              <h3 class="text-white-primary me-4 pt-5">Danh sách bài hát thuộc Album {{ album.albumName }}</h3>
+      
+              <ul class="text-support ps-0 row">
+                <li class="mt-3 p-2 rounded-2">
+                  <div class="d-flex row">
+                    <div class="fw-bolder col-lg-5">BÀI HÁT</div>
+                    <div class="fw-bolder col-lg-4">ALBUM</div>
+                    <div class="fw-bolder col-lg-2">THỜI LƯỢNG</div>
+                  </div>
+                </li>
+      
+                <app-row-card class="rounded-2 col-md-6 col-lg-12 favorite-song"
+                  *ngFor="let song of songsOfAlbum"
+                  [song]="song"
+                  [isOwner]="false"
+                  [singerAlbums]="albums"
+                  [isLibrary]="true"
+                  [singerAlbums]="albums">
+                </app-row-card>
+              </ul>
+            </div>
+          </div>
+        </div>
+      
 </main>
+
+
+  

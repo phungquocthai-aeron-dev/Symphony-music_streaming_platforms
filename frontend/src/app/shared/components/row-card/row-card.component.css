@@ -3,5 +3,5 @@
 }
 
 .list-group .list-group-item:hover {
-    background-color: var(--grey-color) !important;
+    background-color: rgba(169, 214, 249, 0.997) !important;
 }

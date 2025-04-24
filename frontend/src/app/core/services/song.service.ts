@@ -190,4 +190,9 @@ getSongsByPlaylistId(playlistId: number): Observable<ResponseData<SongDTO[]>> {
   const params = new HttpParams().set('id', playlistId);
   return this.http.get<ResponseData<SongDTO[]>>(`${this.apiUrl}/playlist`, { params });
 }
+
+getSongsByAlbumId(playlistId: number): Observable<ResponseData<SongDTO[]>> {
+  const params = new HttpParams().set('id', playlistId);
+  return this.http.get<ResponseData<SongDTO[]>>(`${this.apiUrl}/album`, { params });
+}
 }

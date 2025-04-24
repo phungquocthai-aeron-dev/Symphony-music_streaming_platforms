@@ -2,7 +2,7 @@
     height: 90px;
     padding: 12px 12px 6px 12px;
     background-color: var(--black-color);
-    border-top: 1px solid var(--orange-color);
+    border-top: 2px solid var(--orange-color);
     z-index: 1040;
 }
 

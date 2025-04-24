@@ -135,7 +135,7 @@
                                         </div>
                                     </div>
                                 </li>
-                                <li><a class="dropdown-item text-white-primary" href="/admin">Quản lý hệ thống</a></li>
+                                <li *ngIf="user"><a *ngIf="user.role === 'ADMIN'" class="dropdown-item text-white-primary" href="/admin">Quản lý hệ thống</a></li>
                                 <li><a class="dropdown-item text-white-primary" href="/user">Hồ sơ cá nhân</a></li>
                                     <li  *ngIf="user && user.role=='SINGER' && singer"><a class="dropdown-item text-white-primary"
                                         [routerLink]="['/singer', singer.singer_id]">Hồ sơ ca sĩ</a></li>

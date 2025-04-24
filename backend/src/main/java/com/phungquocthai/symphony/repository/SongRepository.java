@@ -82,6 +82,12 @@ public interface SongRepository extends JpaRepository<Song, Integer> {
 	List<Song> findByPlaylistId(@Param("playlistId") Integer playlistId);
 	
 	@Query(value = "SELECT s.* FROM song s " +
+            "INNER JOIN album_song a ON s.song_id = a.song_id " +
+            "WHERE a.album_id = :albumId", 
+    nativeQuery = true)
+	List<Song> findByAlbumId(@Param("albumId") Integer albumId);
+	
+	@Query(value = "SELECT s.* FROM song s " +
             "INNER JOIN present p ON s.song_id = p.song_id " +
             "WHERE p.singer_id IN (:ids)", 
     nativeQuery = true)

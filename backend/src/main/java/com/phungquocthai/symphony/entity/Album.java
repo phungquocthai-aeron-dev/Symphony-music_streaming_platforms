@@ -3,6 +3,9 @@ package com.phungquocthai.symphony.entity;
 import java.time.LocalDate;
 
 import java.util.Set;
+
+import org.hibernate.annotations.CreationTimestamp;
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,6 +27,7 @@ public class Album {
     private Integer albumId;
     
     @Column(name = "release_date")
+    @CreationTimestamp
     private LocalDate releaseDate;
     
     @Column(name = "album_name", length = 255)

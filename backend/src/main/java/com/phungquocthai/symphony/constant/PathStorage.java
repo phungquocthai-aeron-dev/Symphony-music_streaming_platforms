@@ -5,6 +5,7 @@ import lombok.Getter;
 @Getter
 public enum PathStorage {
     AVATAR("/images/avatars/"),
+    ALBUM("/images/albums/"),
     MUSIC_IMG("/images/music/"),
     LRC("/lrc/"),
     LYRIC("/lyric/"),

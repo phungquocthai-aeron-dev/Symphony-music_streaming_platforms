@@ -1,0 +1,118 @@
+<div class="card card-song mt-4" style="background-color: var(--black-color);">
+    <div class="card-img-container overflow-hidden rounded-3">
+      <div class="card-img-container overflow-hidden rounded-3 ">
+        <a class="text-decoration-none">
+          <img class="card-img-top card_song-img rounded-3"
+          [src]="'http://localhost:8080/symphony/uploads' + album.albumImg"
+            alt="Album image">
+          </a>
+          <div class="card-hover-song rounded-circle text-center fs-5 lh-lg">
+            <i class="fas fa-play icon-play"></i>
+          </div>
+      </div>
+    </div>
+  
+    <div class="card-body ps-0 pe-0">
+      <div class="d-flex justify-content-between align-items-center w-100 px-1">
+        <h6 class="card-title card-song-name refer flex-grow-1 mb-0" *ngIf="album"
+            style="width: calc(100% - 10px); color: var(--text_dark_theme-color);">
+          {{ album.albumName }}
+        </h6>
+  
+        <div class="dropdown ms-2" style="width: 10px;">
+          <button class="btn btn-transparent p-0 m-0" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="fa-solid fa-ellipsis-vertical text-white-primary"></i>
+          </button>
+          <ul class="dropdown-menu dropdown-menu-end bg-dark_grey-color shadow border-0 mt-1">
+            <li>
+              <button class="dropdown-item text-white-primary" (click)="selectAlbum()">Chi tiết</button>
+            </li>
+            <li>
+              <button class="dropdown-item text-white-primary" data-bs-toggle="modal" [attr.data-bs-target]="'#renameModal' + album.albumId">
+                Cập nhật
+              </button>
+            </li>
+            <li>
+              <button class="dropdown-item text-white-primary" data-bs-toggle="modal" [attr.data-bs-target]="'#deleteModal' + album.albumId">
+                Xóa
+              </button>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Modal XÓA -->
+  <div class="modal fade" id="deleteModal{{ album.albumId }}" #deleteModalRef tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog custom-modal-position">
+      <div class="modal-content bg-dark text-white">
+        <div class="modal-header border-0">
+          <h5 class="modal-title">Xác nhận xóa</h5>
+          <button type="button" class="btn-close btn-close-white" #deleteButtonRef data-bs-dismiss="modal" aria-label="Đóng"></button>
+        </div>
+        <div class="modal-body">
+          Bạn có chắc chắn muốn xóa album "<strong>{{ album.albumName }}</strong>"?
+        </div>
+        <div class="modal-footer border-0">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+          <button type="button" class="btn btn-danger" (click)="confirmDelete()">Xóa</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Modal ĐỔI TÊN -->
+  <div class="modal fade" id="renameModal{{ album.albumId }}" #renameModalRef tabindex="-1" aria-labelledby="renameModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content bg-dark_grey-color">
+        <div class="modal-header border-0">
+          <h5 class="modal-title text-white-primary">Đổi tên album</h5>
+          <button type="button" class="btn-close btn-close-white" #renameButtonRef data-bs-dismiss="modal" aria-label="Đóng"></button>
+        </div>
+        <!-- <div class="modal-body">
+          <input type="text" class="form-control" [(ngModel)]="newAlbumName" placeholder="Nhập tên mới" />
+        <
+        <label class="text-white-primary mb-1">Chọn ảnh bìa</label>
+    <input
+      type="file"
+      (change)="onFileSelected($event)"
+      accept="image/*"
+      class="form-control bg-dark_grey-color text-white-primary border-0"
+    /> -->
+
+    <!-- Modal body -->
+    <div class="modal-body d-flex">
+      <img [src]="defaultAlbumImg" alt="" class="song-img-active rounded-4 w-100" style="max-width: 200px; max-height: 200px; min-height: 190px;">
+      <div class="ms-5 w-100">
+          <form action="">
+              <label class="text-white-primary mb-1">Tên album</label>
+              <input
+                type="text"
+                [(ngModel)]="newAlbumName"
+                name="albumName"
+                class="form-control no-outline border-bottom shadow-none rounded-1 p-1 bg-black-primary text-white-primary mb-3"
+                autocomplete="off"
+                placeholder="Nhập tên album..."
+                required
+              />
+            
+              <label class="text-white-primary mb-1">Chọn ảnh bìa</label>
+              <input
+                type="file"
+                (change)="onFileImgChange($event)"
+                accept="image/*"
+                required
+                class="form-control bg-black-primary text-white-primary border-0 round-1"
+              />            
+            </form>
+      </div>
+    </div>
+        <div class="modal-footer border-0">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+          <button type="button" class="btn btn-success" (click)="onUpdate()">Lưu</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  

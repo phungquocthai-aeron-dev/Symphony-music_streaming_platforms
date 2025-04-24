@@ -65,7 +65,8 @@
                         [playlist]="playlist"
                         (playlistDetail)="showSongs($event)"
                         (deleted)="removePlaylist($event)"
-                        (renamed)="updatePlaylistName($event)">
+                        (renamed)="updatePlaylistName($event)"
+                        (playlistSelect)="playlistSelect($event)">
                         </app-playlist-card>
 
                     </ng-container>
@@ -79,8 +80,8 @@
                   </div>
             </div>
 
-            <div *ngIf="quantity > 0" id="have-list-songs-favorite mt-5">
-                <h3 class="text-white-primary me-4 pt-5">Danh sách bài hát</h3>
+            <div *ngIf="quantity > 0 && playlist" id="have-list-songs-favorite mt-5">
+                <h3 class="text-white-primary me-4 pt-5">Danh sách bài hát thuộc Playlist {{ playlist.playlistName }}</h3>
 
                 <ul class="text-support ps-0 row">
                     <li class="mt-3 p-2 rounded-2">

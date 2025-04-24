@@ -11,15 +11,18 @@ import { SongDTO } from '../../shared/models/Song.dto';
 import { RowCardComponent } from '../../shared/components/row-card/row-card.component';
 import { CategoryDTO } from '../../shared/models/Category.dto';
 import { DataShareService } from '../../core/services/dataShare.service';
-import { FormControl, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormGroup, Validators, ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { TopSongDTO } from '../../shared/models/TopSong.dto';
+import { AlbumDTO } from '../../shared/models/Album.dto';
+import { AlbumService } from '../../core/services/album.service';
+import { AlbumCardComponent } from '../../shared/components/album-card/album-card.component';
 
 declare var bootstrap: any;
 
 @Component({
   selector: 'app-singer',
-  imports: [NgIf, NgFor, RowCardComponent, ReactiveFormsModule, DecimalPipe],
+  imports: [NgIf, NgFor, RowCardComponent, ReactiveFormsModule, DecimalPipe, FormsModule, AlbumCardComponent],
   templateUrl: './singer.component.html',
   styleUrl: './singer.component.css'
 })
@@ -90,6 +93,7 @@ export class SingerComponent implements OnInit, OnDestroy {
     private singerService: SingerService,
     private authService: AuthService,
     private songService: SongService,
+    private albumService: AlbumService,
     private dataShareService: DataShareService
   ) {}
 
@@ -152,6 +156,11 @@ export class SingerComponent implements OnInit, OnDestroy {
                 },
                 error: (error) => {
                   console.log(error)
+                }
+              })
+              this.albumService.getAlbumsBySingerId(singerId).subscribe({
+                next: (data) => {
+                  this.albums = data.result;
                 }
               })
 
@@ -511,5 +520,77 @@ export class SingerComponent implements OnInit, OnDestroy {
 
   private isTopSong(song: SongDTO | TopSongDTO): song is TopSongDTO {
     return 'total_listens_per_hour' in song;  // Kiểm tra xem có thuộc tính 'topRank' hay không
+  }
+
+  @ViewChild('closeButtonAlbumRef', { static: false }) closeFormCreateAlbum!: ElementRef;
+  album!: AlbumDTO;
+  albums: AlbumDTO[] = [];
+  newAlbumName: string = '';
+  songsOfAlbum: SongDTO[] = [];
+  quantity = 0;
+  selectedImage: File | null = null;
+  defaultAlbumImg:string = "http://localhost:8080/symphony/uploads/images/other/no-img.png";
+
+
+onFileAlbumImgChange(event: Event): void {
+  const input = event.target as HTMLInputElement;
+  const file = input.files?.[0];
+  
+  if (!file) {
+    return;
+  }
+
+  this.selectedImage = file;
+  
+  // Đọc file và hiển thị preview
+  const reader = new FileReader();
+  reader.onload = (e: any) => {
+    this.defaultAlbumImg = e.target.result;
+  };
+  
+  reader.readAsDataURL(file);
+
+}
+
+
+  loadAlbums(): void {
+    this.albumService.getAlbumsBySingerId(this.originUser.userId).subscribe(response => {
+      this.albums = response.result || [];
+    });
+  }
+
+  addAlbum(): void {
+    
+    if(this.singerId) {
+
+      const trimmedName = this.newAlbumName.trim();
+    if (!trimmedName || !this.selectedImage) return;
+    this.albumService.createAlbum(this.singer.singer_id, trimmedName, this.selectedImage).subscribe(response => {
+      this.albums.push(response.result);
+      this.newAlbumName = '';
+      this.selectedImage = null;
+      this.closeFormCreateAlbum.nativeElement.click();
+    });
+    }
+  }
+  
+  showAlbumSongs(songs: SongDTO[]) {
+    this.songsOfAlbum= songs;
+    this.quantity = songs.length;
+  }
+
+  albumSelect(album: AlbumDTO): void {
+    this.album = album;
+  }
+
+  removeAlbum(albumId: number): void {
+    this.albums = this.albums.filter(a => a.albumId !== albumId);
+  }
+
+  updateAlbumName(event: { albumId: number; newName: string }): void {
+    const album = this.albums.find(a => a.albumId === event.albumId);
+    if (album) {
+      album.albumName = event.newName;
+    }
   }
 }

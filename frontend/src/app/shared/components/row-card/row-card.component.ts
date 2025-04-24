@@ -9,6 +9,8 @@ import { TopSongDTO } from '../../models/TopSong.dto';
 import { PlaylistService } from '../../../core/services/playlist.service';
 import { PlaylistDTO } from '../../models/Playlist.dto';
 import { DataShareService } from '../../../core/services/dataShare.service';
+import { AlbumDTO } from '../../models/Album.dto';
+import { AlbumService } from '../../../core/services/album.service';
 
 
 @Component({
@@ -28,6 +30,7 @@ export class RowCardComponent {
 
 
   @Input()userPlaylists: PlaylistDTO[] = [];
+  @Input()singerAlbums: AlbumDTO[] = [];
 
   selectedSong: SongDTO | TopSongDTO | null = null;
 
@@ -35,7 +38,8 @@ export class RowCardComponent {
     private songService: SongService,
     private authService: AuthService,
     private eventSource: DataShareService,
-    private playlistService: PlaylistService
+    private playlistService: PlaylistService,
+    private albumService: AlbumService
   ){}
 
   toggleFavorite() {
@@ -126,6 +130,36 @@ addSongToPlaylist(playlistId: number) {
   });  
   this.eventSource.changeSongPlaylist(null);
 
+
+}
+
+openAddToAlbum(song: SongDTO | TopSongDTO) {
+  console.log(this.singerAlbums)
+  this.eventSource.changeSongAlbum(song);
+  this.loadUserPlaylists();
+}
+
+addSongToAlbum(albumId: number) {
+  let song: any = null;
+
+  const subscription = this.eventSource.currentSongToAlbum.subscribe(data => {
+    if (data) {
+      song = data;
+      this.albumService.addSongToAlbum(albumId, song.song_id).subscribe({
+        next: (data) => {
+          alert(data.result);
+          subscription.unsubscribe();
+        },
+        error: (err) => {
+          alert('Thêm vào album thất bại!');
+          subscription.unsubscribe(); 
+        }
+      });
+    } else {
+      subscription.unsubscribe();
+    }
+  });  
+  this.eventSource.changeSongPlaylist(null);
 
 }
 

@@ -60,6 +60,18 @@
                                 </button>
                               </li>
 
+                              <li *ngIf="!isLibrary">
+                                <button
+                                  class="dropdown-item text-white-primary"
+                                  data-bs-toggle="modal"
+                                  data-bs-target="#addToAlbumModal"
+                                  (click)="openAddToAlbum(song)"
+                                >
+                                  <i class="fa-solid fa-plus pe-2"></i>
+                                  Thêm vào album
+                                </button>
+                              </li>
+
                               <li *ngIf="isLibrary">
                                 <button
                                   class="dropdown-item text-white-primary"
@@ -94,17 +106,17 @@
 
 <div class="modal fade" id="addToPlaylistModal" tabindex="-1" aria-labelledby="addToPlaylistLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content bg-dark_grey-color text-white border-0">
+      <div class="modal-content bg-dark_grey-color text-white-primary border-0">
         <div class="modal-header">
-          <h5 class="modal-title" id="addToPlaylistLabel">Chọn playlist</h5>
+          <h5 class="modal-title text-white-primary" id="addToPlaylistLabel">Chọn playlist</h5>
           <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <div *ngIf="userPlaylists.length === 0" class="text-muted">Không có playlist nào</div>
+          <div *ngIf="userPlaylists.length === 0" class="text-muted text-white-primary">Không có playlist nào</div>
           <ul class="list-group list-group-flush bg-dark_grey-color">
             <li
               *ngFor="let pl of userPlaylists"
-              class="list-group-item list-group-item-action text-white border-0 bg-dark_grey-color"
+              class="list-group-item list-group-item-action border-0 bg-dark_grey-color text-white-primary"
               style="cursor: pointer;"
               (click)="addSongToPlaylist(pl.playlistId)"
               data-bs-dismiss="modal"
@@ -116,4 +128,30 @@
       </div>
     </div>
   </div>
+
+  <div class="modal fade" id="addToAlbumModal" tabindex="-1" aria-labelledby="addToAlbumLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content bg-dark_grey-color text-white-primary border-0">
+        <div class="modal-header">
+          <h5 class="modal-title text-white-primary" id="addToPlaylistLabel">Chọn album</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div *ngIf="singerAlbums.length === 0" class="text-muted text-white-primary">Không có album nào</div>
+          <ul class="list-group list-group-flush bg-dark_grey-color">
+            <li
+              *ngFor="let sa of singerAlbums"
+              class="list-group-item list-group-item-action border-0 bg-dark_grey-color text-white-primary"
+              style="cursor: pointer;"
+              (click)="addSongToAlbum(sa.albumId)"
+              data-bs-dismiss="modal"
+            >
+              {{ sa.albumName }}
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
   
