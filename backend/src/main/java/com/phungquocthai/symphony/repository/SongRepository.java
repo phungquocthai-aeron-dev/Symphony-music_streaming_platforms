@@ -178,5 +178,5 @@ public interface SongRepository extends JpaRepository<Song, Integer> {
 	@Transactional
 	@Query(value = "INSERT INTO listen (user_id, listen_at, song_id) VALUES (:userId, NOW(), :songId)", nativeQuery = true)
 	int addListened(@Param("userId") Integer userId, @Param("songId") Integer songId);
-	
+
 }

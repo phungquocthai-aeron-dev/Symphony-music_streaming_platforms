@@ -47,10 +47,11 @@ export class SingerService {
     return this.http.post<ResponseData<SingerDTO>>(`${this.apiUrl}/create`, formData);
   }
 
-  deleteSinger(singerId: number): Observable<ResponseData<SingerDTO>> {
-    const params = new HttpParams().set('singerId', singerId.toString());
-    return this.http.post<ResponseData<SingerDTO>>(`${this.apiUrl}/delete`, {}, { params });
+  deleteSinger(singerId: number): Observable<void> {
+    const params = new HttpParams().set('id', singerId.toString());
+    return this.http.post<void>(`${this.apiUrl}/delete`, {}, { params });
   }
+  
 
   exportSingers(): Observable<Blob> {
     const headers = new HttpHeaders().set(
@@ -77,5 +78,5 @@ export class SingerService {
         { headers, params }
       );
     } 
-
+    
 }

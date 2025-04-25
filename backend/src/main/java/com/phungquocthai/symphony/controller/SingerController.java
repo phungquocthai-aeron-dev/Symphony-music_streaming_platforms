@@ -68,9 +68,9 @@ public class SingerController {
 		return ResponseEntity.ok(apiResponse);
 	}
 	
-	@PostMapping("/disable")
+	@PostMapping("/delete")
 	public ResponseEntity<Void> disable(@RequestParam(value = "id", required = true) Integer singerId) {
-		singerService.disable(singerId);
+		singerService.delete(singerId);
 		return ResponseEntity.noContent().build();
 	}
 	

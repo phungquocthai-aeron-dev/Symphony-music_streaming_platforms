@@ -163,16 +163,46 @@
 
                         <ul *ngIf="!isLoggedIn">
                         <li class="d-flex pt-2 flex-wrap justify-content-end">
-                            <button
-                            (click)="ChangeTheme()"
-                                class="text-black-primary btn-sm bg-white-primary rounded-circle change_theme px-2 me-2">
-                                <i class="fa-solid fa-moon refer" [class.d-none]="isDarkTheme" style="color: var(--black-color);"></i>
-                                <i class="fa-solid fa-sun d-none" [class.d-none]="!isDarkTheme" style="color: var(--black-color);"></i>
-                            </button>
-                            <a class="nav-link fw-medium text-nowrap text-white-primary refer px-2 py-1 me-4" href="/register">
+                            <div class="nav-item text-nowrap  mt-2 position-relative">
+                                <div class="d-flex align-items-center">
+                                    <button 
+                                        (click)="ChangeTheme()" 
+                                        class="text-black-primary btn-sm bg-white-primary rounded-circle change_theme">
+                                        <i class="fa-solid fa-moon refer" *ngIf="!isDarkTheme" style="color: var(--black-color);"></i>
+                                        <i class="fa-solid fa-sun refer" *ngIf="isDarkTheme" style="color: var(--black-color);"></i>
+                                    </button>
+                                    <span 
+                                        class="ms-2 fw-medium text-nowrap text-white-primary refer cursor-pointer"
+                                        (click)="isThemeMenuOpen = !isThemeMenuOpen">
+                                        GIAO DIỆN <i class="fa-solid fa-caret-down ms-1"></i>
+                                    </span>
+                                </div>
+                                
+                                <!-- Dropdown menu cho việc chọn màu -->
+                                <div class="theme-color-dropdown" [class.show]="isThemeMenuOpen">
+                                    <div class="p-3 bg-dark_grey-color shadow rounded">
+                                        <h6 class="mb-2 text-white-primary">Chọn màu giao diện</h6>
+                                        <div class="d-flex flex-wrap gap-2">
+                                            <div class="color-option rounded-circle" style="background-color: #9826f2;" (click)="selectColor('#9826f2')"></div>
+                                            <div class="color-option rounded-circle" style="background-color: #ff6337;" (click)="selectColor('#ff6337')"></div>
+                                            <div class="color-option rounded-circle" style="background-color: #00ff91;" (click)="selectColor('#00ff91')"></div>
+                                            <div class="color-option rounded-circle" style="background-color: #fde41c;" (click)="selectColor('#fde41c')"></div>
+                                            <div class="color-option rounded-circle" style="background-color: #0064f1;" (click)="selectColor('#0064f1')"></div>
+                                            <div class="color-option rounded-circle" style="background-color: #ff0068;" (click)="selectColor('#ff0068')"></div>
+                                            <div class="color-option rounded-circle" style="background-color: #fb6dfa;" (click)="selectColor('#fb6dfa')"></div>
+                                            <div class="color-option rounded-circle" style="background-color: #00fbff;" (click)="selectColor('#00fbff')"></div>
+                                            <div class="color-option rounded-circle" style="background-color: #f10000;" (click)="selectColor('#f10000')"></div>
+                                            <div class="color-option rounded-circle" style="background-color: #73ff00;" (click)="selectColor('#73ff00')"></div>
+                                            <div class="color-option rounded-circle" style="background-color: #fdd566;" (click)="selectColor('#fdd566')"></div>
+                                            <div class="color-option rounded-circle" style="background-color: #a2a59b;" (click)="selectColor('#a2a59b')"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <a class="nav-link fw-medium text-nowrap text-white-primary refer mt-2 p-1 ms-4 me-4" href="/register">
                                 Đăng ký
                             </a>
-                            <a class="nav-link fw-medium text-nowrap text-white-primary bg-orange-primary btn rounded-4 px-2 py-1" href="/login">
+                            <a class="nav-link fw-medium text-nowrap text-white-primary bg-orange-primary btn rounded-4 px-2 py-1 mt-2" href="/login">
                                 Đăng nhập
                             </a>
                         </li>

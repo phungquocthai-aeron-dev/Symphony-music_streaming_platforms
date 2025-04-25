@@ -64,5 +64,24 @@ public interface SingerRepository extends JpaRepository<Singer, Integer> {
 	List<Singer> findAllBySongIdNotIn(@Param("ids") Iterable<Integer> ids);
 	
 	List<Singer> findByStageNameContainingIgnoreCase(String keyword);
+	
+	@Modifying
+	@Transactional
+	@Query(value = """
+	    DELETE FROM album_song 
+	    WHERE song_id = :songId 
+	      AND album_id IN (
+	          SELECT id FROM album WHERE singer_id = :singerId
+	      )
+	    """, nativeQuery = true)
+	Integer deleteBySongIdAndSingerOwnership(@Param("songId") Integer songId, @Param("singerId") Integer singerId);
+
+	@Query(value = """
+		    SELECT p.song_id 
+		    FROM present p
+		    JOIN song s ON p.song_id = s.id
+		    WHERE s.singer_id = :singerId
+		    """, nativeQuery = true)
+		List<Integer> findSongIdsInPresentBySingerId(@Param("singerId") Integer singerId);
 
 }

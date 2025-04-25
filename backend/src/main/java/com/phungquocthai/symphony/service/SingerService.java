@@ -37,6 +37,9 @@ public class SingerService {
 	SingerCreateMapper singerCreateMapper;
 	
 	@Autowired
+	SongService songService;
+	
+	@Autowired
 	ExcelExportUtil excelExportUtil;
 	
 	@PreAuthorize("hasRole('ADMIN')")
@@ -61,6 +64,13 @@ public class SingerService {
 	
 	@PreAuthorize("hasAnyRole('SINGER', 'ADMIN')")
 	public void delete(Integer singerId) {
+		List<Integer> songIds = singerRepository.findSongIdsInPresentBySingerId(singerId);
+		if(!songIds.isEmpty()) {
+			int size = songIds.size();
+			for(int i = 0; i < size; i++) {
+				songService.delete(singerId, songIds.get(i));
+			}
+		}
 		singerRepository.deleteById(singerId);
 	}
 	

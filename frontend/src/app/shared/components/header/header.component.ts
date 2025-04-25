@@ -32,7 +32,7 @@ export class HeaderComponent implements OnInit {
 
   pathLogoDarkTheme = environment.assetsPath + 'symphony-darktheme-icon.png';
   pathLogoLightTheme = environment.assetsPath + 'symphony-lighttheme-icon.png';
-  isDarkTheme = true;
+  isDarkTheme = false;
   mainColor = "#ff6337";
   private dataTheme: ThemeSave | null = null;
   isLoggedIn: boolean = false;
@@ -98,6 +98,8 @@ export class HeaderComponent implements OnInit {
     if (this.dataTheme) {
       this.isDarkTheme = this.dataTheme.isDarkTheme;
       this.mainColor = this.dataTheme.mainColor;
+      if(!this.isDarkTheme) this.isDarkTheme = false;
+      if(!this.mainColor) this.mainColor = "#ff6337";
       this.applyTheme();
     }
   }

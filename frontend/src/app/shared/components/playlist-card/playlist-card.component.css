@@ -93,6 +93,16 @@ ul {
 .custom-modal-position {
     margin-top: 15Y0px;
   }
+
+  #fixedAlert {
+    position: fixed;
+    top: 100px; 
+    right: 0;
+    width: auto;
+    max-width: 400px;
+    z-index: 1050;
+    text-align: right;
+  }
   
 
 @media screen and (max-width: 992px) {

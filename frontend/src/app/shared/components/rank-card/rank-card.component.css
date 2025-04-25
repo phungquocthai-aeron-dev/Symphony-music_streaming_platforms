@@ -13,3 +13,13 @@
 .product-song:hover {
     background-color: var(--dark_grey-color);
 }
+
+#fixedAlert {
+    position: fixed;
+    top: 100px; 
+    right: 0;
+    width: auto;
+    max-width: 400px;
+    z-index: 1050;
+    text-align: right;
+  }

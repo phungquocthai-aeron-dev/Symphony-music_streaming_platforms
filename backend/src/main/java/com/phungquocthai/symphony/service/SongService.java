@@ -31,6 +31,7 @@ import com.phungquocthai.symphony.mapper.CategoryMapper;
 import com.phungquocthai.symphony.mapper.SongCreateMapper;
 import com.phungquocthai.symphony.mapper.SongMapper;
 import com.phungquocthai.symphony.mapper.TopSongMapper;
+import com.phungquocthai.symphony.repository.AlbumRepository;
 import com.phungquocthai.symphony.repository.CategoryRepository;
 import com.phungquocthai.symphony.repository.FavoriteRepository;
 import com.phungquocthai.symphony.repository.SingerRepository;
@@ -144,8 +145,9 @@ public class SongService {
 	@PreAuthorize("hasAnyRole('SINGER', 'ADMIN')")
 	public void delete(Integer singerId, Integer songId) {
 		Song song = songRepository.findById(songId).orElseThrow();
-
+		
 		singerRepository.deletePresent(singerId, songId);
+		singerRepository.deleteBySongIdAndSingerOwnership(songId, singerId);
 		Integer isOrphanhood = singerRepository.havePresent(songId);
 		if(isOrphanhood == null) {
 			songRepository.deleteById(songId);
