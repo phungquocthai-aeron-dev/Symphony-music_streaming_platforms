@@ -4,6 +4,7 @@ import java.text.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -83,7 +84,7 @@ public class AuthenticationController {
 	}
 	
 	@PostMapping(value = "/register")
-	public @ResponseBody ResponseEntity<ApiResponse<UserDTO>> userRegister(@Valid @RequestBody UserRegistrationDTO userRegistrationDTO) {
+	public @ResponseBody ResponseEntity<ApiResponse<UserDTO>> userRegister(@RequestBody UserRegistrationDTO userRegistrationDTO) {
 		
 		UserDTO userDTO = userService.create(userRegistrationDTO);
 		ApiResponse<UserDTO> apiResponse = new ApiResponse<UserDTO>();

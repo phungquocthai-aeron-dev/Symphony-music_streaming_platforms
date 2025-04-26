@@ -29,6 +29,9 @@ export class SongComponent implements OnInit, OnDestroy {
   isLyricExpanded: boolean = false;
 
   private paramSubscription!: Subscription;
+  notifyContent = "";
+  notifyTitle = "";
+  isSuccess = true;
 
 
   constructor(
@@ -101,6 +104,21 @@ export class SongComponent implements OnInit, OnDestroy {
           this.isLoadingLyric = false;
         }
       });
+  }
+
+  showNotification(event: { title: string, content: string, isSuccess: boolean }) {
+    this.notifyTitle = event.title;
+    this.notifyContent = event.content;
+    this.isSuccess = event.isSuccess;
+  
+    setTimeout(() => {
+      this.clearNotify();
+    }, 3000);
+  }
+
+  clearNotify() {
+    this.notifyTitle = '';
+    this.notifyContent = '';
   }
 
   toggleLyricExpansion() {

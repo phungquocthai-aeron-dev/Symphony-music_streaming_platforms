@@ -4,12 +4,12 @@ import { AuthService } from '../../core/services/auth.service';
 import { DataShareService } from '../../core/services/dataShare.service';
 import { UserDTO } from '../../shared/models/User.dto';
 import { SingerDTO } from '../../shared/models/Singer.dto';
-import { NgIf } from '@angular/common';
+import { CommonModule, NgIf } from '@angular/common';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-user',
-  imports: [NgIf, ReactiveFormsModule],
+  imports: [NgIf, ReactiveFormsModule, CommonModule],
   templateUrl: './user.component.html',
   styleUrl: './user.component.css'
 })
@@ -22,14 +22,16 @@ export class UserComponent implements OnInit {
   isLoaded = false;
   defaultUserImg:string = "http://localhost:8080/symphony/uploads/images/other/no-img.png";
 
-
+  notifyContent = "";
+  notifyTitle = "";
+  isSuccess = true;
   avatarFile?: File | null;
   
   userForm = new FormGroup({
     fullName: new FormControl('', Validators.required),
     password: new FormControl('', Validators.required),
     newPassword: new FormControl(''),
-    password_confirm: new FormControl('', Validators.required),
+    password_confirm: new FormControl(''),
     phone: new FormControl('', Validators.required),
     birthday: new FormControl('', Validators.required),
     stageName: new FormControl(''),         
@@ -50,7 +52,10 @@ export class UserComponent implements OnInit {
   }
 
   loadData(): void {
-
+    setTimeout(() => {
+      this.clearNotify();
+    }, 3000);
+    
     this.authService.getUser().subscribe({
       next: (data) => {
         this.user = data.result;
@@ -107,11 +112,11 @@ export class UserComponent implements OnInit {
       return;
     }
 
-    const password = this.userForm.value.password || '';
+    const newPassword = this.userForm.value.newPassword || '';
     const passwordConfirm = this.userForm.value.password_confirm || '';
 
-    if (password !== passwordConfirm) {
-      console.log(password)
+    if (newPassword !== passwordConfirm && newPassword) {
+      console.log(newPassword)
       console.log(passwordConfirm)
       return;
     }
@@ -157,12 +162,25 @@ export class UserComponent implements OnInit {
           this.avatarFile = null;
           this.loadData();
         }
+
+        this.notifyTitle = "Cập nhật thông tin";
+        this.notifyContent = "Thông tin đã được cập nhật!";
+        this.isSuccess = true;
+
+
       },
       error: (error) => {
-        console.error('Lỗi cập nhật:', error);
         this.isLoaded = true;
+        this.notifyTitle = "Cập nhật thông tin";
+        this.notifyContent = "Cập nhật thông tin thất bại!";
+        this.isSuccess = false;
       }
     });
+  }
+
+  clearNotify() {
+    this.notifyTitle = '';
+    this.notifyContent = '';
   }
 
   onFileChange(event: any) {

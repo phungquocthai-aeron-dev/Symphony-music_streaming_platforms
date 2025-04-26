@@ -127,24 +127,24 @@ public class SongController {
 	public void update(
 			@Valid @ModelAttribute SongUpdateDTO dto,
 			
-			@ValidFile(
-				maxSize = 1024 * 1024, // 1MB
-        		allowedContentTypes = {"lrc"},
-        		message = "File không hợp lệ",
-        		required = false)
+//			@ValidFile(
+//				maxSize = 1024 * 1024,
+//        		allowedContentTypes = {"lrc"},
+//        		message = "File không hợp lệ",
+//        		required = false)
 			@RequestPart(required = false, value = "lrcFile") MultipartFile lrcFile,
 		
-			@ValidFile(
-				maxSize = 1024 * 1024, // 1MB
-				allowedContentTypes = {"txt"},
-				message = "File không hợp lệ",
-				required = false)
+//			@ValidFile(
+//				maxSize = 1024 * 1024,
+//				allowedContentTypes = {"txt"},
+//				message = "File không hợp lệ",
+//				required = false)
 			@RequestPart(required = false, value = "lyricFile") MultipartFile lyricFile,
 		
-			@ValidFile(maxSize = 1024 * 1024, // 1MB
-        		allowedContentTypes = {"jpeg", "jpg", "png"},
-        		message = "File không hợp lệ",
-        		required = false)
+//			@ValidFile(maxSize = 1024 * 1024,
+//        		allowedContentTypes = {"jpeg", "jpg", "png"},
+//        		message = "File không hợp lệ",
+//        		required = false)
 			@RequestPart(required = false, value = "songImgFile") MultipartFile songImgFile) {
 		songService.update(dto, lyricFile, lrcFile, songImgFile);
 	}

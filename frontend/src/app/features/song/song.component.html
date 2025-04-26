@@ -1,9 +1,15 @@
+
 <main id="content" class="container-fluid bg-black-primary">
     <div class="row">
 
         <div class="col-2 bg-black-primary">
         </div>
         <div class="col-10 content p-4 pt-0">
+            <!-- ALERT -->
+<div *ngIf="notifyTitle !== ''" class="alert alert-dismissible fade show" role="alert" id="fixedAlert" [ngClass]="isSuccess ? 'alert-success' : 'alert-danger'">
+    <strong>{{ notifyTitle }}</strong> {{ notifyContent }}
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
             <div class="d-flex flex-wrap song-active-banner mb-5">
                 <div class="song-img-active-container pe-4">
                     <img *ngIf="song" [src]="'http://localhost:8080/symphony/uploads' + song.song_img" alt=""

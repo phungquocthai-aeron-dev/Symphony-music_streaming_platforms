@@ -5,7 +5,7 @@ import { SingerDTO } from '../../shared/models/Singer.dto';
 import { ResponseData } from '../../shared/models/ResponseData';
 import { UserDTO } from '../../shared/models/User.dto';
 import { AuthService } from '../../core/services/auth.service';
-import { DecimalPipe, NgFor, NgIf } from '@angular/common';
+import { CommonModule, DecimalPipe, NgFor, NgIf } from '@angular/common';
 import { SongService } from '../../core/services/song.service';
 import { SongDTO } from '../../shared/models/Song.dto';
 import { RowCardComponent } from '../../shared/components/row-card/row-card.component';
@@ -17,12 +17,14 @@ import { TopSongDTO } from '../../shared/models/TopSong.dto';
 import { AlbumDTO } from '../../shared/models/Album.dto';
 import { AlbumService } from '../../core/services/album.service';
 import { AlbumCardComponent } from '../../shared/components/album-card/album-card.component';
+import { PlaylistService } from '../../core/services/playlist.service';
+import { PlaylistDTO } from '../../shared/models/Playlist.dto';
 
 declare var bootstrap: any;
 
 @Component({
   selector: 'app-singer',
-  imports: [NgIf, NgFor, RowCardComponent, ReactiveFormsModule, DecimalPipe, FormsModule, AlbumCardComponent],
+  imports: [NgIf, NgFor, RowCardComponent, ReactiveFormsModule, DecimalPipe, FormsModule, AlbumCardComponent, CommonModule],
   templateUrl: './singer.component.html',
   styleUrl: './singer.component.css'
 })
@@ -45,7 +47,7 @@ export class SingerComponent implements OnInit, OnDestroy {
   singerNotPresent!: SingerDTO[];
   singerExclude!: SingerDTO[];
   categories!: CategoryDTO[];
-
+  playlists: PlaylistDTO[] = [];
   isLoaded = false;
 
   songForm!: FormGroup;
@@ -94,10 +96,19 @@ export class SingerComponent implements OnInit, OnDestroy {
     private authService: AuthService,
     private songService: SongService,
     private albumService: AlbumService,
-    private dataShareService: DataShareService
+    private dataShareService: DataShareService,
+    private playlistService: PlaylistService
   ) {}
 
   ngOnInit() {
+    const user = this.authService.getUserInfo();
+    if(user) {
+      this.playlistService.getPlaylistByUserId(user.userId).subscribe(response => {
+        this.playlists = response.result || [];
+        console.log(this.playlists)
+      });
+    }
+    
     this.dataShareService.changeLeftSideInfo("Singer");
 
     this.paramSubscription = this.route.paramMap.subscribe(params => {
@@ -108,6 +119,7 @@ export class SingerComponent implements OnInit, OnDestroy {
         this.loadSingerData(this.singerId);
       }
     });
+
   }
 
   loadSingerData(singerId: string | number) {
@@ -193,8 +205,27 @@ export class SingerComponent implements OnInit, OnDestroy {
         }
       })
     }
+  }
 
-   
+  getTotalListens(): number {
+    return this.songs.reduce((sum, song) => sum + song.total_listens, 0);
+  }
+
+  showNotification(event: { title: string, content: string, isSuccess: boolean }) {
+    this.notifyTitle = event.title;
+    this.notifyContent = event.content;
+    this.isSuccess = event.isSuccess;
+  
+    setTimeout(() => {
+      this.clearNotify();
+    }, 3000);
+
+    if(this.singerId) this.loadSingerData(this.singerId);
+  }
+
+  clearNotify() {
+    this.notifyTitle = '';
+    this.notifyContent = '';
   }
 
   openModal() {
@@ -267,9 +298,21 @@ export class SingerComponent implements OnInit, OnDestroy {
       this.songService.deleteSong(this.selectedSong.song_id.toString(), this.singerId.toString()).subscribe({
         next: (data) => {
           if(this.singerId) this.loadSingerData(this.singerId);
+          this.notifyTitle = "Xóa bài hát";
+          this.notifyContent = "Bài hát đã được xóa!";
+          this.isSuccess = true;
+          setTimeout(() => {
+            this.clearNotify();
+          }, 3000);
         },
         error: (error) => {
-          console.error("Xoá bài hát thất bại!")
+          this.notifyTitle = "Xóa bài hát";
+          this.notifyContent = "Xóa bài hát thất bại";
+          this.isSuccess = false;
+          console.error(error)
+          setTimeout(() => {
+            this.clearNotify();
+          }, 3000);
         }
       })
     }
@@ -322,12 +365,25 @@ export class SingerComponent implements OnInit, OnDestroy {
         this.lrcFile = null;
         this.lyricFile = null;
         this.songImgFile = null;
-        
+        this.defaultSongImg = "http://localhost:8080/symphony/uploads/images/other/no-img.png";
+
         this.closeCreateButton.nativeElement.click();
         if(this.singerId) this.loadSingerData(this.singerId);
+
+        this.notifyTitle = "Thêm bài hát";
+        this.notifyContent = "Bài hát đã được thêm!";
+        this.isSuccess = true;
+        setTimeout(() => {
+          this.clearNotify();
+        }, 3000);
       },
       error: (error) => {
-        console.error('Lỗi khi upload:', error);
+        this.notifyTitle = "Thêm bài hát";
+        this.notifyContent = "Thêm bài hát thất bại";
+        this.isSuccess = false;
+        setTimeout(() => {
+          this.clearNotify();
+        }, 3000);
       }
     });
   }
@@ -381,19 +437,19 @@ export class SingerComponent implements OnInit, OnDestroy {
       }
   
     // Thêm các file
-    if (this.lrcFile) {
-      formData.append('lrcFile', this.lrcFile);
+    if (this.lrcFileUpd) {
+      formData.append('lrcFile', this.lrcFileUpd);
       formData.append('lrc', 'null');
     }
 
 
-    if (this.lyricFile) {
-      formData.append('lyricFile', this.lyricFile);
+    if (this.lyricFileUpd) {
+      formData.append('lyricFile', this.lyricFileUpd);
       formData.append('lyric', 'null');
     }
 
-    if (this.songImgFile) {
-      formData.append('songImgFile', this.songImgFile);
+    if (this.songImgFileUpd) {
+      formData.append('songImgFile', this.songImgFileUpd);
       formData.append('song_img', 'null');
     }
   
@@ -410,9 +466,23 @@ export class SingerComponent implements OnInit, OnDestroy {
         
         this.closeUpdateButton.nativeElement.click();
         if(this.singerId) this.loadSingerData(this.singerId);
+
+        this.notifyTitle = "Cập nhật bài hát";
+        this.notifyContent = "Bài hát đã được cập nhật!";
+        this.isSuccess = true;
+        setTimeout(() => {
+          this.clearNotify();
+        }, 3000);
+
       },
       error: (error) => {
-        console.error('Lỗi khi upload:', error);
+        this.notifyTitle = "Cập nhật bài hát";
+        this.notifyContent = "Cập nhật bài hát thất bại";
+        this.isSuccess = false;
+        console.error(error);
+        setTimeout(() => {
+          this.clearNotify();
+        }, 3000);
       }
     });
   }
@@ -506,7 +576,7 @@ export class SingerComponent implements OnInit, OnDestroy {
     reader.onload = (e: any) => {
       this.songSelectedImg = e.target.result;
     };
-    
+    console.log(this.songSelectedImg)
     reader.readAsDataURL(file);
   }
   
@@ -530,7 +600,9 @@ export class SingerComponent implements OnInit, OnDestroy {
   quantity = 0;
   selectedImage: File | null = null;
   defaultAlbumImg:string = "http://localhost:8080/symphony/uploads/images/other/no-img.png";
-
+  notifyContent = "";
+  notifyTitle = "";
+  isSuccess = true;
 
 onFileAlbumImgChange(event: Event): void {
   const input = event.target as HTMLInputElement;
@@ -559,6 +631,10 @@ onFileAlbumImgChange(event: Event): void {
     });
   }
 
+  turnOn() {
+    this.dataShareService.changePlaylistSong(this.songs);
+  }
+
   addAlbum(): void {
     
     if(this.singerId) {
@@ -581,6 +657,7 @@ onFileAlbumImgChange(event: Event): void {
 
   albumSelect(album: AlbumDTO): void {
     this.album = album;
+    this
   }
 
   removeAlbum(albumId: number): void {

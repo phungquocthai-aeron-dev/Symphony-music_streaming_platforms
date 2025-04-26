@@ -34,6 +34,8 @@ import com.phungquocthai.symphony.mapper.TopSongMapper;
 import com.phungquocthai.symphony.repository.AlbumRepository;
 import com.phungquocthai.symphony.repository.CategoryRepository;
 import com.phungquocthai.symphony.repository.FavoriteRepository;
+import com.phungquocthai.symphony.repository.ListenRepository;
+import com.phungquocthai.symphony.repository.PlaylistRepository;
 import com.phungquocthai.symphony.repository.SingerRepository;
 import com.phungquocthai.symphony.repository.SongRepository;
 
@@ -73,6 +75,15 @@ public class SongService {
 	
 	@Autowired
 	FavoriteRepository favoriteRepository;
+	
+	@Autowired
+	ListenRepository listenRepository;
+	
+	@Autowired
+	PlaylistRepository playlistRepository;
+	
+	@Autowired
+	AlbumRepository albumRepository;
 		
 	public List<SongDTO> getFavoriteSongsOfUser(Integer userId) {
 		List<Song> songEntities = songRepository.getFavoriteSongsOfUser(userId); 
@@ -150,6 +161,12 @@ public class SongService {
 		singerRepository.deleteBySongIdAndSingerOwnership(songId, singerId);
 		Integer isOrphanhood = singerRepository.havePresent(songId);
 		if(isOrphanhood == null) {
+			playlistRepository.deleteAllBySongId(songId);
+			favoriteRepository.deleteAllBySongId(songId);
+			listenRepository.deleteAllBySongId(songId);
+			categoryRepository.deleteAllBySongId(songId);
+			albumRepository.deleteAllBySongId(songId);
+			
 			songRepository.deleteById(songId);
 			
 			String pathStorage = "D:\\nienluan\\Symphony-music-streaming-platforms\\backend\\uploads";
@@ -165,10 +182,8 @@ public class SongService {
 	@PreAuthorize("hasRole('SINGER')")
 	public SongDTO update(SongUpdateDTO dto, MultipartFile lyricFile,
 			MultipartFile lrcFile, MultipartFile songImgFile) {
-		
 		Song song = songRepository.findById(dto.getSong_id())
 				.orElseThrow(() -> new AppException(ErrorCode.SONG_NOT_EXISTED));
-		
 		if(lyricFile != null) {
 			String lyric = fileStorageService.storeFile(lyricFile, PathStorage.LYRIC);
 			song.setLyric(lyric);

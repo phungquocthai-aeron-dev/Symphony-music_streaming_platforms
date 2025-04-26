@@ -26,6 +26,9 @@ export class LibraryComponent implements OnInit {
   songs: SongDTO[] = [];
   quantity = 0;
   playlist!: PlaylistDTO;
+  notifyContent = "";
+  notifyTitle = "";
+  isSuccess = true;
 
   constructor(
     private playlistService: PlaylistService,
@@ -55,6 +58,12 @@ export class LibraryComponent implements OnInit {
       this.playlists.push(response.result);
       this.newPlaylistName = '';
       this.closeFormCreate.nativeElement.click();
+      this.notifyTitle = "Tạo playlist";
+      this.notifyContent = "Playlist đã được tạo thành công!";
+      this.isSuccess = true;
+      setTimeout(() => {
+        this.clearNotify();
+      }, 3000);
     });
   }
 
@@ -77,6 +86,25 @@ export class LibraryComponent implements OnInit {
       playlist.playlistName = event.newName;
     }
   }  
+
+  turnOnPlaylist() {
+    this.dataShareService.changePlaylistSong(this.songs);
+  }
+
+  showNotification(event: { title: string, content: string, isSuccess: boolean }) {
+    this.notifyTitle = event.title;
+    this.notifyContent = event.content;
+    this.isSuccess = event.isSuccess;
+  
+    setTimeout(() => {
+      this.clearNotify();
+    }, 3000);
+  }
+
+  clearNotify() {
+    this.notifyTitle = '';
+    this.notifyContent = '';
+  }
   
 }
 

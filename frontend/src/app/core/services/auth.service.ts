@@ -139,16 +139,8 @@ export class AuthService {
   }
 
   // Đăng ký
-  register(userData: UserRegistrationDTO): Observable<ResponseData<UserDTO>> {
-    return this.http.post<any>(environment.apiUrl + 'auth/register', userData).pipe(
-      tap((response) => {
-        console.log('Đăng ký thành công:', response);
-      }),
-      catchError((error) => {
-        console.error('Lỗi đăng ký:', error);
-        return throwError(() => new Error(error.error?.message || 'Đăng ký thất bại!'));
-      })
-    );
+  register(data: UserRegistrationDTO): Observable<ResponseData<UserDTO>> {
+    return this.http.post<any>(environment.apiUrl + 'auth/register', data);
   }
 
   // Đăng nhập và lưu JWT

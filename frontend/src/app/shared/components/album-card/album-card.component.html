@@ -1,8 +1,4 @@
-<!-- ALERT -->
-<div class="alert alert-success alert-dismissible fade show" role="alert" id="fixedAlert">
-  <strong>Holy guacamole!</strong> You should check in on some of those fields below.
-  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-</div>
+
 <div class="card card-song mt-4" style="background-color: var(--black-color);">
     <div class="card-img-container overflow-hidden rounded-3">
       <div class="card-img-container overflow-hidden rounded-3 ">
@@ -32,12 +28,12 @@
             <li>
               <button class="dropdown-item text-white-primary" (click)="selectAlbum()">Chi tiết</button>
             </li>
-            <li>
+            <li *ngIf="role==='SINGER'">
               <button class="dropdown-item text-white-primary" data-bs-toggle="modal" [attr.data-bs-target]="'#renameModal' + album.albumId">
                 Cập nhật
               </button>
             </li>
-            <li>
+            <li *ngIf="role==='SINGER'" (click)="selectAlbum(true)">
               <button class="dropdown-item text-white-primary" data-bs-toggle="modal" [attr.data-bs-target]="'#deleteModal' + album.albumId">
                 Xóa
               </button>

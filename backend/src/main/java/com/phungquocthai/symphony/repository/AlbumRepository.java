@@ -36,5 +36,10 @@ public interface AlbumRepository extends JpaRepository<Album, Integer> {
     @Transactional
     @Query(value = "DELETE FROM album_song WHERE album_id = :albumId AND song_id = :songId", nativeQuery = true)
     void removeSongFromAlbum(@Param("albumId") Integer albumId, @Param("songId") Integer songId);
+    
+    @Modifying
+    @Transactional
+    @Query(value = "DELETE FROM album_song WHERE song_id = :songId", nativeQuery = true)
+    void deleteAllBySongId(@Param("songId") Integer songId);
 }
 

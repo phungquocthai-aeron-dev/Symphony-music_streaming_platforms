@@ -21,6 +21,8 @@ export class AlbumCardComponent implements OnInit {
   @Output() albumSelect = new EventEmitter<AlbumDTO>();
   @Output() deleted = new EventEmitter<number>();
   @Output() renamed = new EventEmitter<{ albumId: number; newName: string }>();
+  @Output() notify = new EventEmitter<{ title: string, content: string, isSuccess: boolean }>();
+  @Input() role = "USER";
 
   songs: SongDTO[] = [];
   newAlbumName: string = '';
@@ -67,8 +69,8 @@ export class AlbumCardComponent implements OnInit {
   
   }
 
-  selectAlbum() {
-    this.albumDetail.emit(this.songs);
+  selectAlbum(isDelete = false) {
+    if(!isDelete) this.albumDetail.emit(this.songs);
     this.albumSelect.emit(this.album);
     this.dataShareService.changeCurrentAlbum(this.album);
   }
@@ -78,8 +80,19 @@ export class AlbumCardComponent implements OnInit {
       next: () => {
         this.deleted.emit(this.album.albumId);
         this.closeFormDelete.nativeElement.click();
+        this.notify.emit({
+          title: 'Xóa album',
+          content: 'Album đã được xóa!',
+          isSuccess: true
+        });
       },
-      error: err => console.error('Lỗi khi xóa album:', err)
+      error: (error) => {
+        this.notify.emit({
+          title: 'Xóa album',
+          content: 'Xóa album thất bại!',
+          isSuccess: false
+        });
+      }
     });
   }
 
@@ -91,8 +104,19 @@ export class AlbumCardComponent implements OnInit {
       next: () => {
         this.renamed.emit({ albumId: this.album.albumId, newName });
         this.closeFormUpdate.nativeElement.click();
+        this.notify.emit({
+          title: 'Cập nhật album',
+          content: 'Album đã được cập nhật!',
+          isSuccess: true
+        });
       },
-      error: err => console.error('Lỗi khi đổi tên album:', err)
+      error: (error) => {
+        this.notify.emit({
+          title: 'Cập nhật album',
+          content: 'Cập nhật album thất bại!',
+          isSuccess: false
+        });
+      }
     });
   }
 }

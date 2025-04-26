@@ -11,6 +11,8 @@ import { RankCardComponent } from '../../shared/components/rank-card/rank-card.c
 import { AuthService } from '../../core/services/auth.service';
 import { PlaylistDTO } from '../../shared/models/Playlist.dto';
 import { PlaylistService } from '../../core/services/playlist.service';
+import { SongDTO } from '../../shared/models/Song.dto';
+import { CategoryDTO } from '../../shared/models/Category.dto';
 
 @Component({
   selector: 'app-rank',
@@ -65,4 +67,33 @@ export class RankComponent implements OnInit {
       });
     }
   }
+
+  turnOn() {
+    const songs: SongDTO[] = this.topSongs.map(this.mapTopSongToSong);
+    this.dataShareService.changePlaylistSong(songs);
+
+  }
+
+  mapTopSongToSong(topSong: TopSongDTO): SongDTO {
+    return {
+      song_id: topSong.song_id,
+      songName: topSong.songName,
+      song_img: topSong.song_img,
+      total_listens: topSong.total_listens,
+      path: topSong.path,
+      lyric: topSong.lyric,
+      lrc: topSong.lrc,
+      duration: topSong.duration,
+      releaseDate: topSong.releaseDate,
+      author: topSong.author,
+      isVip: topSong.isVip,
+      categories: [], // vì TopSongDTO chỉ có categoryIds, bạn cần map từ id sang CategoryDTO nếu có dữ liệu
+      singers: topSong.singers,
+      favorite: topSong.favorite
+    };
+  }
+
+ 
+  
+  
 }

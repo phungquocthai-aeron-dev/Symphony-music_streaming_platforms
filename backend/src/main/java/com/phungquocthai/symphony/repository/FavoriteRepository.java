@@ -18,6 +18,11 @@ public interface FavoriteRepository extends JpaRepository<Favorite, Integer> {
 
 	@Modifying
 	@Transactional
+	@Query(value = "DELETE FROM favorite WHERE user_id = :userId", nativeQuery = true)
+	void deleteAllByUserId(@Param("userId") Integer userId);
+	 
+	@Modifying
+	@Transactional
 	@Query(value = "INSERT INTO favorite (song_id, user_id) VALUES (:songId, :userId)", nativeQuery = true)
 	Integer insertFavorite(@Param("songId") Integer songId, @Param("userId") Integer userId);
 	
@@ -27,4 +32,9 @@ public interface FavoriteRepository extends JpaRepository<Favorite, Integer> {
 	@Query(value = "SELECT COUNT(*) FROM favorite WHERE song_id = :songId AND user_id = :userId limit 1", nativeQuery = true)
 	Integer findByPrimaryKey(@Param("songId") Integer songId, @Param("userId") Integer userId);
 
+	 @Modifying
+	 @Transactional
+	 @Query(value = "DELETE FROM favorite WHERE song_id = :songId", nativeQuery = true)
+	 void deleteAllBySongId(@Param("songId") Integer songId);
+	 
 }

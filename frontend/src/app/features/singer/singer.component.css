@@ -90,6 +90,16 @@ select option:checked {
     background-color: var(--grey-color) !important;
 }
 
+#fixedAlert {
+    position: fixed;
+    top: 100px; 
+    right: 0;
+    width: auto;
+    max-width: 400px;
+    z-index: 1050;
+    text-align: right;
+  }
+
 @media screen and (max-width: 992px) {
     #singer-product ul li:first-child {
         display: none;

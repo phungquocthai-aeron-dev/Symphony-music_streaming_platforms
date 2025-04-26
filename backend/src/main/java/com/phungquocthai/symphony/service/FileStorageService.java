@@ -49,7 +49,7 @@ public class FileStorageService {
 	            Path filePath = Paths.get(absoluteFilePath).toAbsolutePath().normalize();
 	            
 	            // Kiểm tra xem đường dẫn tệp có hợp lệ và nằm trong phạm vi thư mục cho phép (ví dụ: "D:/uploads/")
-	            Path basePath = Paths.get("D:/uploads/").toAbsolutePath().normalize();
+	            Path basePath = Paths.get("D:\\nienluan\\Symphony-music-streaming-platforms\\backend\\uploads").toAbsolutePath().normalize();
 	            if (!filePath.startsWith(basePath)) {
 	                throw new AppException(ErrorCode.FILE_DELETE_PERMISSION_DENIED);
 	            }

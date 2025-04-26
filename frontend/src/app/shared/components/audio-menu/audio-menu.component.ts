@@ -1,16 +1,17 @@
 import { AfterViewInit, Component, ElementRef, Input, OnDestroy, OnInit, Output, ViewChild, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
 import { SongDTO } from '../../models/Song.dto';
 import { RouterModule } from '@angular/router';
-import { NgFor, NgIf } from '@angular/common';
+import { CommonModule, NgFor, NgIf } from '@angular/common';
 import { AuthService } from '../../../core/services/auth.service';
 import { SongService } from '../../../core/services/song.service';
 import { TimeFormatPipe } from '../../pipes/time-format.pipe';
 import { DataShareService } from '../../../core/services/dataShare.service';
 import { UserDTO } from '../../models/User.dto';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-audio-menu',
-  imports: [ RouterModule, NgFor, NgIf, TimeFormatPipe],
+  imports: [ RouterModule, NgFor, NgIf, TimeFormatPipe, CommonModule],
   templateUrl: './audio-menu.component.html',
   styleUrl: './audio-menu.component.css'
 })
@@ -44,6 +45,9 @@ export class AudioMenuComponent implements AfterViewInit, OnChanges {
   progress: string = '0'; // miền giá trị 0 đến 100
   inputtingProgress: boolean = false;
   duration = 0;
+  notifyContent = "";
+  notifyTitle = "";
+  isSuccess = true;
 
   constructor(
       private authService: AuthService,
@@ -55,7 +59,6 @@ export class AudioMenuComponent implements AfterViewInit, OnChanges {
 
       setTimeout(() => {
         if (!this.audioRef || !this.volumeRef || !this.progressRef || !this.progressBar || !this.progressVolumeRef) {
-          console.warn("ViewChild chưa được khởi tạo.");
           return;
         }
         this.loadData();

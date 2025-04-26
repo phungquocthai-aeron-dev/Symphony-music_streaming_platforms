@@ -6,6 +6,7 @@ import { NgIf } from '@angular/common';
 import { PlaylistService } from '../../../core/services/playlist.service';
 import { FormsModule } from '@angular/forms';
 import { DataShareService } from '../../../core/services/dataShare.service';
+import { error } from 'console';
 
 @Component({
   selector: 'app-playlist-card',
@@ -21,10 +22,13 @@ export class PlaylistCardComponent implements OnInit {
   @Output() playlistSelect = new EventEmitter<PlaylistDTO>();
   @Output() deleted = new EventEmitter<number>();
   @Output() renamed = new EventEmitter<{ playlistId: number; newName: string }>();
+  @Output() notify = new EventEmitter<{ title: string, content: string, isSuccess: boolean }>();
+
 
   songs: SongDTO[] = [];
   songImages: string[] = [];
   newPlaylistName: string = '';
+
 
   @ViewChild('deleteButtonRef',  { static: false }) closeFormDelete!: ElementRef;
   @ViewChild('renameButtonRef',  { static: false }) closeFormUpdate!: ElementRef;
@@ -47,10 +51,11 @@ export class PlaylistCardComponent implements OnInit {
     }
   }
 
-  selectPlaylist() {
+  selectPlaylist(isTurnOn = false) {
     this.playlistDetail.emit(this.songs);
     this.playlistSelect.emit(this.playlist);
     this.dataShareService.changeCurrentPlaylist(this.playlist);
+    if(isTurnOn) this.dataShareService.changePlaylistSong(this.songs);
   }
 
   confirmDelete(): void {
@@ -58,8 +63,19 @@ export class PlaylistCardComponent implements OnInit {
       next: () => {
         this.deleted.emit(this.playlist.playlistId);
         this.closeFormDelete.nativeElement.click();
+        this.notify.emit({
+          title: 'Xóa playlist',
+          content: 'Đã xóa playlist!',
+          isSuccess: true
+        });
       },
-      error: err => console.error('Lỗi khi xóa playlist:', err)
+      error: (error) => {
+        this.notify.emit({
+          title: 'Xóa playlist',
+          content: 'Xóa playlist thất bại!',
+          isSuccess: false
+        });
+      }
     });
   }
 
@@ -71,8 +87,19 @@ export class PlaylistCardComponent implements OnInit {
       next: () => {
         this.renamed.emit({ playlistId: this.playlist.playlistId, newName });
         this.closeFormUpdate.nativeElement.click();
+        this.notify.emit({
+          title: 'Cập nhật playlist',
+          content: 'Playlist đã được cập nhật!',
+          isSuccess: false
+        });
       },
-      error: err => console.error('Lỗi khi đổi tên playlist:', err)
+      error: (error) => {
+        this.notify.emit({
+          title: 'Cập nhật playlist',
+          content: 'Cập nhật playlist thất bại!',
+          isSuccess: false
+        });
+      }
     });
   }
 }

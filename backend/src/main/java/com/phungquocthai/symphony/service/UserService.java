@@ -21,6 +21,8 @@ import com.phungquocthai.symphony.entity.Vip;
 import com.phungquocthai.symphony.exception.AppException;
 import com.phungquocthai.symphony.mapper.UserMapper;
 import com.phungquocthai.symphony.mapper.UserRegistrationMapper;
+import com.phungquocthai.symphony.repository.FavoriteRepository;
+import com.phungquocthai.symphony.repository.PlaylistRepository;
 import com.phungquocthai.symphony.repository.UserRepository;
 import com.phungquocthai.symphony.repository.VipRepository;
 
@@ -53,6 +55,12 @@ public class UserService {
 	VipRepository vipRepository;
 	
 	@Autowired
+	PlaylistRepository playlistRepository;
+	
+	@Autowired
+	FavoriteRepository favoriteRepository;
+	
+	@Autowired
 	ExcelExportUtil excelExportUtil;
 
 	public UserDTO create(UserRegistrationDTO dto) {
@@ -63,7 +71,7 @@ public class UserService {
 		dto.setPassword(passwordEncoder.encode(dto.getPassword()));
 		User user = userRegistrationMapper.toEntity(dto);
 		user.setRole(Role.USER.getValue());
-		user.setAvatar("/avatar/my_avatar.jpg");
+		user.setAvatar("/images/avatars/default-avatar.jpg");
 		
 		userRepository.save(user);
 		
@@ -76,7 +84,10 @@ public class UserService {
 	public UserDTO update(UserUpdateDTO dto, MultipartFile avatarFile,
 			String password, String password_confirm, String newPassword) {
 		
-		if(!password.equals(password_confirm)) return null;
+		if(newPassword != null && password != "") {
+			log.info("STOP");
+			if(!newPassword.equals(password_confirm)) return null;
+		}
 		
 		User user = userRepository.findById(dto.getId())
 				.orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISRED));
@@ -108,8 +119,10 @@ public class UserService {
 		return userMapper.toDTO(user);
 	}
 	
-	@PreAuthorize("hasRole('ADMIN') or #userId.toString() == authentication.name")
+	@PreAuthorize("hasAnyRole('SINGER', 'ADMIN')")
 	public void delete(Integer userId) {
+		playlistRepository.deleteAllByUserId(userId);
+		favoriteRepository.deleteAllByUserId(userId);
 	    userRepository.deleteById(userId);
 	}
 

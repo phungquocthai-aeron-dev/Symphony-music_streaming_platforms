@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { SongDTO } from '../../models/Song.dto';
 import { NgFor, NgIf } from '@angular/common';
 import { SongService } from '../../../core/services/song.service';
@@ -27,7 +27,7 @@ export class RowCardComponent {
   @Output() isDelete = new EventEmitter<boolean>();
   @Output() songSelected = new EventEmitter<SongDTO | TopSongDTO>();
   @Output() openModalEdit = new EventEmitter<void>();
-
+  @Output() notify = new EventEmitter<{ title: string, content: string, isSuccess: boolean }>();
 
   @Input()userPlaylists: PlaylistDTO[] = [];
   @Input()singerAlbums: AlbumDTO[] = [];
@@ -93,10 +93,18 @@ onDeleteSongInPlaylist(song: SongDTO | TopSongDTO) {
     if(data) {
       this.playlistService.removeSongFromPlaylist(data.playlistId, song.song_id).subscribe({
         next: (data) => {
-
+          this.notify.emit({
+            title: 'Xóa bài hát khỏi playlist',
+            content: 'Bài hát đã được xóa khỏi playlist!',
+            isSuccess: true
+          });
         },
         error: (error) => {
-          console.error(error);
+          this.notify.emit({
+            title: 'Xóa bài hát khỏi playlist',
+            content: 'Xóa bài hát khỏi playlist thất bại!',
+            isSuccess: false
+          });
         }
       })
     }
@@ -110,17 +118,24 @@ openAddToPlaylist(song: SongDTO | TopSongDTO) {
 
 addSongToPlaylist(playlistId: number) {
   let song: any = null;
-
   const subscription = this.eventSource.currentSongToPlaylist.subscribe(data => {
     if (data) {
       song = data;
       this.playlistService.addSongToPlaylist(playlistId, song.song_id).subscribe({
         next: (data) => {
-          alert(data.result);
+          this.notify.emit({
+            title: 'Thêm bài hát vào playlist',
+            content: 'Bài hát đã được thêm vào playlist!',
+            isSuccess: true
+          });
           subscription.unsubscribe();
         },
         error: (err) => {
-          alert('Thêm vào playlist thất bại!');
+          this.notify.emit({
+            title: 'Thêm bài hát vào playlist',
+            content: 'Thêm bài hát vào playlist thất bại!',
+            isSuccess: true
+          });
           subscription.unsubscribe(); 
         }
       });
@@ -147,21 +162,63 @@ addSongToAlbum(albumId: number) {
       song = data;
       this.albumService.addSongToAlbum(albumId, song.song_id).subscribe({
         next: (data) => {
-          alert(data.result);
+          this.notify.emit({
+            title: 'Thêm bài hát vào album',
+            content: 'Bài hát đã được thêm vào album!',
+            isSuccess: true
+          });
           subscription.unsubscribe();
         },
         error: (err) => {
-          alert('Thêm vào album thất bại!');
-          subscription.unsubscribe(); 
+          this.notify.emit({
+            title: 'Thêm bài hát vào album',
+            content: 'Thêm bài hát vào album thất bại!',
+            isSuccess: true
+          });
         }
       });
-    } else {
-      subscription.unsubscribe();
     }
   });  
   this.eventSource.changeSongPlaylist(null);
 
 }
 
+deleteSongFromAlbum() {
+  let song: any = null;
+  this.eventSource.currentAlbum.subscribe({
+    next: data => {
+      const album:AlbumDTO = data;
+      console.log(data)
+      if(data) {
+
+        this.eventSource.currentSongToAlbum.subscribe(data => {
+          if (data) {
+            song = data;
+            this.albumService.removeSongFromAlbum(album.albumId, song.song_id).subscribe({
+              next: (data) => {
+                this.notify.emit({
+                  title: 'Xóa bài hát khỏi album',
+                  content: 'Bài hát đã được xoá khỏi album!',
+                  isSuccess: true
+                });
+              },
+              error: (err) => {
+                this.notify.emit({
+                  title: 'Xóa bài hát khỏi album',
+                  content: 'Xóa bài hát khỏi album thất bại!',
+                  isSuccess: false
+                });
+              }
+            });
+          }
+        });  
+        this.eventSource.changeSongPlaylist(null);
+      
+
+      }
+    }
+  })
+  
+}
 
 }

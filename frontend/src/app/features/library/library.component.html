@@ -1,9 +1,14 @@
+
 <main id="content" class="container-fluid bg-black-primary pt-5 mt-5">
     <div class="row">
         <div class="col-2 bg-black-primary">
         </div>
 
         <div id="content-library" class="col-10 p-4 pt-0">
+            <div *ngIf="notifyTitle !== ''" class="alert alert-dismissible fade show" role="alert" id="fixedAlert" [ngClass]="isSuccess ? 'alert-success' : 'alert-danger'">
+                <strong>{{ notifyTitle }}</strong> {{ notifyContent }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
             <h2 class="text-center text-white-primary">THƯ VIỆN</h2>
 
             <!-- PLAYLIST EMPTY -->

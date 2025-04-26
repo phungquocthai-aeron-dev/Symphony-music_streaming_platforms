@@ -33,6 +33,16 @@ public interface PlaylistRepository extends JpaRepository<Playlist, Integer> {
 		       nativeQuery = true)
 	Integer isSongInPlaylist(@Param("playlistId") Integer playlistId, @Param("songId") Integer songId);
 	
+    @Modifying
+    @Transactional
+    @Query(value = "DELETE FROM playlist WHERE user_id = :userId", nativeQuery = true)
+    void deleteAllByUserId(@Param("userId") Integer userId);
+    
+    @Modifying
+    @Transactional
+    @Query(value = "DELETE FROM playlist_song WHERE song_id = :songId", nativeQuery = true)
+    void deleteAllBySongId(@Param("songId") Integer songId);
+    
 	@Modifying
     @Transactional
     @Query(value = "DELETE FROM playlist_song WHERE playlist_id = :playlistId AND song_id = :songId", 

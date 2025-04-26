@@ -47,6 +47,20 @@ export class MainLayoutComponent implements OnInit {
       if(data) this.currentSong = data;
     });
 
+    this.dataShareService.dataPlaylistSong.subscribe(data => {
+      console.log(data)
+      if(data) {
+        if(data.length > 0) {
+          this.playlistSong = [];
+          this.playlistSong = data;
+          this.currentSong = data[0];
+          this.playlistSong = this.filteredPlaylist();
+          this.playlistSong.unshift(this.currentSong);
+          console.log(this.playlistSong)
+        }
+      }
+    })
+
     this.songService.getCurrentSong().subscribe({
       next: (response) => {
         if (response.code === 1000) {
@@ -85,8 +99,10 @@ export class MainLayoutComponent implements OnInit {
       this.songService.getRecentlyListenSongs().subscribe({
         next: (response: ResponseData<SongDTO[]>) => {
           if (response.code === 1000) {
-            this.recentSong = response.result;
-            this.recentSong = this.filteredRecentSong();
+            if(response.result) {
+              this.recentSong = response.result;
+              this.recentSong = this.filteredRecentSong();
+            }
 
           if (this.currentSong) {
             this.recentSong.unshift(this.currentSong);

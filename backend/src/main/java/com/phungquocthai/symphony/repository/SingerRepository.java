@@ -71,7 +71,7 @@ public interface SingerRepository extends JpaRepository<Singer, Integer> {
 	    DELETE FROM album_song 
 	    WHERE song_id = :songId 
 	      AND album_id IN (
-	          SELECT id FROM album WHERE singer_id = :singerId
+	          SELECT album_id FROM album WHERE singer_id = :singerId
 	      )
 	    """, nativeQuery = true)
 	Integer deleteBySongIdAndSingerOwnership(@Param("songId") Integer songId, @Param("singerId") Integer singerId);

@@ -1,0 +1,1 @@
+thêm độ ưu tiên, tạo thêm vài sprint rồi add us vào sprint, trưởng dự án ko tham gia vào user story

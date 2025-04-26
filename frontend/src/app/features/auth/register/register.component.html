@@ -14,6 +14,11 @@
                             class="form-control text-white-primary bg-black-primary no-outline shadow-none"
                             id="fullName" placeholder="Nhập họ và tên" name="fullName" value="">
 <!-- info -->
+<div *ngIf="(fullName?.invalid && (fullName?.dirty || fullName?.touched || isSubmitted))">
+    <small class="text-danger">
+        <span *ngIf="fullName?.errors?.['required']">Họ và tên là bắt buộc</span>
+    </small>
+</div>
                     </div>
                     <div class="mb-3 mt-3">
                         <label for="phone" class="text-white-primary mb-3">Số điện thoại:</label>
@@ -22,6 +27,12 @@
                             id="phone" placeholder="Số điện thoại dùng để đăng nhập" name="phone" value="">
 
 <!-- info -->
+<div *ngIf="(phone?.invalid && (phone?.dirty || phone?.touched || isSubmitted))">
+    <small class="text-danger">
+        <span *ngIf="phone?.errors?.['required']">Số điện thoại là bắt buộc</span>
+        <span *ngIf="phone?.errors?.['pattern']">Số điện thoại không đúng định dạng</span>
+    </small>
+</div>
                     </div>
                     <div class="mb-3">
                         <label for="password" class="text-white-primary mb-3">Mật khẩu:</label>
@@ -32,6 +43,12 @@
                             name="password">
 
 <!-- info -->
+<div *ngIf="(password?.invalid && (password?.dirty || password?.touched || isSubmitted))">
+    <small class="text-danger">
+        <span *ngIf="password?.errors?.['required']">Mật khẩu là bắt buộc</span>
+        <span *ngIf="password?.errors?.['pattern']">Mật khẩu phải có ít nhất 8 ký tự. Bao gồm chữ thường, chữ in hoa, số và ký tự đặc biệt</span>
+    </small>
+</div>
                     </div>
                     <div class="mb-3">
                         <label for="password_confirm" class="text-white-primary mb-3">Nhập lại mật khẩu:</label>
@@ -39,9 +56,13 @@
                             class="form-control text-white-primary bg-black-primary no-outline shadow-none"
                             id="password_confirm" name="password_confirm">
 <!-- info -->
-                        <div *ngIf="passwordMismatch && isSubmitted">
-                            <strong class="text-danger">Mật khẩu nhập lại không chính xác</strong>
-                        </div>
+<div *ngIf="(confirmPassword?.invalid && (confirmPassword?.dirty || confirmPassword?.touched || isSubmitted)) || (passwordMismatch && isSubmitted)">
+    <small class="text-danger">
+        <span *ngIf="confirmPassword?.errors?.['required']">Xác nhận mật khẩu là bắt buộc</span>
+        <span *ngIf="passwordMismatch && isSubmitted">Mật khẩu nhập lại không khớp</span>
+    </small>
+</div>
+
                     </div>
                 </div>
                 <div class="col-md-6">
@@ -52,6 +73,12 @@
                             class="form-control text-white-primary bg-black-primary no-outline shadow-none"
                             id="birthday" placeholder="" name="birthday" [max]="maxDate" value="">
 <!-- info -->
+<div *ngIf="(birthday?.invalid && (birthday?.dirty || birthday?.touched || isSubmitted))">
+    <small class="text-danger">
+        <span *ngIf="birthday?.errors?.['required']">Ngày sinh là bắt buộc</span>
+    </small>
+</div>
+
                     </div>
                     <div class="mb-3 mt-3">
                         <p class="text-white-primary mb-4">Giới tính:</p>
@@ -65,6 +92,11 @@
                         <input required type="radio" class="form-check-input ms-2 me-5" id="other" name="gender"
                            formControlName="gender"  value="2">
 <!-- info -->
+<div *ngIf="(gender?.invalid && (gender?.dirty || gender?.touched || isSubmitted))">
+    <small class="text-danger">
+        <span *ngIf="gender?.errors?.['required']">Vui lòng chọn giới tính</span>
+    </small>
+</div>
                     </div>
                     <div class="form-check">
                         <label class="form-check-label text-white-primary mb-1">
@@ -72,6 +104,11 @@
                                 href="/clause" class="text-orange-primary text-decoration-none">điều
                                 khoản</a> của chúng tôi
                         </label>
+                    </div>
+                    <div *ngIf="(agree?.invalid && (agree?.dirty || agree?.touched || isSubmitted))">
+                        <small class="text-danger">
+                            <span *ngIf="agree?.errors?.['required']">Bạn cần đồng ý với điều khoản để tiếp tục</span>
+                        </small>
                     </div>
                     <div class="mb-4">
                         <p class="text-white-primary ms-0">Bạn đã có tài khoản? <a href="/login" class="text-orange-primary text-decoration-none">Đăng nhập tại đây</a></p>

@@ -12,6 +12,9 @@ import { AlbumDTO } from "../../shared/models/Album.dto";
 export class DataShareService {
     private dataSource = new BehaviorSubject<any>(null);
     currentData = this.dataSource.asObservable();
+
+    private dataPlaylistSongSource = new BehaviorSubject<any>(null);
+    dataPlaylistSong = this.dataPlaylistSongSource.asObservable();
   
     private singerSource = new BehaviorSubject<any>(null);
     currentSinger = this.singerSource.asObservable();
@@ -64,5 +67,9 @@ export class DataShareService {
 
     changeCurrentAlbum(data: AlbumDTO) {
       this.currentAlbumSource.next(data);
+    }
+
+    changePlaylistSong(data: SongDTO[]) {
+      this.dataPlaylistSongSource.next(data);
     }
   }

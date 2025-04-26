@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
 import { SingerService } from '../../../core/services/singer.service';
-import { DatePipe, DecimalPipe, NgFor, NgIf } from '@angular/common';
+import { CommonModule, DatePipe, DecimalPipe, NgFor, NgIf } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { UserDTO } from '../../../shared/models/User.dto';
 import { SingerDTO } from '../../../shared/models/Singer.dto';
@@ -12,7 +12,7 @@ import { error } from 'console';
 
 @Component({
   selector: 'app-users',
-  imports: [NgFor, NgIf, FormsModule, DatePipe, DecimalPipe],
+  imports: [NgFor, NgIf, FormsModule, DatePipe, DecimalPipe, CommonModule],
   templateUrl: './users.component.html',
   styleUrl: './users.component.css'
 })
@@ -22,6 +22,10 @@ export class UsersComponent implements OnInit {
 
   userPhone = "";
   stageName = "";
+
+  notifyContent = "";
+  notifyTitle = "";
+  isSuccess = true;
 
   constructor(
     private authService: AuthService,
@@ -38,6 +42,10 @@ export class UsersComponent implements OnInit {
   }
 
   loadData(): void {
+    setTimeout(() => {
+      this.clearNotify();
+    }, 3000);
+
     this.loadUser();
     this.loadSinger();
   }
@@ -97,14 +105,37 @@ export class UsersComponent implements OnInit {
     this.router.navigate(['/users/edit', id]);
   }
   
-  deleteUser(id: number): void {
-    if (confirm('Bạn có chắc chắn muốn xóa không?')) {
-      this.authService.deleteUser(id).subscribe({
+  deleteUser(user: UserDTO): void {
+    if (confirm('Bạn có chắc chắn muốn xóa người dùng ' + user.fullName + '. Id:' + user.userId +  ' không?')) {
+      this.authService.deleteUser(user.userId).subscribe({
         next: () => {
-          this.loadData(); // Reload list
+          this.loadData();
+          this.notifyTitle = "Xóa người dùng";
+          this.notifyContent = "Đã xóa tài khoản người dùng!";
+          this.isSuccess = true;
         },
         error: (err) => {
-          console.error(err);
+          this.notifyTitle = "Xóa người dùng";
+          this.notifyContent = "Xóa tài khoản người dùng thất bại!";
+          this.isSuccess = false;
+        }
+      });
+    }
+  }
+
+  deleteSinger(singer: SingerDTO): void {
+    if (confirm('Bạn có chắc chắn muốn xóa ca sĩ ' + singer.stageName + '. Id:' + singer.singer_id +  ' không?')) {
+      this.singerService.deleteSinger(singer.singer_id).subscribe({
+        next: () => {
+          this.loadData();
+          this.notifyTitle = "Xóa ca sĩ";
+          this.notifyContent = "Đã xóa quyền ca sĩ!";
+          this.isSuccess = true;
+        },
+        error: (err) => {
+          this.notifyTitle = "Xóa ca sĩ";
+          this.notifyContent = "Xóa ca sĩ thất bại!";
+          this.isSuccess = false;
         }
       });
     }
@@ -162,4 +193,8 @@ export class UsersComponent implements OnInit {
   }
   
   
+  clearNotify() {
+    this.notifyTitle = '';
+    this.notifyContent = '';
+  }
 }
