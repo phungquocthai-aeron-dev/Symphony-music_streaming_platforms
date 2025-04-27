@@ -137,6 +137,7 @@ export class UserComponent implements OnInit {
   
     if (this.userForm.value.singer_id) {
       formData.append('singer_id', this.userForm.value.singer_id);
+      console.log(this.userForm.value.singer_id)
     }
   
     if (this.avatarFile) {
@@ -174,6 +175,7 @@ export class UserComponent implements OnInit {
         this.notifyTitle = "Cập nhật thông tin";
         this.notifyContent = "Cập nhật thông tin thất bại!";
         this.isSuccess = false;
+        console.log(error)
       }
     });
   }
@@ -186,6 +188,7 @@ export class UserComponent implements OnInit {
   onFileChange(event: any) {
     const input = event.target as HTMLInputElement;
     const file = input.files?.[0];
+    this.avatarFile = file;
     
     if (!file) {
       return;

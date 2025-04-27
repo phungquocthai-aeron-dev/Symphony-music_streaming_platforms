@@ -116,10 +116,16 @@ public class UserController {
 			@RequestParam(required = false) String password_confirm,
 			@RequestParam(required = false) String newPassword) {
 		
-		UserDTO user = userService.update(dto, avatarFile, password, password_confirm, newPassword);
+		userService.update(dto, avatarFile, password, password_confirm, newPassword);
 		log.info("STOP");
+	
+		UserDTO user = userService.getUserById(dto.getId());
+		log.info(dto.getId().toString());
+
 		if(user != null) {
-			if(user.getRole().equals("ADMIN") || user.getRole().equals("SINGER")) singerService.update(singerdto);
+			log.info(user.getRole());
+			log.info(dto.getId().toString());
+			if(user.getRole().equals("SINGER")) singerService.update(singerdto);
 		}
 
 		return ResponseEntity.ok(

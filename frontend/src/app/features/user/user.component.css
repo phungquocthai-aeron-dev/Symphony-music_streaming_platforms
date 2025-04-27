@@ -45,6 +45,10 @@
     color: var(--white-color) !important;
 }
 
+input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: brightness(0) invert(1);
+}
+
 #fixedAlert {
     position: fixed;
     top: 100px; 

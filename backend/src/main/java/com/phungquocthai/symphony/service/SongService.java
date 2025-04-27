@@ -121,7 +121,7 @@ public class SongService {
 		this.songRepository.addListened(userId, songId);
 	}
 	
-	@PreAuthorize("hasRole('SINGER')")
+//	@PreAuthorize("hasRole('SINGER')")
 	public SongDTO create(SongCreateDTO dto, MultipartFile pathFile, MultipartFile lyricFile,
 			MultipartFile lrcFile, MultipartFile songImgFile) {
 		Song song = songCreateMapper.toEntity(dto);
@@ -153,7 +153,7 @@ public class SongService {
 		return songDTO;
 	}
 
-	@PreAuthorize("hasAnyRole('SINGER', 'ADMIN')")
+//	@PreAuthorize("hasAnyRole('SINGER', 'ADMIN')")
 	public void delete(Integer singerId, Integer songId) {
 		Song song = songRepository.findById(songId).orElseThrow();
 		
@@ -179,7 +179,7 @@ public class SongService {
 
 	}
 	
-	@PreAuthorize("hasRole('SINGER')")
+//	@PreAuthorize("hasRole('SINGER')")
 	public SongDTO update(SongUpdateDTO dto, MultipartFile lyricFile,
 			MultipartFile lrcFile, MultipartFile songImgFile) {
 		Song song = songRepository.findById(dto.getSong_id())

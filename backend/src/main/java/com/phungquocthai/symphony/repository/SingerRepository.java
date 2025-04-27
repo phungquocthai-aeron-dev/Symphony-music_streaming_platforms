@@ -79,9 +79,13 @@ public interface SingerRepository extends JpaRepository<Singer, Integer> {
 	@Query(value = """
 		    SELECT p.song_id 
 		    FROM present p
-		    JOIN song s ON p.song_id = s.id
-		    WHERE s.singer_id = :singerId
+		    WHERE p.singer_id = :singerId
 		    """, nativeQuery = true)
 		List<Integer> findSongIdsInPresentBySingerId(@Param("singerId") Integer singerId);
+
+	@Modifying
+	@Transactional
+	@Query(value = "DELETE FROM singer WHERE user_id = :userId", nativeQuery = true)
+	void deleteSingersByUserId(@Param("userId") Integer userId);
 
 }

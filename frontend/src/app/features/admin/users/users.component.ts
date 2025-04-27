@@ -109,10 +109,11 @@ export class UsersComponent implements OnInit {
     if (confirm('Bạn có chắc chắn muốn xóa người dùng ' + user.fullName + '. Id:' + user.userId +  ' không?')) {
       this.authService.deleteUser(user.userId).subscribe({
         next: () => {
+        this.notifyTitle = "Xóa tài khoản người dùng";
+        this.notifyContent = "Đã xóa tài khoản người dùng " + user.fullName + ", id: " + user.userId + "!";
+        this.isSuccess = true;
           this.loadData();
-          this.notifyTitle = "Xóa người dùng";
-          this.notifyContent = "Đã xóa tài khoản người dùng!";
-          this.isSuccess = true;
+
         },
         error: (err) => {
           this.notifyTitle = "Xóa người dùng";
@@ -127,10 +128,11 @@ export class UsersComponent implements OnInit {
     if (confirm('Bạn có chắc chắn muốn xóa ca sĩ ' + singer.stageName + '. Id:' + singer.singer_id +  ' không?')) {
       this.singerService.deleteSinger(singer.singer_id).subscribe({
         next: () => {
-          this.loadData();
           this.notifyTitle = "Xóa ca sĩ";
-          this.notifyContent = "Đã xóa quyền ca sĩ!";
+          this.notifyContent = "Đã xóa ca sĩ " + singer.stageName + ", id: " + singer.singer_id + "!";
           this.isSuccess = true;
+
+          this.loadData();
         },
         error: (err) => {
           this.notifyTitle = "Xóa ca sĩ";
@@ -197,4 +199,56 @@ export class UsersComponent implements OnInit {
     this.notifyTitle = '';
     this.notifyContent = '';
   }
+
+  // onDeleteUser(user: UserDTO) {
+  //   this.authService.deleteUser(user.userId).subscribe({
+  //     next: () => {
+  //       this.notifyTitle = "Xóa tài khoản người dùng";
+  //       this.notifyContent = "Đã xóa tài khoản người dùng " + user.fullName + ", id: " + user.userId + "!";
+  //       this.isSuccess = true;
+  //     },
+  //     error: (error) => {
+  //       this.notifyTitle = "Xóa tài khoản người dùng";
+  //       this.notifyContent = "Lỗi xóa tài khoản người dùng!";
+  //       this.isSuccess = false;
+  //       console.error(error)
+  //     }
+  //   })
+  // }
+
+  // onDeleteSinger(singer: SingerDTO) {
+  //   this.singerService.deleteSinger(singer.singer_id).subscribe({
+  //     next: () => {
+  //       this.notifyTitle = "Xóa ca sĩ";
+  //       this.notifyContent = "Đã xóa ca sĩ " + singer.stageName + ", id: " + singer.singer_id + "!";
+  //       this.isSuccess = true;
+  //     },
+  //     error: () => {
+  //       this.notifyTitle = "Xóa ca sĩ";
+  //       this.notifyContent = "Lỗi xóa ca sĩ!";
+  //       this.isSuccess = false;
+  //       console.error(error)
+  //     }
+  //   })
+  // }
+
+  onGrantSinger(user: UserDTO) {
+    if (confirm('Bạn có chắc chắn muốn cấp quyền ca sĩ cho người dùng ' + user.fullName + '. Id:' + user.userId +  ' không?')) {
+    this.authService.grantSinger(user.userId).subscribe({
+      next: () => {
+        this.notifyTitle = "Cấp quyền ca sĩ";
+        this.notifyContent = "Đã quyền ca sĩ cho người dùng " + user.fullName + ", id: " + user.userId + "!";
+        this.isSuccess = true;
+
+        this.loadData();
+      },
+      error: (error) => {
+        this.notifyTitle = "Cấp quyền ca sĩ";
+        this.notifyContent = "Lỗi cấp quyền ca sĩ!";
+        this.isSuccess = false;
+        console.error(error)
+      }
+    })
+  }
+}
 }

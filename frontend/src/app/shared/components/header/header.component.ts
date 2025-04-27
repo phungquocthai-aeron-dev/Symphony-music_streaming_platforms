@@ -7,6 +7,7 @@ import { NgIf } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { SingerDTO } from '../../models/Singer.dto';
 import { FormsModule } from '@angular/forms';
+import { error } from 'node:console';
 
 declare var webkitSpeechRecognition: any;
 
@@ -47,6 +48,7 @@ export class HeaderComponent implements OnInit {
     private router: Router,
     private ngZone: NgZone
   ) {
+
     const storedTheme = this.cookieService.get(this.COOKIE_NAME);
     this.dataTheme = storedTheme ? JSON.parse(storedTheme) : null;
     if (typeof window !== 'undefined') {
@@ -82,6 +84,14 @@ export class HeaderComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.authService.getUser().subscribe({
+      next: (data) => {
+        if(!data) this.logout();
+      },
+      error: () => {
+        this.logout();
+      }
+    })
     this.loadConfig();
     this.isLoggedIn = this.authService.isLoggedIn();
   }
@@ -156,6 +166,18 @@ export class HeaderComponent implements OnInit {
     document.documentElement.style.setProperty('--orange-color', colorCode);
     this.saveConfig();
   }
+
+onDeleteUser() {
+  this.authService.deleteUser(this.user.userId).subscribe({
+    next: () => {
+      this.authService.logout();
+    },
+    error: (error) => {
+      alert("Không thể xóa tài khoản!");
+      console.error(error)
+    }
+  })
+}
 
 handleSearch() {
   this.search = this.search.trim();

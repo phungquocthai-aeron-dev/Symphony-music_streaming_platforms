@@ -12,10 +12,13 @@ import com.phungquocthai.symphony.dto.SingerCreateDTO;
 import com.phungquocthai.symphony.dto.SingerDTO;
 import com.phungquocthai.symphony.dto.SingerUpdateDTO;
 import com.phungquocthai.symphony.entity.Singer;
+import com.phungquocthai.symphony.entity.User;
 import com.phungquocthai.symphony.exception.AppException;
 import com.phungquocthai.symphony.mapper.SingerCreateMapper;
 import com.phungquocthai.symphony.mapper.SingerMapper;
+import com.phungquocthai.symphony.repository.AlbumRepository;
 import com.phungquocthai.symphony.repository.SingerRepository;
+import com.phungquocthai.symphony.repository.UserRepository;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -31,10 +34,16 @@ public class SingerService {
 	SingerRepository singerRepository;
 	
 	@Autowired
+	UserRepository userRepository;
+	
+	@Autowired
 	SingerMapper singerMapper;
 	
 	@Autowired
 	SingerCreateMapper singerCreateMapper;
+	
+	@Autowired
+	AlbumRepository albumRepository;
 	
 	@Autowired
 	SongService songService;
@@ -49,12 +58,12 @@ public class SingerService {
 		return singerMapper.toDTO(singer);
 	}
 	
-	@PreAuthorize("hasAnyRole('SINGER', 'ADMIN')")
 	public SingerDTO update(SingerUpdateDTO dto) {
-
+		log.info("AAAAAAAAAAAAAAAAAAAaa");
 		Singer singer = singerRepository.findById(dto.getSinger_id())
 				.orElseThrow(() -> new AppException(ErrorCode.SINGER_NOT_EXISTED));
 		singer.setStageName(dto.getStageName());
+		log.info("AAAAAAAAAAAAAAAAAAAaa");
 		singerRepository.save(singer);
 		log.info(dto.getStageName());
 		log.info(singer.getStageName());
@@ -71,6 +80,10 @@ public class SingerService {
 				songService.delete(singerId, songIds.get(i));
 			}
 		}
+		albumRepository.deleteAlbumsBySingerId(singerId);
+		User user = userRepository.findBySingerId(singerId).orElseThrow();
+		user.setRole("USER");
+		userRepository.save(user);
 		singerRepository.deleteById(singerId);
 	}
 	

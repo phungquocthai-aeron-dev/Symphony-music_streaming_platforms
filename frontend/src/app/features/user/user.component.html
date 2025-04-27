@@ -48,9 +48,9 @@
                                     <div class="row">
                                         <div class="col-sm-4">
                                             <input #inputAvatar id="input-change-avatar" (change)="onFileChange($event)" type="file" class="form-control" hidden name="avatar">
-                                            <div id="change-avatar" class="mb-3">
+                                            <div id="change-avatar" class="mb-3" (click)="triggerFileInput()">
                                                 <div class="change-avatar-container rounded-circle" style="max-width: 200px;">
-                                                    <img *ngIf="user" [src]="defaultUserImg" alt="" (click)="triggerFileInput()"
+                                                    <img *ngIf="user" [src]="defaultUserImg" alt="" 
                                                         class="user-img-active rounded-circle w-100" style="max-width: 200px;">
                                                     <div id="modal-avatar" class="w-100 rounded-circle text-white-primary" style="max-width: 200px;">
                                                         <div class="d-flex flex-column justify-content-center h-100 w-100">

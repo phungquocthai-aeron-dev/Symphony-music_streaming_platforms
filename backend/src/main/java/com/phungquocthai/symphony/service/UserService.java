@@ -22,7 +22,10 @@ import com.phungquocthai.symphony.exception.AppException;
 import com.phungquocthai.symphony.mapper.UserMapper;
 import com.phungquocthai.symphony.mapper.UserRegistrationMapper;
 import com.phungquocthai.symphony.repository.FavoriteRepository;
+import com.phungquocthai.symphony.repository.ListenRepository;
 import com.phungquocthai.symphony.repository.PlaylistRepository;
+import com.phungquocthai.symphony.repository.SingerRepository;
+import com.phungquocthai.symphony.repository.SubscriptionRepository;
 import com.phungquocthai.symphony.repository.UserRepository;
 import com.phungquocthai.symphony.repository.VipRepository;
 
@@ -61,6 +64,15 @@ public class UserService {
 	FavoriteRepository favoriteRepository;
 	
 	@Autowired
+	ListenRepository listenRepository;
+	
+	@Autowired
+	SingerRepository singerRepository;
+	
+	@Autowired
+	SubscriptionRepository subscriptionRepository;
+	
+	@Autowired
 	ExcelExportUtil excelExportUtil;
 
 	public UserDTO create(UserRegistrationDTO dto) {
@@ -81,12 +93,12 @@ public class UserService {
 	}
 	
 //	@PreAuthorize("hasRole('ADMIN') or #dto.userId == authentication.name")
-	public UserDTO update(UserUpdateDTO dto, MultipartFile avatarFile,
+	public void update(UserUpdateDTO dto, MultipartFile avatarFile,
 			String password, String password_confirm, String newPassword) {
 		
 		if(newPassword != null && password != "") {
 			log.info("STOP");
-			if(!newPassword.equals(password_confirm)) return null;
+			if(!newPassword.equals(password_confirm)) return;
 		}
 		
 		User user = userRepository.findById(dto.getId())
@@ -94,7 +106,7 @@ public class UserService {
 		
 		boolean authenticated = passwordEncoder.matches(password, user.getPassword());
 		log.info(password);
-		if(!authenticated) return null;
+		if(!authenticated) return;
 		
 		
 
@@ -116,13 +128,15 @@ public class UserService {
 		log.info("Info");
 		
 		userRepository.save(user);
-		return userMapper.toDTO(user);
+
 	}
 	
-	@PreAuthorize("hasAnyRole('SINGER', 'ADMIN')")
 	public void delete(Integer userId) {
 		playlistRepository.deleteAllByUserId(userId);
 		favoriteRepository.deleteAllByUserId(userId);
+		listenRepository.deleteAllByUserId(userId);
+		subscriptionRepository.deleteSubscriptionsByUserId(userId);
+		singerRepository.deleteSingersByUserId(userId);
 	    userRepository.deleteById(userId);
 	}
 

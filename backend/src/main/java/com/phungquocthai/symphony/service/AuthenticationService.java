@@ -30,9 +30,11 @@ import com.phungquocthai.symphony.dto.IntrospectResponse;
 import com.phungquocthai.symphony.dto.LogoutRequest;
 import com.phungquocthai.symphony.dto.RefreshRequest;
 import com.phungquocthai.symphony.entity.InvalidatedToken;
+import com.phungquocthai.symphony.entity.Singer;
 import com.phungquocthai.symphony.entity.User;
 import com.phungquocthai.symphony.exception.AppException;
 import com.phungquocthai.symphony.repository.InvalidatedTokenRepository;
+import com.phungquocthai.symphony.repository.SingerRepository;
 import com.phungquocthai.symphony.repository.UserRepository;
 
 import lombok.experimental.NonFinal;
@@ -43,6 +45,9 @@ import lombok.extern.slf4j.Slf4j;
 public class AuthenticationService {
 	@Autowired
 	private UserRepository userRepository;
+	
+	@Autowired
+	private SingerRepository singerRepository;
 	
 	@Autowired
 	private InvalidatedTokenRepository invalidatedTokenRepository;
@@ -154,6 +159,16 @@ public class AuthenticationService {
 				.authenticated(authenticated)
 				.token(token)
 				.build();
+	}
+	
+	public void grantSinger(Integer userId) {
+		Singer singer = new Singer();
+		User user = userRepository.findById(userId).orElseThrow();
+		singer.setUser(user);
+		singer.setStageName("Chưa có nghệ danh");
+
+		singerRepository.save(singer);
+		this.userRepository.updateUserRoleToSinger(userId);
 	}
 	
 	private String generateToken(User user) {

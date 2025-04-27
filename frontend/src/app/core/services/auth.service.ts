@@ -86,7 +86,7 @@ export class AuthService {
   
     const params = new HttpParams().set('id', userId.toString());
   
-    return this.http.post<void>(`${environment.apiUrl}users/delete`, null, { headers, params });
+    return this.http.post<void>(`${environment.apiUrl}user/delete`, null, { headers, params });
   }
 
   getUser(): Observable<ResponseData<UserDTO>> {
@@ -317,5 +317,15 @@ exportRevenueStatistic(year: number): Observable<Blob> {
   );
 }
 
+grantSinger(userId: number): Observable<void> {
+  const headers = new HttpHeaders().set(
+    'Authorization',
+    'Bearer ' + this.getToken()
+  );
+
+  const params = new HttpParams().set('id', userId.toString());
+
+  return this.http.post<void>(`${environment.apiUrl}auth/grant/singer`, null, { headers, params });
+}
 
 }
