@@ -10,13 +10,14 @@ import { NgFor } from '@angular/common';
 import { CardComponent } from '../../shared/components/card/card.component';
 import { NewCardComponent } from '../../shared/components/new-card/new-card.component';
 import { DataShareService } from '../../core/services/dataShare.service';
+import { GamesComponent } from '../games/games.component';
 
 @Component({
   selector: 'app-home',
   standalone: true,
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css'],
-  imports: [NgFor, CardComponent, NewCardComponent]
+  imports: [NgFor, CardComponent, NewCardComponent, GamesComponent]
 })
 
 export class HomeComponent implements OnInit, OnDestroy {

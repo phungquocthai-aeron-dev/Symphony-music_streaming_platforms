@@ -1,0 +1,27 @@
+<div class="game-container">
+    <h2>🍉 Fruit Slash Game</h2>
+    <div>❤️ Tim: {{ hearts }} | 🕒 {{ timeLeft }}s | 💰 Xu: {{ coins }}</div>
+  
+    <div class="fruit-zone">
+      <img
+        *ngFor="let item of fruitsOnScreen"
+        [src]="item.fruit.image"
+        [style.left.px]="item.x"
+        [style.top.px]="item.y"
+        (click)="sliceFruit(item.id)"
+        class="fruit"
+      />
+    </div>
+  
+    <div class="task-board">
+      <h4>Nhiệm vụ hôm nay:</h4>
+      <ul>
+        <li *ngFor="let t of task.targets">
+          {{ t.count }} x {{ t.fruitName }} (đã: {{ taskProgress[t.fruitName] || 0 }})
+        </li>
+      </ul>
+    </div>
+  
+    <button (click)="startGame()" [disabled]="isPlaying || hearts <= 0">Bắt đầu chơi</button>
+  </div>
+  

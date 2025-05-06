@@ -381,6 +381,7 @@ export class SingerComponent implements OnInit, OnDestroy {
         this.notifyTitle = "Thêm bài hát";
         this.notifyContent = "Thêm bài hát thất bại";
         this.isSuccess = false;
+        console.error(error)
         setTimeout(() => {
           this.clearNotify();
         }, 3000);
