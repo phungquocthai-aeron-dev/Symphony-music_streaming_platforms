@@ -1,0 +1,7 @@
+
+
+"song_feature_id   (PK)
+song_id           (FK → Song)
+feature_vector    (BLOB hoặc JSON)
+model_version     (string)  -- lưu phiên bản model đã trích xuất
+created_at        (date)"

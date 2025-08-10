@@ -1,0 +1,16 @@
+# Python cache
+__pycache__/
+*.pyc
+
+# Virtual environment
+.venv/
+
+# Data (audio & features)
+data/audio/
+data/features/
+
+# Upload temp
+uploads/
+
+# Test audio (giữ lại nếu cần)
+test/*.mp3
