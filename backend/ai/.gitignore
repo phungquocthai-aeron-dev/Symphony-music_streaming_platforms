@@ -1,16 +1,23 @@
-# Python cache
+# Python
 __pycache__/
-*.pyc
+*.py[cod]
+*.pyo
+*.pyd
 
-# Virtual environment
+# Virtual environments
 .venv/
+venv/
 
-# Data (audio & features)
-data/audio/
-data/features/
-
-# Upload temp
+# Data & uploads
 uploads/
 
-# Test audio (giữ lại nếu cần)
-test/*.mp3
+# Environment variables
+.env
+
+# Logs & temp
+*.log
+*.tmp
+*.bak
+
+# Jupyter Notebook checkpoints (nếu có)
+.ipynb_checkpoints/
