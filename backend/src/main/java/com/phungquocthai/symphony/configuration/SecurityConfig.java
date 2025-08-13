@@ -38,7 +38,7 @@ public class SecurityConfig {
 	
 	private final String[] PUBLIC_POST_ENDPOINTS = {"/auth/login", "/auth/register", "/auth/logout",
 			"/auth/refresh", "/song/listenedSong",
-			"/singer/exclude**", "/singer/exclude/**", "/singer/exclude"};
+			"/singer/exclude**", "/singer/exclude/**", "/singer/exclude", "/search-humming", "/home/search-humming"};
 	
 //	private final String[] ADMIN_ENDPOINTS = {"/user/users", "/singer/singers", "/singer/create"};
 //	

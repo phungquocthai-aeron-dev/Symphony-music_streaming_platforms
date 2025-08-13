@@ -1,134 +1,254 @@
 <div class="content p-4">
-    <div class="tab-content">
-      <div *ngIf="notifyTitle !== ''" class="alert alert-dismissible fade show" role="alert" id="fixedAlert" [ngClass]="isSuccess ? 'alert-success' : 'alert-danger'">
-        <strong>{{ notifyTitle }}</strong> {{ notifyContent }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  <div class="tab-content">
+    <div
+      *ngIf="notifyTitle !== ''"
+      class="alert alert-dismissible fade show"
+      role="alert"
+      id="fixedAlert"
+      [ngClass]="isSuccess ? 'alert-success' : 'alert-danger'"
+    >
+      <strong>{{ notifyTitle }}</strong> {{ notifyContent }}
+      <button
+        type="button"
+        class="btn-close"
+        data-bs-dismiss="alert"
+        aria-label="Close"
+      ></button>
     </div>
-      <!-- User Management -->
-      <div class="tab-pane pb-5 fade show active" id="customers">
-        <h3 class="text-center mb-5">Quản lý người dùng</h3>
+    <!-- User Management -->
+    <div class="tab-pane pb-5 fade show active" id="customers">
+      <h3 class="text-center mb-5">Quản lý người dùng</h3>
     </div>
 
-       <div class="mb-5">
+    <div class="mb-5">
+      <!-- Search Form -->
+      <h3>Tài khoản</h3>
 
-         <!-- Search Form -->
-         <h3>Tài khoản</h3>
+      <div class="row">
+        <div class="col-sm-10">
+          <input
+            type="text"
+            class="form-control"
+            placeholder="Nhập số điện thoại..."
+            name="phone"
+            required=""
+            [(ngModel)]="userPhone"
+          />
+        </div>
+        <div class="col-sm-2">
+          <div class="input-group">
+            <button
+              class="btn btn-outline-secondary btn-primary text-white mx-auto bg-primary"
+              (click)="searchUsers()"
+            >
+              <i class="bi bi-search"></i>
+              Tìm người dùng
+            </button>
+          </div>
+        </div>
+      </div>
 
-         <div class="row">
-           <div class="col-sm-10">
-               <input type="text" class="form-control" placeholder="Nhập số điện thoại..." name="phone" required="" [(ngModel)]="userPhone">
-             </div>
-             <div class="col-sm-2">
-               <div class="input-group">
-                 <button class="btn btn-outline-secondary btn-primary text-white mx-auto bg-primary" (click)="searchUsers()">
-                   <i class="bi bi-search"></i>
-                   Tìm người dùng
-                 </button>
-               </div>
-             </div>
-         </div>
- 
-     <!-- Table + Actions -->
-     <div *ngIf="users" class="mt-4 row">
-       <div class="col-sm-12 float-end mb-3 d-flex">
-         <button *ngIf="users.length" class="btn btn-success me-1" (click)="onExportUsersExcel()">
-           Xuất Excel
-         </button>
-         <button class="btn btn-primary ms-1 bg-primary" (click)="loadUser()">Xem tất cả</button>
-       </div>
- 
-       <!-- User Table -->
-       <div class="col-sm-12 table-responsive" style="max-height: 300px; min-height: 300px; max-width: 1200px; overflow-y: auto; border: 1px solid #ddd;">
+      <!-- Table + Actions -->
+      <div *ngIf="users" class="mt-4 row">
+        <div class="col-sm-12 float-end mb-3 d-flex">
+          <button
+            *ngIf="users.length"
+            class="btn btn-success me-1"
+            (click)="onExportUsersExcel()"
+          >
+            Xuất Excel
+          </button>
+          <button class="btn btn-primary ms-1 bg-primary" (click)="loadUser()">
+            Xem tất cả
+          </button>
+        </div>
 
-           <table class="table table-hover table-bordered">
-             <thead style="position: sticky; top: 0; background: black; z-index: 1; text-align: center;">
-               <tr class="text-center">
-                 <th>STT</th>
-                 <th>Mã người dùng</th>
-                 <th>Tên người dùng</th>
-                 <th>Ngày sinh</th>
-                 <th>Giới tính</th>
-                 <th>Số điện thoại</th>
-                 <th>Thao tác</th>
-               </tr>
-             </thead>
-             <tbody>
-               <tr *ngFor="let user of users; let i = index">
-                 <td class="text-center">{{ i + 1 }}</td>
-                 <td>{{ user.userId }}</td>
-                 <td>{{ user.fullName }}</td>
-                 <td>{{ user.birthday | date:'dd/MM/yyyy' }}</td>
-                 <td>{{ getGenderText(user.gender) }}</td>
-                 <td>{{ user.phone }}</td>
-                 <td>
-                   <div class="mx-auto d-flex justify-content-center">
-                     <button *ngIf="user.role === 'USER'" class="btn btn-warning me-1" (click)="onGrantSinger(user)">Cấp quyền ca sĩ</button>
-                     <button *ngIf="user.role === 'SINGER'" class="btn btn-success me-1">Đã cấp quyền ca sĩ</button>
-                     <button *ngIf="user.role === 'ADMIN'" class="btn btn-primary bg-primary me-1">ADMIN</button>
-                     <button class="btn btn-danger" (click)="deleteUser(user)">Xóa</button>
-                   </div>
-                 </td>
-               </tr>
-             </tbody>
-           </table>
-       </div>
-     </div>
-       </div>
+        <!-- User Table -->
+        <div
+          class="col-sm-12 table-responsive"
+          style="
+            max-height: 300px;
+            min-height: 300px;
+            max-width: 1200px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+          "
+        >
+          <table class="table table-hover table-bordered">
+            <thead
+              style="
+                position: sticky;
+                top: 0;
+                background: black;
+                z-index: 1;
+                text-align: center;
+              "
+            >
+              <tr class="text-center">
+                <th>STT</th>
+                <th>Mã người dùng</th>
+                <th>Tên người dùng</th>
+                <th>Ngày sinh</th>
+                <th>Giới tính</th>
+                <th>Số điện thoại</th>
+                <th>Thao tác</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let user of users; let i = index">
+                <td class="text-center">{{ i + 1 }}</td>
+                <td>{{ user.userId }}</td>
+                <td>{{ user.fullName }}</td>
+                <td>{{ user.birthday | date : "dd/MM/yyyy" }}</td>
+                <td>{{ getGenderText(user.gender) }}</td>
+                <td>{{ user.phone }}</td>
+                <td>
+                  <div class="mx-auto d-flex justify-content-center">
+                    <button
+                      *ngIf="user.role === 'USER'"
+                      class="btn btn-warning me-1"
+                      (click)="onGrantSinger(user)"
+                    >
+                      Cấp quyền ca sĩ
+                    </button>
+                    <button
+                      *ngIf="user.role === 'SINGER'"
+                      class="btn btn-success me-1"
+                    >
+                      Đã cấp quyền ca sĩ
+                    </button>
+                    <button
+                      *ngIf="user.role === 'ADMIN'"
+                      class="btn btn-primary bg-primary me-1"
+                    >
+                      ADMIN
+                    </button>
+                    <button
+                      class="btn btn-danger"
+                      *ngIf="user.active"
+                      (click)="deleteUser(user)"
+                    >
+                      Vô hiệu hóa
+                    </button>
+                    <button class="btn btn-warning ms-1">Sửa</button>
+                    <button
+                      class="btn btn-primary bg-primary"
+                      (click)="enableUser(user)"
+                      *ngIf="!user.active"
+                    >
+                      Khôi phục
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
 
-       <div class="mb-5">
+    <div class="mb-5">
       <h3>Thông tin ca sĩ</h3>
 
       <div class="row">
         <div class="col-sm-10">
-            <input type="text" class="form-control" placeholder="Nhập nghệ danh ca sĩ..." name="phone" required="" [(ngModel)]="stageName">
+          <input
+            type="text"
+            class="form-control"
+            placeholder="Nhập nghệ danh ca sĩ..."
+            name="phone"
+            required=""
+            [(ngModel)]="stageName"
+          />
+        </div>
+        <div class="col-sm-2">
+          <div class="input-group">
+            <button
+              class="btn btn-outline-secondary btn-primary text-white mx-auto bg-primary"
+              (click)="searchSingers()"
+            >
+              <i class="bi bi-search"></i>
+              Tìm ca sĩ
+            </button>
           </div>
-          <div class="col-sm-2">
-            <div class="input-group">
-              <button class="btn btn-outline-secondary btn-primary text-white mx-auto bg-primary" (click)="searchSingers()">
-                <i class="bi bi-search"></i>
-                Tìm ca sĩ
-              </button>
-            </div>
-          </div>
+        </div>
       </div>
       <div *ngIf="users" class="mt-4 row">
         <div class="col-sm-12 float-end mb-3 d-flex">
-          <button *ngIf="users.length" class="btn btn-success me-1" (click)="onExportSingersExcel()">
+          <button
+            *ngIf="users.length"
+            class="btn btn-success me-1"
+            (click)="onExportSingersExcel()"
+          >
             Xuất Excel
           </button>
-          <button class="btn btn-primary ms-1 bg-primary" (click)="loadSinger()">Xem tất cả</button>
+          <button
+            class="btn btn-primary ms-1 bg-primary"
+            (click)="loadSinger()"
+          >
+            Xem tất cả
+          </button>
         </div>
-  
-        <!-- User Table -->
-        <div class="col-sm-12 table-responsive" style="max-height: 300px; min-height: 300px; max-width: 1200px; overflow-y: auto; border: 1px solid #ddd;">
 
-            <table class="table table-hover table-bordered">
-              <thead style="position: sticky; top: 0; background: black; z-index: 1; text-align: center;">
-                <tr class="text-center">
-                  <th>STT</th>
-                  <th>Mã ca sĩ</th>
-                  <th>Nghệ danh</th>
-                  <th>Lượt theo dõi</th>
-                  <th>Thao tác</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr *ngFor="let singer of singers; let i = index">
-                  <td class="text-center">{{ i + 1 }}</td>
-                  <td>{{ singer.singer_id }}</td>
-                  <td>{{ singer.stageName }}</td>
-                  <td>{{ singer.followers | number }}</td>
-                  <td>
-                    <div class="mx-auto d-flex justify-content-center">
-                      <button class="btn btn-danger me-1" (click)="deleteSinger(singer)">Xóa</button>
-                    </div>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+        <!-- User Table -->
+        <div
+          class="col-sm-12 table-responsive"
+          style="
+            max-height: 300px;
+            min-height: 300px;
+            max-width: 1200px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+          "
+        >
+          <table class="table table-hover table-bordered">
+            <thead
+              style="
+                position: sticky;
+                top: 0;
+                background: black;
+                z-index: 1;
+                text-align: center;
+              "
+            >
+              <tr class="text-center">
+                <th>STT</th>
+                <th>Mã ca sĩ</th>
+                <th>Nghệ danh</th>
+                <th>Lượt theo dõi</th>
+                <th>Thao tác</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let singer of singers; let i = index">
+                <td class="text-center">{{ i + 1 }}</td>
+                <td>{{ singer.singer_id }}</td>
+                <td>{{ singer.stageName }}</td>
+                <td>{{ singer.followers | number }}</td>
+                <td>
+                  <div class="mx-auto d-flex justify-content-center">
+                    <button
+                      *ngIf="singer.active"
+                      class="btn btn-danger me-1"
+                      (click)="deleteSinger(singer)"
+                    >
+                      Vô hiệu hóa
+                    </button>
+                    <button class="btn btn-warning me-1">Sửa</button>
+                    <button
+                      class="btn btn-primary bg-primary me-1"
+                      (click)="enableSinger(singer)"
+                      *ngIf="!singer.active"
+                    >
+                      Khôi phục
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
-      </div>
       </div>
     </div>
   </div>
-  
+</div>

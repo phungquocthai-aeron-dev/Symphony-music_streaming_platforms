@@ -87,9 +87,10 @@ export class RankComponent implements OnInit {
       releaseDate: topSong.releaseDate,
       author: topSong.author,
       isVip: topSong.isVip,
-      categories: [], // vì TopSongDTO chỉ có categoryIds, bạn cần map từ id sang CategoryDTO nếu có dữ liệu
+      categories: [], 
       singers: topSong.singers,
-      favorite: topSong.favorite
+      favorite: topSong.favorite,
+      active: topSong.active
     };
   }
 

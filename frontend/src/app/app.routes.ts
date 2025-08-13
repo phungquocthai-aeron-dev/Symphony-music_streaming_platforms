@@ -23,6 +23,7 @@ import { StatisticComponent } from './features/admin/statistic/statistic.compone
 import { UsersComponent } from './features/admin/users/users.component';
 import { AdminLayoutComponent } from './layouts/admin-layout/admin-layout.component';
 import { LibraryComponent } from './features/library/library.component';
+import { SongsComponent } from './features/admin/songs/songs.component';
 
 export const routes: Routes = [
     { 
@@ -58,6 +59,7 @@ export const routes: Routes = [
         children: [
             { path: '', component: StatisticComponent },
             { path: 'users', component: UsersComponent},
+            { path: 'songs', component: SongsComponent},
         ]
     },
     { path: 'login', component: LoginComponent, canActivate: [LoginGuard]},

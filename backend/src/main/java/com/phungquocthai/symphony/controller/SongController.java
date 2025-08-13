@@ -2,6 +2,7 @@ package com.phungquocthai.symphony.controller;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -26,6 +27,7 @@ import com.phungquocthai.symphony.dto.SongUpdateDTO;
 import com.phungquocthai.symphony.dto.TopSongDTO;
 import com.phungquocthai.symphony.service.SongService;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import jakarta.validation.Valid;
@@ -60,6 +62,15 @@ public class SongController {
 	@GetMapping("/songs")
 	public ResponseEntity<ApiResponse<List<SongDTO>>> findAll() {
 		List<SongDTO> songs = songService.findAll();
+		ApiResponse<List<SongDTO>> apiResponse = ApiResponse.<List<SongDTO>>builder()
+				.result(songs)
+				.build();
+		return ResponseEntity.ok(apiResponse);
+	}
+	
+	@GetMapping("/songName")
+	public ResponseEntity<ApiResponse<List<SongDTO>>> findBySongName(@RequestParam(value = "songName", required = true) String songName) {
+		List<SongDTO> songs = songService.findBySongName(songName);
 		ApiResponse<List<SongDTO>> apiResponse = ApiResponse.<List<SongDTO>>builder()
 				.result(songs)
 				.build();
@@ -120,6 +131,20 @@ public class SongController {
 			@RequestParam(value = "songId", required = true) Integer songId,
 			@RequestParam(value = "singerId", required = true) Integer singerId) {
 		songService.delete(singerId, songId);
+		return ResponseEntity.noContent().build();
+	}
+	
+	@PostMapping("/enable")
+	public ResponseEntity<Void> enable(
+			@RequestParam(value = "songId", required = true) Integer songId) {
+		songService.enable(songId);
+		return ResponseEntity.noContent().build();
+	}
+	
+	@PostMapping("/disable")
+	public ResponseEntity<Void> disable(
+			@RequestParam(value = "songId", required = true) Integer songId) {
+		songService.disable(songId);
 		return ResponseEntity.noContent().build();
 	}
 
@@ -273,6 +298,28 @@ public class SongController {
 				.build();
 		return ResponseEntity.ok(apiResponse);
 	}
+	
+	@PostMapping("/export")
+    public ResponseEntity<byte[]> exportToExcel() {
+    	
+    	byte[] excelData = new byte[0];;
+    	
+
+            try {
+				excelData = songService.exportToExcel();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+    	
+    	            
+            HttpHeaders headers = new HttpHeaders();
+            headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=danh_sach_nguoi_dung.xlsx");
+            
+            return ResponseEntity.ok()
+                    .headers(headers)
+                    .contentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
+                    .body(excelData);
+    }
 	
 
 //	@GetMapping("/recomend")

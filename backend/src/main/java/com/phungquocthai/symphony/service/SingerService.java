@@ -84,16 +84,21 @@ public class SingerService {
 		User user = userRepository.findBySingerId(singerId).orElseThrow();
 		user.setRole("USER");
 		userRepository.save(user);
-		singerRepository.deleteById(singerId);
+//		singerRepository.deleteById(singerId);
+		
+		singerRepository.updateIsActive(singerId, false);
 	}
 	
 	@PreAuthorize("hasRole('ADMIN')")
-	public void disable(Integer singerId) {
-		
+	public void enable(Integer singerId) {
+		User user = userRepository.findBySingerId(singerId).orElseThrow();
+		user.setRole("SINGER");
+		userRepository.save(user);
+		singerRepository.updateIsActive(singerId, true);
 	}
 	
 	public SingerDTO getSinger(Integer singerId) {
-		Singer singer = singerRepository.findById(singerId)
+		Singer singer = singerRepository.findSingerActive(singerId)
 				.orElseThrow(() -> new AppException(ErrorCode.SINGER_NOT_EXISTED));
 		return singerMapper.toDTO(singer);
 	}

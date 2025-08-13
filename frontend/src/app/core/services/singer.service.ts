@@ -52,6 +52,10 @@ export class SingerService {
     return this.http.post<void>(`${this.apiUrl}/delete`, {}, { params });
   }
   
+  enable(singerId: number): Observable<void> {
+    const params = new HttpParams().set('id', singerId.toString());
+    return this.http.post<void>(`${this.apiUrl}/enable`, {}, { params });
+  }
 
   exportSingers(): Observable<Blob> {
     const headers = new HttpHeaders().set(

@@ -56,6 +56,9 @@ public class Song {
     @Column(name = "is_vip")
     private Boolean isVip;
     
+    @Column(name = "is_active")
+    private boolean active;
+    
     @ManyToMany(mappedBy = "songs")
     private Set<Playlist> playlist;
     
@@ -69,9 +72,6 @@ public class Song {
     @ManyToMany(mappedBy = "songs")
     @JsonManagedReference
     private Set<Singer> singers;
-    
-    @OneToMany(mappedBy = "song")
-    private List<Comment> comments;
     
     @OneToMany(mappedBy = "song")
     private List<Favorite> favorites;

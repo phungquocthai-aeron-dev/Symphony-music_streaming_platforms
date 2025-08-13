@@ -3,13 +3,16 @@ package com.phungquocthai.symphony.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.phungquocthai.symphony.constant.CategorySong;
 import com.phungquocthai.symphony.dto.ApiResponse;
@@ -20,6 +23,7 @@ import com.phungquocthai.symphony.dto.SingerDTO;
 import com.phungquocthai.symphony.dto.SongDTO;
 import com.phungquocthai.symphony.dto.TopSongDTO;
 import com.phungquocthai.symphony.entity.Vip;
+import com.phungquocthai.symphony.service.AISearchService;
 import com.phungquocthai.symphony.service.SingerService;
 import com.phungquocthai.symphony.service.SongService;
 import com.phungquocthai.symphony.service.UserService;
@@ -38,6 +42,9 @@ public class HomeController {
 	
 	@Autowired
 	private UserService userService;
+	
+	@Autowired
+	private AISearchService aiSearchService;
 		
 	@GetMapping
 	public ResponseEntity<ApiResponse<HomeDTO>> getHome(@AuthenticationPrincipal Jwt jwt) {
@@ -132,5 +139,22 @@ public class HomeController {
 				);
 	}
 	
-	
+	@PostMapping("/search-humming")
+    public ResponseEntity<List<SongDTO>> searchHumming(@RequestParam("file") MultipartFile file) {
+		 try {
+		        // In ra thông tin file nhận được
+		        System.out.println("Received file: " + file.getOriginalFilename() + ", size: " + file.getSize());
+		        
+		        List<SongDTO> results = aiSearchService.searchByHumming(file);
+
+		        // In ra kết quả trả về từ AI service (tên bài hát)
+		        results.forEach(song -> System.out.println("Matched song: " + song.getSongName()));
+
+		        return ResponseEntity.ok(results);
+		    } catch (Exception e) {
+		        e.printStackTrace();
+		        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		    }
+    }
+
 }

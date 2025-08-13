@@ -3,6 +3,7 @@ package com.phungquocthai.symphony.entity;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -14,6 +15,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
@@ -62,6 +64,9 @@ public class User {
 	
 	@Column(name = "role")
 	private String role;
+	
+    @Column(name = "is_active")
+    private boolean active;
 		
 	@OneToMany(mappedBy = "user")
 	private List<Favorite> favorites;
@@ -75,16 +80,20 @@ public class User {
 	@OneToMany(mappedBy = "user")
 	@JsonManagedReference
 	private List<Subscription> subscriptions;
-	
-	@OneToMany(mappedBy = "user")
-	private List<Comment> comments;
+    
+    @OneToMany(mappedBy = "user")
+    private List<Notification> notifications;
+    
+    @ManyToMany(mappedBy = "users")
+    @JsonManagedReference
+    private Set<Notification> notificationsRecieved;
 
 	@Override
 	public String toString() {
 		return "User [userId=" + userId + ", fullName=" + fullName + ", birthday=" + birthday + ", password=" + password
 				+ ", create_at=" + create_at + ", update_at=" + update_at + ", phone=" + phone + ", gender=" + gender
 				+ ", avatar=" + avatar + ", role=" + role + ", favorites=" + favorites + ", singer=" + singer
-				+ ", listens=" + listens + ", subscriptions=" + subscriptions + ", comments=" + comments + "]";
+				+ ", listens=" + listens + ", subscriptions=" + subscriptions + "]";
 	}
 	
 	

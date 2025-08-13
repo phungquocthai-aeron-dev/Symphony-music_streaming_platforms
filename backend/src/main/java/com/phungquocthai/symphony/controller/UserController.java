@@ -102,6 +102,12 @@ public class UserController {
 		userService.delete(userId);
 		return ResponseEntity.noContent().build();
 	}
+	
+	@PostMapping("/enable")
+	public ResponseEntity<Void> enable(@RequestParam(value = "id", required = true) Integer userId) {
+		userService.enable(userId);
+		return ResponseEntity.noContent().build();
+	}
 
 	@PostMapping(value =  "/update", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 	public ResponseEntity<ApiResponse<UserDTO>> update(

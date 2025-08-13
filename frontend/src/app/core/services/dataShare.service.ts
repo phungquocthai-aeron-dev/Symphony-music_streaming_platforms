@@ -37,6 +37,9 @@ export class DataShareService {
     private currentAlbumSource = new BehaviorSubject<any>(null);
     currentAlbum = this.currentAlbumSource.asObservable();
 
+    private searchHummingResultsSource = new BehaviorSubject<any[]>([]);
+    searchHummingResults = this.searchHummingResultsSource.asObservable();
+
     changeData(data: SongDTO | TopSongDTO) {
       this.dataSource.next(data);
     }
@@ -71,5 +74,9 @@ export class DataShareService {
 
     changePlaylistSong(data: SongDTO[]) {
       this.dataPlaylistSongSource.next(data);
+    }
+
+    changeSearchHummingResults(data: SongDTO[]) {
+      this.searchHummingResultsSource.next(data);
     }
   }

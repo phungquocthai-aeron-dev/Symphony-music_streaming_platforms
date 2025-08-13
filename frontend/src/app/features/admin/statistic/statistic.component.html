@@ -1,68 +1,105 @@
 <!-- listen-statistics.component.html -->
 <div class="content p-4">
-    <div class="container-fluid">
-      <div class="row">
-          <div class="mb-5">
-            <h2 class="mb-4 text-center w-100">Thống kê Lượt Nghe</h2>
-      
-      <div class="d-flex" style="justify-content: flex-end">
-        <div *ngIf="listenData.length === 12">
-          <button class="btn btn-success" (click)="exportListenStatisticExcel()">
-            Xuất Excel
-          </button>
-        </div>
-        
-        <div class="input-group d-flex ms-2" style="width: 12%;">
+  <div class="container-fluid">
+    <div class="row">
+      <div>
+        <h2 class="mb-1" id="pageTitle">Tổng quan Hệ thống</h2>
+        <p class="text-muted mb-0">
+          Chào mừng bạn đến với bảng điều khiển quản trị
+        </p>
+      </div>
+
+      <div class="mb-5">
+        <h2 class="mb-4 text-center w-100">Thống kê Lượt Nghe</h2>
+
+        <div class="d-flex" style="justify-content: flex-end">
+          <div *ngIf="listenData.length === 12">
+            <button
+              class="btn btn-success"
+              (click)="exportListenStatisticExcel()"
+            >
+              Xuất Excel
+            </button>
+          </div>
+
+          <div class="input-group d-flex ms-2" style="width: 12%">
             <input
               [(ngModel)]="year"
-              type="number" 
-              class="form-control" 
-              min="2000" 
-              placeholder="Năm...">
-            <button class="btn btn-outline-secondary btn-primary text-white bg-primary" (click)="onListenStatisticSubmit()">
-              <i class="fa-solid fa-magnifying-glass" style="color: white !important;"></i>
+              type="number"
+              class="form-control"
+              min="2000"
+              placeholder="Năm..."
+            />
+            <button
+              class="btn btn-outline-secondary btn-primary text-white bg-primary"
+              (click)="onListenStatisticSubmit()"
+            >
+              <i
+                class="fa-solid fa-magnifying-glass"
+                style="color: white !important"
+              ></i>
             </button>
+          </div>
+        </div>
+
+        <!-- Tab Content -->
+        <div class="tab-content">
+          <canvas
+            id="listenChart"
+            class="w-100"
+            style="height: 500px; max-height: 500px"
+          ></canvas>
+          <p class="text-center mt-3">
+            Biểu đồ đường thể hiện số lượt nghe năm {{ year }}
+          </p>
         </div>
       </div>
-  
-      <!-- Tab Content -->
-      <div class="tab-content">
-        <canvas id="listenChart" class="w-100" style="height: 500px; max-height: 500px;"></canvas>
-        <p class="text-center mt-3">Biểu đồ đường thể hiện số lượt nghe năm {{ year }}</p>
-      </div>
+
+      <div>
+        <h2 class="mb-4 text-center w-100">Thống kê Doanh thu</h2>
+
+        <div class="d-flex" style="justify-content: flex-end">
+          <div *ngIf="listenData.length === 12">
+            <button
+              class="btn btn-success"
+              (click)="exportRevenueStatisticExcel()"
+            >
+              Xuất Excel
+            </button>
           </div>
 
-
-
-          <div>
-            <h2 class="mb-4 text-center w-100">Thống kê Doanh thu</h2>
-      
-      <div class="d-flex" style="justify-content: flex-end">
-        <div *ngIf="listenData.length === 12">
-          <button class="btn btn-success" (click)="exportRevenueStatisticExcel()">
-            Xuất Excel
-          </button>
-        </div>
-        
-        <div class="input-group d-flex ms-2" style="width: 12%;">
-            <input 
+          <div class="input-group d-flex ms-2" style="width: 12%">
+            <input
               [(ngModel)]="revenueYear"
-              type="number" 
-              class="form-control" 
-              min="2000" 
-              placeholder="Năm...">
-            <button class="btn btn-outline-secondary btn-primary text-white bg-primary" (click)="onRevenueStatisticSubmit()">
-              <i class="fa-solid fa-magnifying-glass" style="color: white !important;"></i>
+              type="number"
+              class="form-control"
+              min="2000"
+              placeholder="Năm..."
+            />
+            <button
+              class="btn btn-outline-secondary btn-primary text-white bg-primary"
+              (click)="onRevenueStatisticSubmit()"
+            >
+              <i
+                class="fa-solid fa-magnifying-glass"
+                style="color: white !important"
+              ></i>
             </button>
-        </div>
-      </div>
-  
-      <!-- Tab Content -->
-      <div class="tab-content">
-        <canvas id="revenueChart" class="w-100" style="height: 500px; max-height: 500px;"></canvas>
-        <p class="text-center mt-3">Biểu đồ đường thể hiện doanh thu năm {{ revenueYear }}</p>
-      </div>
           </div>
+        </div>
+
+        <!-- Tab Content -->
+        <div class="tab-content">
+          <canvas
+            id="revenueChart"
+            class="w-100"
+            style="height: 500px; max-height: 500px"
+          ></canvas>
+          <p class="text-center mt-3">
+            Biểu đồ đường thể hiện doanh thu năm {{ revenueYear }}
+          </p>
+        </div>
       </div>
     </div>
   </div>
+</div>

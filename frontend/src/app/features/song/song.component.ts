@@ -15,7 +15,7 @@ import { PlaylistDTO } from '../../shared/models/Playlist.dto';
 
 @Component({
   selector: 'app-song',
-  imports: [NgIf, NgFor, RouterModule, CardComponent, DatePipe, DecimalPipe, NgClass],
+  imports: [NgIf, NgFor, RouterModule, DatePipe, DecimalPipe, NgClass],
   templateUrl: './song.component.html',
   styleUrl: './song.component.css'
 })

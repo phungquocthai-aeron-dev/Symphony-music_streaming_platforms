@@ -132,12 +132,17 @@ public class UserService {
 	}
 	
 	public void delete(Integer userId) {
-		playlistRepository.deleteAllByUserId(userId);
-		favoriteRepository.deleteAllByUserId(userId);
-		listenRepository.deleteAllByUserId(userId);
-		subscriptionRepository.deleteSubscriptionsByUserId(userId);
-		singerRepository.deleteSingersByUserId(userId);
-	    userRepository.deleteById(userId);
+//		playlistRepository.deleteAllByUserId(userId);
+//		favoriteRepository.deleteAllByUserId(userId);
+//		listenRepository.deleteAllByUserId(userId);
+//		subscriptionRepository.deleteSubscriptionsByUserId(userId);
+//		singerRepository.deleteSingersByUserId(userId);
+//	    userRepository.deleteById(userId);
+		userRepository.updateIsActive(userId, false);
+	}
+	
+	public void enable(Integer userId) {
+		userRepository.updateIsActive(userId, true);
 	}
 
 	@PreAuthorize("hasRole('ADMIN')")

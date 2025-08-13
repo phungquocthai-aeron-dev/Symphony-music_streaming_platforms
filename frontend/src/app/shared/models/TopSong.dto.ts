@@ -16,4 +16,5 @@ export interface TopSongDTO {
     categoryIds: number[];
     singers: SingerDTO[];
     favorite: boolean;
+    active: boolean;
 }

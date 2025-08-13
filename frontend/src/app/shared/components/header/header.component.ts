@@ -3,11 +3,13 @@ import { CookieService } from 'ngx-cookie-service';
 import { environment } from '../../../../environments/environment';
 import { AuthService } from '../../../core/services/auth.service';
 import { UserDTO } from '../../models/User.dto';
-import { NgIf } from '@angular/common';
+import { NgFor, NgIf } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { SingerDTO } from '../../models/Singer.dto';
 import { FormsModule } from '@angular/forms';
-import { error } from 'node:console';
+import { HummingSearchComponent } from '../humming-search/humming-search.component';
+import { NotificationService } from '../../../core/services/notification.service';
+import { NotificationDTO } from '../../models/Notification.dto';
 
 declare var webkitSpeechRecognition: any;
 
@@ -20,7 +22,7 @@ interface ThemeSave {
   selector: 'app-header',
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.css'],
-  imports: [NgIf, RouterModule, FormsModule]
+  imports: [NgIf, RouterModule, FormsModule, HummingSearchComponent, NgFor ]
 })
 
 export class HeaderComponent implements OnInit {
@@ -30,6 +32,7 @@ export class HeaderComponent implements OnInit {
   search: string = '';
   recognition: any;
   isThemeMenuOpen = false;
+  showHummingSearch = false;
 
   pathLogoDarkTheme = environment.assetsPath + 'symphony-darktheme-icon.png';
   pathLogoLightTheme = environment.assetsPath + 'symphony-lighttheme-icon.png';
@@ -39,6 +42,9 @@ export class HeaderComponent implements OnInit {
   isLoggedIn: boolean = false;
   isListening: boolean = false;
 
+  notifications: NotificationDTO[] = [];
+  unreadCount: number = 0;
+
   @Input() user!: UserDTO;
   @Input() singer!: SingerDTO;
 
@@ -46,7 +52,8 @@ export class HeaderComponent implements OnInit {
     private cookieService: CookieService,
     private authService: AuthService,
     private router: Router,
-    private ngZone: NgZone
+    private ngZone: NgZone,
+    private notificationService: NotificationService
   ) {
 
     const storedTheme = this.cookieService.get(this.COOKIE_NAME);
@@ -87,6 +94,7 @@ export class HeaderComponent implements OnInit {
     this.authService.getUser().subscribe({
       next: (data) => {
         if(!data) this.logout();
+        this.loadNotifications();
       },
       error: () => {
         this.logout();
@@ -94,6 +102,7 @@ export class HeaderComponent implements OnInit {
     })
     this.loadConfig();
     this.isLoggedIn = this.authService.isLoggedIn();
+
   }
 
   get assetsPath() {
@@ -191,4 +200,30 @@ handleSearch() {
     });
   }
 }
+
+loadNotifications(): void {
+        console.log("VVVVVVVVVVV")
+
+    this.notificationService.getUserNotifications(this.user.userId).subscribe({
+      next: (data) => {
+        this.notifications = data;
+        console.log(data)
+        this.unreadCount = data.filter(n => !n.isRead).length;
+      },
+      error: (err) => {
+        console.error("Lỗi khi tải thông báo:", err);
+      }
+    });
+  }
+
+  getNotificationImage(noti: NotificationDTO): string {
+  if (noti.type === 'system') {
+    return 'https://img.icons8.com/?size=512&id=19935&format=png';
+  }
+  return 'https://cdn-icons-png.flaticon.com/512/149/149071.png';
+  }
+
+  getNotificationSender(noti: NotificationDTO): string {
+   return noti.type;
+  }
 }

@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import java.time.LocalDate;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.phungquocthai.symphony.entity.User;
 
 import jakarta.validation.constraints.*;
@@ -36,6 +38,8 @@ public class UserDTO {
 	
 	@NotNull(message = "Vui lòng xác thực quyền")
 	private String role;
+	
+	private boolean active;
 	
 	public UserDTO(User user) {
 		this.avatar = user.getAvatar();

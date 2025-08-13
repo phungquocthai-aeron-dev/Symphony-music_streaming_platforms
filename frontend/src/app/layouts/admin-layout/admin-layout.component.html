@@ -1,45 +1,75 @@
 <!-- Sidebar giữ nguyên từ HTML gốc, bỏ các <%...%> và <c:...> -->
-    <div *ngIf="admin" class="wrapper d-flex">
-        <!-- Sidebar -->
-        <nav class="sidebar overflow-auto" style="max-width: 250px; height: 100vh;">
-            <div class="p-3">
-                <div class="d-flex align-items-center mb-4 mt-2">
-                    <div class="bg-white p-2 rounded me-2" style="max-width: 200px; cursor: pointer;" [routerLink]="['/home']">
-                        <img [src]="logo" alt="Symphony" class="hotel-logo" style="max-width: 150px;">
-                    </div>
-                </div>
-                
-                <div class="user-info d-flex align-items-center mb-2">
-                    <img 
-                    style="width: 40px; height: 40px; border-radius: 50%;"
-                    [src]="'http://localhost:8080/symphony/uploads' + admin.avatar" alt="User" class="rounded-circle me-2">
-                    <div>
-                        <h6 class="mb-0">{{ admin.fullName }}</h6>
-                        <small>Mã admin: {{ admin.userId }}</small>
-                    </div>
-                </div>
-                <div class="mb-4">
-				    <button (click)="logout()" class="btn bg-white text-primary fw-bolder">
-				        Đăng xuất
-				    </button>
-                </div>
-                
-                <ul class="nav flex-column">
-                    <li class="nav-item">
-                        <a [routerLink]="['/admin']" class="nav-link" [class.active]="activeItem('Overview')" data-bs-toggle="pill">
-                            <i class="bi bi-speedometer2"></i> Tổng quan
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a [routerLink]="['/admin/users']" class="nav-link active" [class.active]="activeItem('Users')" data-bs-toggle="pill">
-                            <i class="bi bi-house-door"></i> Quản lý người dùng
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </nav>
-      
-        <router-outlet></router-outlet>
-
+<div *ngIf="admin" class="wrapper d-flex">
+  <!-- Sidebar -->
+  <nav class="sidebar overflow-auto" style="max-width: 250px; height: 100vh">
+    <div class="p-3">
+      <div class="d-flex align-items-center mb-4 mt-2">
+        <div
+          class="bg-white p-2 rounded me-2"
+          style="max-width: 200px; cursor: pointer"
+          [routerLink]="['/home']"
+        >
+          <img
+            [src]="logo"
+            alt="Symphony"
+            class="hotel-logo"
+            style="max-width: 150px"
+          />
+        </div>
       </div>
-      
+
+      <div class="user-info d-flex align-items-center mb-2">
+        <img
+          style="width: 40px; height: 40px; border-radius: 50%"
+          [src]="'http://localhost:8080/symphony/uploads' + admin.avatar"
+          alt="User"
+          class="rounded-circle me-2"
+        />
+        <div>
+          <h6 class="mb-0">{{ admin.fullName }}</h6>
+          <small>Mã admin: {{ admin.userId }}</small>
+        </div>
+      </div>
+      <div class="mb-4">
+        <button (click)="logout()" class="btn bg-white text-primary fw-bolder">
+          Đăng xuất
+        </button>
+      </div>
+
+      <ul class="nav flex-column">
+        <li class="nav-item">
+          <a
+            [routerLink]="['/admin']"
+            class="nav-link"
+            [class.active]="activeItem('Overview')"
+            data-bs-toggle="pill"
+          >
+            <i class="bi bi-speedometer2"></i> Tổng quan
+          </a>
+        </li>
+        <li class="nav-item">
+          <a
+            [routerLink]="['/admin/users']"
+            class="nav-link active"
+            [class.active]="activeItem('Users')"
+            data-bs-toggle="pill"
+          >
+            <i class="bi bi-house-door"></i> Quản lý người dùng
+          </a>
+        </li>
+        <li class="nav-item">
+          <a
+            [routerLink]="['/admin/songs']"
+            class="nav-link"
+            [class.active]="activeItem('Songs')"
+            data-bs-toggle="pill"
+          >
+            <i class="bi bi-house-door"></i> Quản lý bài hát
+          </a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+  <router-outlet></router-outlet>
+</div>

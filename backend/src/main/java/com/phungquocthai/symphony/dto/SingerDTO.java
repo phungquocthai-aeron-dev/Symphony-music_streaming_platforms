@@ -1,5 +1,6 @@
 package com.phungquocthai.symphony.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.phungquocthai.symphony.entity.Singer;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
@@ -25,6 +26,8 @@ public class SingerDTO {
     @NotNull(message = "Vui lòng chọn lượt theo dõi")
     @Min(value = 0, message = "Lượt theo dõi phải lớn hơn 0")
     private int followers;
+    
+    private boolean active;
    
     public SingerDTO(Singer singer) {
     	this.stageName = singer.getStageName();

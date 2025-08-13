@@ -31,6 +31,9 @@ public class Singer {
     @Column(name = "followers")
     private int followers;
     
+    @Column(name = "is_active")
+    private boolean active;
+    
     @OneToOne
     @JoinColumn(name = "user_id")
     private User user;

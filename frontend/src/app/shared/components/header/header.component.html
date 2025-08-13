@@ -1,98 +1,265 @@
 <header class="fixed-top">
-    <nav class="navbar navbar-expand-lg pt-3 pb-3" style="background-color: var(--black-color);">
-        <div class="container-fluid">
-            <div class="row w-100">
-                <div class="col-5 order-1 col-sm-2  order-sm-1 pt-1 pb-1 ps-4">
-                    <a [routerLink]="['/home']">
-                        <img id="logo" [src]="(isDarkTheme) ? pathLogoLightTheme : pathLogoDarkTheme" alt="logo"
-                            style="width: 75%; min-width: 120px;">
-                    </a>
+  <nav
+    class="navbar navbar-expand-lg pb-3 pt-3"
+    style="background-color: var(--black-color)"
+  >
+    <div class="container-fluid">
+      <div class="row w-100">
+        <div class="col-5 order-1 col-sm-2 order-sm-1 pt-1 pb-1 ps-4">
+          <a [routerLink]="['/home']">
+            <img
+              id="logo"
+              [src]="isDarkTheme ? pathLogoLightTheme : pathLogoDarkTheme"
+              alt="logo"
+              style="width: 75%; min-width: 120px"
+            />
+          </a>
+        </div>
+        <div class="col-12 order-3 col-sm-6 order-sm-2 ps-5">
+          <form
+            (ngSubmit)="handleSearch()"
+            class="d-flex"
+            role="search"
+            action="/search"
+          >
+            <i
+              class="mt-2 fa-solid fa-magnifying-glass lh-lg bg-dark_grey-color text-white-primary rounded-start-4 ms-5 ps-3"
+            ></i>
+            <input
+              [(ngModel)]="search"
+              name="search"
+              class="form-control no-outline mt-2 shadow-none fs-6 bg-dark_grey-color rounded-start-0 rounded-end-0"
+              type="text"
+              placeholder="Tìm kiếm ca sĩ, bài hát,..."
+              aria-label="Search"
+              value=""
+              style="width: 68%; color: var(--text_dark_theme-color)"
+            />
+            <span class="mt-2 lh-lg bg-dark_grey-color ps-1">
+              <i
+                class="fa-solid fa-podcast text-white-primary refer btn rounded-circle"
+                (click)="showHummingSearch = !showHummingSearch"
+                style="cursor: pointer"
+              ></i>
+            </span>
+            <span class="mt-2 lh-lg bg-dark_grey-color ps-1 me-2 rounded-end-4">
+              <i
+                class="fa-solid fa-microphone text-white-primary refer btn rounded-circle"
+                #voiceSearch
+                (click)="startListening()"
+              ></i>
+            </span>
+          </form>
+        </div>
+        <div class="col-7 order-2 col-sm-4 order-sm-3 p-0">
+          <div class="container d-flex justify-content-between flex-nowrap">
+            <ul
+              *ngIf="isLoggedIn"
+              class="navbar-nav me-auto mb-2 mb-lg-0 ms-auto"
+            >
+              <!-- LOGGED IN -->
+              <li
+                class="nav-item text-nowrap clean-navbar-before mt-2 position-relative"
+              >
+                <div class="d-flex align-items-center">
+                  <button
+                    (click)="ChangeTheme()"
+                    class="text-black-primary btn-sm bg-white-primary rounded-circle change_theme"
+                  >
+                    <i
+                      class="fa-solid fa-moon refer"
+                      *ngIf="!isDarkTheme"
+                      style="color: var(--black-color)"
+                    ></i>
+                    <i
+                      class="fa-solid fa-sun refer"
+                      *ngIf="isDarkTheme"
+                      style="color: var(--black-color)"
+                    ></i>
+                  </button>
+                  <span
+                    class="ms-2 fw-medium text-nowrap text-white-primary refer cursor-pointer"
+                    (click)="isThemeMenuOpen = !isThemeMenuOpen"
+                  >
+                    GIAO DIỆN
+                    <!-- <i class="fa-solid fa-caret-down ms-1"></i> -->
+                  </span>
                 </div>
-                <div class="col-12 order-3 col-sm-6  order-sm-2 ps-5">
-                    <form (ngSubmit)="handleSearch()" class="d-flex" role="search" action="/search">
-                        <i class="mt-2 fa-solid fa-magnifying-glass lh-lg bg-dark_grey-color text-white-primary rounded-start-4 ms-5 ps-3"></i>
-                        <input
-                            [(ngModel)]="search" name="search"
-                            class="form-control no-outline mt-2 shadow-none fs-6 bg-dark_grey-color rounded-start-0 rounded-end-0"
-                            type="text" placeholder="Tìm kiếm ca sĩ, bài hát,..." aria-label="Search" value=""
-                            style="width: 68%; color: var(--text_dark_theme-color);">
-                        <span class="mt-2 lh-lg bg-dark_grey-color ps-3 me-2 rounded-end-4">
-                            <i class="fa-solid fa-microphone text-white-primary refer btn rounded-circle" #voiceSearch (click)="startListening()"></i>
-                        </span>
-                    </form>
+
+                <!-- Dropdown menu cho việc chọn màu -->
+                <div
+                  class="theme-color-dropdown"
+                  [class.show]="isThemeMenuOpen"
+                >
+                  <div class="p-3 bg-dark_grey-color shadow rounded">
+                    <div
+                      class="pb-2 mb-2 border-1 border-bottom"
+                      style="border-color: var(--text_dark_theme-color)"
+                    >
+                      <span class="mb-2 text-white-primary">Giao diện:</span>
+                      <button
+                        (click)="ChangeTheme()"
+                        class="text-black-primary btn-sm bg-white-primary rounded-circle change_theme ms-2 me-1"
+                      >
+                        <i
+                          class="fa-solid fa-moon refer"
+                          *ngIf="!isDarkTheme"
+                          style="color: var(--black-color)"
+                        ></i>
+                        <i
+                          class="fa-solid fa-sun refer"
+                          *ngIf="isDarkTheme"
+                          style="color: var(--black-color)"
+                        ></i>
+                      </button>
+                      <span class="text-white-primary">Tối</span>
+                    </div>
+                    <h6 class="mb-2 text-white-primary">Chọn màu chủ đạo</h6>
+                    <div class="d-flex flex-wrap gap-2">
+                      <div
+                        class="color-option rounded-circle"
+                        style="background-color: #9826f2"
+                        (click)="selectColor('#9826f2')"
+                      ></div>
+                      <div
+                        class="color-option rounded-circle"
+                        style="background-color: #ff6337"
+                        (click)="selectColor('#ff6337')"
+                      ></div>
+                      <div
+                        class="color-option rounded-circle"
+                        style="background-color: #00ff91"
+                        (click)="selectColor('#00ff91')"
+                      ></div>
+                      <div
+                        class="color-option rounded-circle"
+                        style="background-color: #fde41c"
+                        (click)="selectColor('#fde41c')"
+                      ></div>
+                      <div
+                        class="color-option rounded-circle"
+                        style="background-color: #0064f1"
+                        (click)="selectColor('#0064f1')"
+                      ></div>
+                      <div
+                        class="color-option rounded-circle"
+                        style="background-color: #ff0068"
+                        (click)="selectColor('#ff0068')"
+                      ></div>
+                      <div
+                        class="color-option rounded-circle"
+                        style="background-color: #fb6dfa"
+                        (click)="selectColor('#fb6dfa')"
+                      ></div>
+                      <div
+                        class="color-option rounded-circle"
+                        style="background-color: #00fbff"
+                        (click)="selectColor('#00fbff')"
+                      ></div>
+                      <div
+                        class="color-option rounded-circle"
+                        style="background-color: #f10000"
+                        (click)="selectColor('#f10000')"
+                      ></div>
+                      <div
+                        class="color-option rounded-circle"
+                        style="background-color: #73ff00"
+                        (click)="selectColor('#73ff00')"
+                      ></div>
+                      <div
+                        class="color-option rounded-circle"
+                        style="background-color: #fdd566"
+                        (click)="selectColor('#fdd566')"
+                      ></div>
+                      <div
+                        class="color-option rounded-circle"
+                        style="background-color: #a2a59b"
+                        (click)="selectColor('#a2a59b')"
+                      ></div>
+                    </div>
+                  </div>
                 </div>
-                <div class="col-7 order-2 col-sm-4  order-sm-3 p-0">
-                    <div class="container d-flex justify-content-between flex-nowrap">
-                        <ul *ngIf="isLoggedIn" class="navbar-nav me-auto mb-2 mb-lg-0 ms-auto">
+              </li>
 
-                            <!-- LOGGED IN -->
-                            <li class="nav-item text-nowrap clean-navbar-before mt-2 position-relative">
-                                <div class="d-flex align-items-center">
-                                    <button 
-                                        (click)="ChangeTheme()" 
-                                        class="text-black-primary btn-sm bg-white-primary rounded-circle change_theme">
-                                        <i class="fa-solid fa-moon refer" *ngIf="!isDarkTheme" style="color: var(--black-color);"></i>
-                                        <i class="fa-solid fa-sun refer" *ngIf="isDarkTheme" style="color: var(--black-color);"></i>
-                                    </button>
-                                    <span 
-                                        class="ms-2 fw-medium text-nowrap text-white-primary refer cursor-pointer"
-                                        (click)="isThemeMenuOpen = !isThemeMenuOpen">
-                                        GIAO DIỆN <i class="fa-solid fa-caret-down ms-1"></i>
-                                    </span>
-                                </div>
-                                
-                                <!-- Dropdown menu cho việc chọn màu -->
-                                <div class="theme-color-dropdown" [class.show]="isThemeMenuOpen">
-                                    <div class="p-3 bg-dark_grey-color shadow rounded">
-                                        <h6 class="mb-2 text-white-primary">Chọn màu giao diện</h6>
-                                        <div class="d-flex flex-wrap gap-2">
-                                            <div class="color-option rounded-circle" style="background-color: #9826f2;" (click)="selectColor('#9826f2')"></div>
-                                            <div class="color-option rounded-circle" style="background-color: #ff6337;" (click)="selectColor('#ff6337')"></div>
-                                            <div class="color-option rounded-circle" style="background-color: #00ff91;" (click)="selectColor('#00ff91')"></div>
-                                            <div class="color-option rounded-circle" style="background-color: #fde41c;" (click)="selectColor('#fde41c')"></div>
-                                            <div class="color-option rounded-circle" style="background-color: #0064f1;" (click)="selectColor('#0064f1')"></div>
-                                            <div class="color-option rounded-circle" style="background-color: #ff0068;" (click)="selectColor('#ff0068')"></div>
-                                            <div class="color-option rounded-circle" style="background-color: #fb6dfa;" (click)="selectColor('#fb6dfa')"></div>
-                                            <div class="color-option rounded-circle" style="background-color: #00fbff;" (click)="selectColor('#00fbff')"></div>
-                                            <div class="color-option rounded-circle" style="background-color: #f10000;" (click)="selectColor('#f10000')"></div>
-                                            <div class="color-option rounded-circle" style="background-color: #73ff00;" (click)="selectColor('#73ff00')"></div>
-                                            <div class="color-option rounded-circle" style="background-color: #fdd566;" (click)="selectColor('#fdd566')"></div>
-                                            <div class="color-option rounded-circle" style="background-color: #a2a59b;" (click)="selectColor('#a2a59b')"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </li>
-
-                                <li class="nav-item clean-navbar-before mt-2 refer ms-3" [routerLink]="['/introduce']">
+              <!-- <li class="nav-item clean-navbar-before mt-2 refer ms-3" [routerLink]="['/introduce']">
                                         <i class="fa-solid fa-rocket text-white-primary lh-lg ms-3 refer"></i>
                                     <span class="ms-2 fw-medium text-nowrap text-white-primary refer">
                                         GIỚI THIỆU
                                     </span>
-                                </li>
-
-                                <!-- <li class="nav-item clean-navbar-before mt-2">
-                                    <div class="dropdown me-3">
-                                        <div class="dropdown-toggle fw-medium text-nowrap text-white-primary refer"
-                                            data-bs-toggle="dropdown">
-                                            <i id="notification"
-                                                class="fa-regular fa-bell refer text-white-primary lh-lg ms-3">
-                                                <div class="notification-number rounded-circle">2</div>
-                                            </i>
-                                            <span class="ms-3">
-                                                THÔNG BÁO
-                                            </span>
-                                        </div>
-                                        <ul class="dropdown-menu dropdown-menu-end bg-dark_grey-color"
-                                            style="width: 300px;">
-                                            <li><a class="dropdown-item text-white-primary" href="#">Thông báo 1</a>
-                                            </li>
-                                            <li><a class="dropdown-item text-white-primary" href="#">Thông báo 2</a>
-                                            </li>
-                                        </ul>
-                                    </div>
                                 </li> -->
 
-                                <!-- <li class="nav-item clean-navbar">
+              <li class="nav-item clean-navbar-before mt-2 ms-4">
+                <div class="dropdown me-3">
+                  <div
+                    class="btn p-0 bg-transparent border-0 dropdown-toggle fw-medium text-nowrap text-white-primary refer"
+                    data-bs-toggle="dropdown"
+                    aria-expanded="false"
+                  >
+                    <i
+                      id="notification"
+                      class="fa-regular fa-bell refer text-white-primary lh-lg ms-3 position-relative"
+                    >
+                      <span class="notification-number rounded-circle">{{
+                        unreadCount
+                      }}</span>
+                    </i>
+                    <span class="ms-3 text-white-primary">THÔNG BÁO</span>
+                  </div>
+
+                  <ul
+                    class="dropdown-menu dropdown-menu-end bg-dark_grey-color pb-1"
+                    style="width: 320px; max-height: 300px"
+                  >
+                    <li
+                      *ngIf="!notifications?.length"
+                      class="px-3 py-2 text-white-primary opacity-75"
+                    >
+                      Không có thông báo
+                    </li>
+
+                    <li *ngFor="let noti of notifications">
+                      <button
+                        class="dropdown-item bg-transparent text-white-primary"
+                        (click)="$event.preventDefault()"
+                      >
+                        <div
+                          class="d-flex ps-2 pe-3 py-1"
+                          style="
+                            width: 300px;
+                            max-height: 300px;
+                            overflow-y: auto;
+                            white-space: normal;
+                          "
+                        >
+                          <img
+                            style="width: 40px; height: 40px"
+                            class="rounded-circle me-2"
+                            [src]="getNotificationImage(noti)"
+                            alt=""
+                          />
+                          <div style="font-size: 13px">
+                            <p class="fw-bold pe-1 mb-0 pb-1">
+                              {{ getNotificationSender(noti) }}
+                            </p>
+                            <p class="mt-0 mb-1">{{ noti.message }}</p>
+                          </div>
+                          <i
+                            class="ms-2 fa-solid fa-circle"
+                            style="font-size: 10px; margin-left: auto"
+                            [style.color]="
+                              noti.isRead
+                                ? 'transparent'
+                                : 'var(--orange-color)'
+                            "
+                          ></i>
+                        </div>
+                      </button>
+                    </li>
+                  </ul>
+                </div>
+              </li>
+
+              <!-- <li class="nav-item clean-navbar">
                                     <div class="dropdown me-3">
                                         <div class="dropdown-toggle fw-medium text-nowrap text-white-primary refer text-center"
                                             data-bs-toggle="dropdown">
@@ -113,109 +280,245 @@
                                         </ul>
                                     </div>
                                 </li> -->
-                        </ul>
+            </ul>
 
-
-                        <div *ngIf="isLoggedIn" class="dropdown">
-                            <div
-                            *ngIf="user"
-                            [style.background-image]="'url(http://localhost:8080/symphony/uploads' + user.avatar + ')'"
-                             class="rounded-circle me-5 dropdown-toggle" data-bs-toggle="dropdown" id="avatar">
-                            </div>
-                            <ul class="dropdown-menu dropdown-menu-end bg-dark_grey-color" style="width: 300px;">
-                                <li>
-                                    <div class="d-flex p-3">
-                                        <img *ngIf="user"
-                                            [src]="'http://localhost:8080/symphony/uploads' + user.avatar"
-                                            class="rounded-circle avatarInMenuBar"
-                                            style="width: 60px; height: 60px;" alt="">
-                                        <div class="ms-4">
-                                            <h6 *ngIf="user" class="text-white-primary">{{ user.fullName }}</h6>
-                                            <div *ngIf="user" class="btn bg-orange-primary text-white-primary">{{ user.role }}</div>
-                                        </div>
-                                    </div>
-                                </li>
-                                <li *ngIf="user"><a *ngIf="user.role === 'ADMIN'" class="dropdown-item text-white-primary" href="/admin">Quản lý hệ thống</a></li>
-                                <li><a class="dropdown-item text-white-primary" href="/user">Hồ sơ cá nhân</a></li>
-                                    <li  *ngIf="user && user.role=='SINGER' && singer"><a class="dropdown-item text-white-primary"
-                                        [routerLink]="['/singer', singer.singer_id]">Hồ sơ ca sĩ</a></li>
-                                <li *ngIf="user"><a class="dropdown-item text-white-primary" *ngIf="user.role === 'USER'" [routerLink]="['/upgrade']">Nâng cấp tài khoản</a></li>
-                                <li><a class="dropdown-item text-white-primary" [routerLink]="['/contact']">Liên hệ</a></li>
-                                <li *ngIf="user">
-                                    <form action="/user/delete" method=post id="formDeleteAccount">
-                                        <span *ngIf="user.role !== 'ADMIN'" class="dropdown-item text-white-primary" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#deleteAccountModal">
-                                            Xóa tài khoản
-                                        </span>
-                                        <input type="text" value="..." name="CSRFToken" hidden readonly>
-                                    </form>
-                                </li>
-                                <li>
-                                    <form action="/logout" method="POST">
-                                        <button type="submit" class="dropdown-item border-top border-2 text-orange-primary" (click)="logout()" href="login.php">Đăng xuất</button>
-                                    </form>
-                                </li>
-                            </ul>
-                        </div>
-                   
-
-
-                        <!-- NO LOGIN -->
-
-                        <ul *ngIf="!isLoggedIn">
-                        <li class="d-flex pt-2 flex-wrap justify-content-end">
-                            <div class="nav-item text-nowrap  mt-2 position-relative">
-                                <div class="d-flex align-items-center">
-                                    <button 
-                                        (click)="ChangeTheme()" 
-                                        class="text-black-primary btn-sm bg-white-primary rounded-circle change_theme">
-                                        <i class="fa-solid fa-moon refer" *ngIf="!isDarkTheme" style="color: var(--black-color);"></i>
-                                        <i class="fa-solid fa-sun refer" *ngIf="isDarkTheme" style="color: var(--black-color);"></i>
-                                    </button>
-                                    <span 
-                                        class="ms-2 fw-medium text-nowrap text-white-primary refer cursor-pointer"
-                                        (click)="isThemeMenuOpen = !isThemeMenuOpen">
-                                        GIAO DIỆN <i class="fa-solid fa-caret-down ms-1"></i>
-                                    </span>
-                                </div>
-                                
-                                <!-- Dropdown menu cho việc chọn màu -->
-                                <div class="theme-color-dropdown" [class.show]="isThemeMenuOpen">
-                                    <div class="p-3 bg-dark_grey-color shadow rounded">
-                                        <h6 class="mb-2 text-white-primary">Chọn màu giao diện</h6>
-                                        <div class="d-flex flex-wrap gap-2">
-                                            <div class="color-option rounded-circle" style="background-color: #9826f2;" (click)="selectColor('#9826f2')"></div>
-                                            <div class="color-option rounded-circle" style="background-color: #ff6337;" (click)="selectColor('#ff6337')"></div>
-                                            <div class="color-option rounded-circle" style="background-color: #00ff91;" (click)="selectColor('#00ff91')"></div>
-                                            <div class="color-option rounded-circle" style="background-color: #fde41c;" (click)="selectColor('#fde41c')"></div>
-                                            <div class="color-option rounded-circle" style="background-color: #0064f1;" (click)="selectColor('#0064f1')"></div>
-                                            <div class="color-option rounded-circle" style="background-color: #ff0068;" (click)="selectColor('#ff0068')"></div>
-                                            <div class="color-option rounded-circle" style="background-color: #fb6dfa;" (click)="selectColor('#fb6dfa')"></div>
-                                            <div class="color-option rounded-circle" style="background-color: #00fbff;" (click)="selectColor('#00fbff')"></div>
-                                            <div class="color-option rounded-circle" style="background-color: #f10000;" (click)="selectColor('#f10000')"></div>
-                                            <div class="color-option rounded-circle" style="background-color: #73ff00;" (click)="selectColor('#73ff00')"></div>
-                                            <div class="color-option rounded-circle" style="background-color: #fdd566;" (click)="selectColor('#fdd566')"></div>
-                                            <div class="color-option rounded-circle" style="background-color: #a2a59b;" (click)="selectColor('#a2a59b')"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <a class="nav-link fw-medium text-nowrap text-white-primary refer mt-2 p-1 ms-4 me-4" href="/register">
-                                Đăng ký
-                            </a>
-                            <a class="nav-link fw-medium text-nowrap text-white-primary bg-orange-primary btn rounded-4 px-2 py-1 mt-2" href="/login">
-                                Đăng nhập
-                            </a>
-                        </li>
-                        </ul>
-
-                    <!-- <?php endif ?> -->
-
+            <div *ngIf="isLoggedIn" class="dropdown">
+              <div
+                *ngIf="user"
+                [style.background-image]="
+                  'url(http://localhost:8080/symphony/uploads' +
+                  user.avatar +
+                  ')'
+                "
+                class="rounded-circle me-5 dropdown-toggle"
+                data-bs-toggle="dropdown"
+                id="avatar"
+              ></div>
+              <ul
+                class="dropdown-menu dropdown-menu-end bg-dark_grey-color"
+                style="width: 300px"
+              >
+                <li>
+                  <div class="d-flex p-3">
+                    <img
+                      *ngIf="user"
+                      [src]="
+                        'http://localhost:8080/symphony/uploads' + user.avatar
+                      "
+                      class="rounded-circle avatarInMenuBar"
+                      style="width: 60px; height: 60px"
+                      alt=""
+                    />
+                    <div class="ms-4">
+                      <h6 *ngIf="user" class="text-white-primary">
+                        {{ user.fullName }}
+                      </h6>
+                      <div
+                        *ngIf="user"
+                        class="btn bg-orange-primary text-white-primary"
+                      >
+                        {{ user.role }}
+                      </div>
                     </div>
-
-                </div>
+                  </div>
+                </li>
+                <li *ngIf="user">
+                  <a
+                    *ngIf="user.role === 'ADMIN'"
+                    class="dropdown-item text-white-primary"
+                    href="/admin"
+                    >Quản lý hệ thống</a
+                  >
+                </li>
+                <li>
+                  <a class="dropdown-item text-white-primary" href="/user"
+                    >Hồ sơ cá nhân</a
+                  >
+                </li>
+                <li *ngIf="user && user.role == 'SINGER' && singer">
+                  <a
+                    class="dropdown-item text-white-primary"
+                    [routerLink]="['/singer', singer.singer_id]"
+                    >Hồ sơ ca sĩ</a
+                  >
+                </li>
+                <li>
+                  <a
+                    class="dropdown-item text-white-primary"
+                    [routerLink]="['/upgrade']"
+                    >Nâng cấp tài khoản</a
+                  >
+                </li>
+                <li>
+                  <a
+                    class="dropdown-item text-white-primary"
+                    [routerLink]="['/contact']"
+                    >Liên hệ</a
+                  >
+                </li>
+                <li *ngIf="user">
+                  <form
+                    action="/user/delete"
+                    method="post"
+                    id="formDeleteAccount"
+                  >
+                    <span
+                      *ngIf="user.role !== 'ADMIN'"
+                      class="dropdown-item text-white-primary"
+                      style="cursor: pointer"
+                      data-bs-toggle="modal"
+                      data-bs-target="#deleteAccountModal"
+                    >
+                      Xóa tài khoản
+                    </span>
+                    <input
+                      type="text"
+                      value="..."
+                      name="CSRFToken"
+                      hidden
+                      readonly
+                    />
+                  </form>
+                </li>
+                <li>
+                  <form action="/logout" method="POST">
+                    <button
+                      type="submit"
+                      class="dropdown-item border-top border-2 text-orange-primary"
+                      (click)="logout()"
+                      href="login.php"
+                    >
+                      Đăng xuất
+                    </button>
+                  </form>
+                </li>
+              </ul>
             </div>
+
+            <!-- NO LOGIN -->
+
+            <ul *ngIf="!isLoggedIn">
+              <li class="d-flex pt-2 flex-wrap justify-content-end">
+                <div class="nav-item text-nowrap mt-2 position-relative">
+                  <div class="d-flex align-items-center">
+                    <button
+                      (click)="ChangeTheme()"
+                      class="text-black-primary btn-sm bg-white-primary rounded-circle change_theme"
+                    >
+                      <i
+                        class="fa-solid fa-moon refer"
+                        *ngIf="!isDarkTheme"
+                        style="color: var(--black-color)"
+                      ></i>
+                      <i
+                        class="fa-solid fa-sun refer"
+                        *ngIf="isDarkTheme"
+                        style="color: var(--black-color)"
+                      ></i>
+                    </button>
+                    <span
+                      class="ms-2 fw-medium text-nowrap text-white-primary refer cursor-pointer"
+                      (click)="isThemeMenuOpen = !isThemeMenuOpen"
+                    >
+                      GIAO DIỆN <i class="fa-solid fa-caret-down ms-1"></i>
+                    </span>
+                  </div>
+
+                  <!-- Dropdown menu cho việc chọn màu -->
+                  <div
+                    class="theme-color-dropdown"
+                    [class.show]="isThemeMenuOpen"
+                  >
+                    <div class="p-3 bg-dark_grey-color shadow rounded">
+                      <h6 class="mb-2 text-white-primary">
+                        Chọn màu giao diện
+                      </h6>
+                      <div class="d-flex flex-wrap gap-2">
+                        <div
+                          class="color-option rounded-circle"
+                          style="background-color: #9826f2"
+                          (click)="selectColor('#9826f2')"
+                        ></div>
+                        <div
+                          class="color-option rounded-circle"
+                          style="background-color: #ff6337"
+                          (click)="selectColor('#ff6337')"
+                        ></div>
+                        <div
+                          class="color-option rounded-circle"
+                          style="background-color: #00ff91"
+                          (click)="selectColor('#00ff91')"
+                        ></div>
+                        <div
+                          class="color-option rounded-circle"
+                          style="background-color: #fde41c"
+                          (click)="selectColor('#fde41c')"
+                        ></div>
+                        <div
+                          class="color-option rounded-circle"
+                          style="background-color: #0064f1"
+                          (click)="selectColor('#0064f1')"
+                        ></div>
+                        <div
+                          class="color-option rounded-circle"
+                          style="background-color: #ff0068"
+                          (click)="selectColor('#ff0068')"
+                        ></div>
+                        <div
+                          class="color-option rounded-circle"
+                          style="background-color: #fb6dfa"
+                          (click)="selectColor('#fb6dfa')"
+                        ></div>
+                        <div
+                          class="color-option rounded-circle"
+                          style="background-color: #00fbff"
+                          (click)="selectColor('#00fbff')"
+                        ></div>
+                        <div
+                          class="color-option rounded-circle"
+                          style="background-color: #f10000"
+                          (click)="selectColor('#f10000')"
+                        ></div>
+                        <div
+                          class="color-option rounded-circle"
+                          style="background-color: #73ff00"
+                          (click)="selectColor('#73ff00')"
+                        ></div>
+                        <div
+                          class="color-option rounded-circle"
+                          style="background-color: #fdd566"
+                          (click)="selectColor('#fdd566')"
+                        ></div>
+                        <div
+                          class="color-option rounded-circle"
+                          style="background-color: #a2a59b"
+                          (click)="selectColor('#a2a59b')"
+                        ></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <a
+                  class="nav-link fw-medium text-nowrap text-white-primary refer mt-2 p-1 ms-4 me-4"
+                  href="/register"
+                >
+                  Đăng ký
+                </a>
+                <a
+                  class="nav-link fw-medium text-nowrap text-white-primary bg-orange-primary btn rounded-4 ps-2 pe-3 py-1 mt-2"
+                  href="/login"
+                >
+                  Đăng nhập
+                </a>
+              </li>
+            </ul>
+
+            <!-- <?php endif ?> -->
+          </div>
         </div>
-    </nav>
+      </div>
+    </div>
+  </nav>
 </header>
 
 <div
@@ -228,44 +531,57 @@
     width: 400px;
     color: white;
     border-radius: 12px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
     padding: 20px;
-    z-index: 9999;
     text-align: center;
     font-family: sans-serif;
     z-index: 1100;
   "
   class="bg-dark_grey-color"
 >
-  <div style="font-size: 32px; margin-bottom: 10px;" (click)="startListening()">
-    <i class="fa-solid fa-microphone fa-beat" style="color: red;"></i>
+  <div style="font-size: 32px; margin-bottom: 10px" (click)="startListening()">
+    <i class="fa-solid fa-microphone fa-beat" style="color: red"></i>
   </div>
-  <div style="font-size: 16px; opacity: 0.7; margin-bottom: 8px;">
+  <div style="font-size: 16px; opacity: 0.7; margin-bottom: 8px">
     Đang nghe giọng nói...
   </div>
-  <div style="font-size: 18px; font-weight: bold;">
-    "{{ search }}"
+  <div style="font-size: 18px; font-weight: bold">"{{ search }}"</div>
+</div>
+
+<div class="modal" id="deleteAccountModal">
+  <div class="modal-dialog modal-sm modal-dialog-centered">
+    <div class="modal-content bg-dark_grey-color text-white-primary">
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h4 class="modal-title">Bạn chấp nhận xóa tài khoản</h4>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+        ></button>
+      </div>
+
+      <!-- Modal footer -->
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-danger"
+          (click)="onDeleteUser()"
+          data-bs-dismiss="modal"
+          id="accept-delete-account"
+        >
+          Xóa
+        </button>
+        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">
+          Hủy
+        </button>
+      </div>
+    </div>
   </div>
 </div>
 
-
-
-<div class="modal" id="deleteAccountModal">
-    <div class="modal-dialog modal-sm modal-dialog-centered">
-        <div class="modal-content bg-dark_grey-color text-white-primary">
-
-            <!-- Modal Header -->
-            <div class="modal-header">
-                <h4 class="modal-title">Bạn chấp nhận xóa tài khoản</h4>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-
-            <!-- Modal footer -->
-            <div class="modal-footer">
-                <button type="button" class="btn btn-danger" (click)="onDeleteUser()" data-bs-dismiss="modal" id="accept-delete-account">Xóa</button>
-                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Hủy</button>
-            </div>
-
-        </div>
-    </div>
-</div>
+<app-humming-search
+  (close)="showHummingSearch = false"
+  *ngIf="showHummingSearch"
+  style="position: fixed; top: 120px; left: 35%; z-index: 1300"
+></app-humming-search>

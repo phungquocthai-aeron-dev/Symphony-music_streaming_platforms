@@ -1,0 +1,471 @@
+<div class="content p-4">
+  <div class="tab-content">
+    <div
+      *ngIf="notifyTitle !== ''"
+      class="alert alert-dismissible fade show"
+      role="alert"
+      id="fixedAlert"
+      [ngClass]="isSuccess ? 'alert-success' : 'alert-danger'"
+    >
+      <strong>{{ notifyTitle }}</strong> {{ notifyContent }}
+      <button
+        type="button"
+        class="btn-close"
+        data-bs-dismiss="alert"
+        aria-label="Close"
+      ></button>
+    </div>
+
+    <!-- Song Management -->
+    <div class="tab-pane pb-5 fade show active" id="songs">
+      <h3 class="text-center mb-5">Quản lý bài hát</h3>
+    </div>
+
+    <div class="mb-5">
+      <!-- Search Form -->
+      <h3>Tìm kiếm bài hát</h3>
+
+      <div class="row">
+        <div class="col-sm-10">
+          <input
+            type="text"
+            class="form-control"
+            placeholder="Nhập tên bài hát hoặc tác giả..."
+            name="songName"
+            required
+            [(ngModel)]="searchTitle"
+          />
+        </div>
+        <div class="col-sm-2">
+          <div class="input-group">
+            <button
+              class="btn btn-outline-secondary btn-primary text-white mx-auto bg-primary"
+              (click)="searchSongs()"
+            >
+              <i class="bi bi-search"></i>
+              Tìm bài hát
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Table + Actions -->
+      <div *ngIf="songs" class="mt-4 row">
+        <div class="col-sm-12 float-end mb-3 d-flex">
+          <button
+            *ngIf="songs.length"
+            class="btn btn-success me-1"
+            (click)="onExportSongsExcel()"
+          >
+            Xuất Excel
+          </button>
+          <button class="btn btn-primary ms-1 bg-primary" (click)="loadSongs()">
+            Xem tất cả
+          </button>
+        </div>
+
+        <!-- Songs Table -->
+        <div
+          class="col-sm-12 table-responsive"
+          style="
+            max-height: 300px;
+            min-height: 600px;
+            max-width: 1200px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+          "
+        >
+          <table class="table table-hover table-bordered">
+            <thead
+              style="
+                position: sticky;
+                top: 0;
+                background: black;
+                z-index: 1;
+                text-align: center;
+                color: white;
+              "
+            >
+              <tr class="text-center">
+                <th>STT</th>
+                <th>Mã bài hát</th>
+                <th>Ảnh</th>
+                <th>Tên bài hát</th>
+                <th>Tác giả</th>
+                <th>Ca sĩ</th>
+                <th>Thể loại</th>
+                <th>Ngày phát hành</th>
+                <th>Lượt nghe</th>
+                <th>VIP</th>
+                <th>Trạng thái</th>
+                <th>Thao tác</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                *ngFor="let song of songs; let i = index"
+                class="text-center align-middle"
+              >
+                <td>{{ i + 1 }}</td>
+                <td>{{ song.song_id }}</td>
+                <td>
+                  <img
+                    [src]="
+                      'http://localhost:8080/symphony/uploads' + song.song_img
+                    "
+                    alt="{{ song.songName }}"
+                    style="
+                      width: 50px;
+                      height: 50px;
+                      object-fit: cover;
+                      border-radius: 4px;
+                    "
+                  />
+                </td>
+                <td>{{ song.songName }}</td>
+                <td>{{ song.author }}</td>
+                <td>
+                  <span *ngFor="let singer of song.singers; let last = last">
+                    {{ singer.stageName }}<span *ngIf="!last">, </span>
+                  </span>
+                </td>
+                <td>
+                  <span *ngFor="let cat of song.categories; let last = last">
+                    {{ cat.category_name }}<span *ngIf="!last">, </span>
+                  </span>
+                </td>
+                <td>{{ song.releaseDate | date : "dd/MM/yyyy" }}</td>
+                <td>{{ song.total_listens }}</td>
+                <td>
+                  <span
+                    class="badge"
+                    [ngClass]="
+                      song.isVip ? 'bg-warning text-dark' : 'bg-secondary'
+                    "
+                  >
+                    {{ song.isVip ? "VIP" : "Thường" }}
+                  </span>
+                </td>
+                <td>
+                  <span
+                    class="badge"
+                    [ngClass]="song.active ? 'bg-success' : 'bg-danger'"
+                  >
+                    {{ song.active ? "Hoạt động" : "Vô hiệu" }}
+                  </span>
+                </td>
+                <td>
+                  <div class="d-flex justify-content-center">
+                    <button
+                      class="btn btn-warning me-1"
+                      (click)="editSong(song)"
+                    >
+                      Sửa
+                    </button>
+                    <button
+                      class="btn btn-danger"
+                      *ngIf="song.active"
+                      (click)="disableSong(song)"
+                    >
+                      Vô hiệu hóa
+                    </button>
+                    <button
+                      class="btn btn-primary bg-primary"
+                      *ngIf="!song.active"
+                      (click)="enableSong(song)"
+                    >
+                      Kích hoạt
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div
+  #editModel
+  id="songModalEdit"
+  *ngIf="displayEditModal"
+  class="p-4 rounded-3"
+  style="position: fixed; top: 20px; left: 30%; z-index: 1300"
+>
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div
+      class="modal-content bg-dark_grey-color text-white-primary p-4 rounded-3"
+      style="max-height: 90vh; overflow-y: auto"
+    >
+      <div class="modal-header">
+        <h4 class="modal-title">Thông tin bài hát</h4>
+        <button
+          #close_update_modal
+          type="button"
+          style="margin-left: 65%"
+          class="btn-close bg-grey-color"
+        ></button>
+      </div>
+
+      <div class="modal-body">
+        <form
+          method="post"
+          enctype="multipart/form-data"
+          [formGroup]="editSongForm"
+        >
+          <div class="row">
+            <div class="col-sm-4">
+              <div id="song-edit-img" class="mb-3">
+                <div
+                  class="song-edit-img-container rounded-4"
+                  style="max-width: 200px"
+                  (click)="triggerFileInputEdit()"
+                >
+                  <img
+                    [src]="songSelectedImg"
+                    alt=""
+                    class="song-img-active rounded-4 w-100"
+                    style="max-width: 200px"
+                  />
+                  <div
+                    id="modal-edit"
+                    class="w-100 rounded-4 text-white-primary"
+                    style="max-width: 200px"
+                  >
+                    <div
+                      class="d-flex flex-column justify-content-center h-100 w-100"
+                    >
+                      <p class="text-center fs-5">
+                        Chọn ảnh
+                        <i class="fa-regular fa-pen-to-square"></i>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <input
+                #inputSongEdit
+                (change)="onFileEditChange($event)"
+                (change)="onFileUpdateChange($event, 'image')"
+                id="input-song-edit-img"
+                type="file"
+                value=""
+                class="form-control text-white-primary bg-black-primary no-outline shadow-none"
+                name="song_img"
+                hidden
+              />
+              <!-- adv -->
+            </div>
+            <div class="col-sm-8">
+              <div class="mb-3">
+                <label for="song_name" class="text-white-primary mb-3"
+                  >Tên bài hát:</label
+                >
+                <input
+                  required
+                  type="text"
+                  class="form-control text-white-primary bg-black-primary no-outline shadow-none"
+                  id="song_name"
+                  name="songName"
+                  [value]="song.songName"
+                  formControlName="songName"
+                />
+                <!-- adv -->
+              </div>
+              <div class="mb-3">
+                <label
+                  for="isVip"
+                  class="form-check-label text-white-primary mb-3 me-2"
+                  >Bài hát vip:</label
+                >
+                <input
+                  required
+                  type="checkbox"
+                  class="form-check-input"
+                  id="isVip"
+                  name="isVip"
+                  [checked]="song.isVip"
+                  value="true"
+                  formControlName="isVip"
+                />
+                <!-- adv -->
+              </div>
+              <div class="mb-3">
+                <label for="author" class="text-white-primary mb-3"
+                  >Tác giả:</label
+                >
+                <input
+                  required
+                  type="text"
+                  class="form-control text-white-primary bg-black-primary no-outline shadow-none"
+                  id="author"
+                  name="author"
+                  formControlName="author"
+                />
+                <!-- adv -->
+              </div>
+
+              <div class="mb-3">
+                <label for="singers_present" class="text-white-primary mb-3"
+                  >Ca sĩ thể hiện:</label
+                >
+
+                <input
+                  *ngFor="let singer of song.singers"
+                  class="form-control text-white-primary bg-black-primary no-outline shadow-none mb-3"
+                  type="text"
+                  [value]="singer.stageName"
+                  readonly
+                  disabled
+                />
+
+                <select
+                  formControlName="singersId"
+                  class="form-select bg-black-primary text-white-primary"
+                  id="singers_present"
+                  name="singers_present[]"
+                  multiple
+                >
+                  <option value="" disabled selected>
+                    Ca sĩ cùng thể hiện (nếu có)
+                  </option>
+                  <option
+                    *ngFor="let singer of singerNotPresent"
+                    [value]="singer.singer_id"
+                    class="bg-black-primary text-white-primary"
+                  >
+                    {{ singer.stageName }}
+                  </option>
+                </select>
+              </div>
+              <div class="mb-3 mt-3">
+                <label for="lrcFile" class="text-white-primary mb-3"
+                  >File LRC bài hát:</label
+                >
+                <input
+                  type="file"
+                  class="form-control text-white-primary bg-black-primary no-outline shadow-none"
+                  id="lrcFile"
+                  name="lrcFile"
+                  (change)="onFileUpdateChange($event, 'lrc')"
+                  accept=".lrc"
+                />
+                <!-- adv -->
+              </div>
+              <div class="mb-3 mt-3">
+                <label for="lyric" class="text-white-primary mb-3"
+                  >Lời bài hát:</label
+                >
+                <input
+                  type="file"
+                  class="form-control text-white-primary bg-black-primary no-outline shadow-none"
+                  id="lyric"
+                  name="lyricFile"
+                  (change)="onFileUpdateChange($event, 'lyric')"
+                  accept=".txt"
+                />
+                <!-- adv -->
+              </div>
+              <div class="mb-3">
+                <label for="category_id" class="text-white-primary mb-3"
+                  >Thể loại:</label
+                >
+                <select
+                  formControlName="categoryIds"
+                  class="form-select bg-black-primary text-white-primary"
+                  aria-label="Default select example"
+                  id="category_id"
+                  name="categories[]"
+                  multiple
+                  required
+                >
+                  <option
+                    *ngFor="let category of categories"
+                    class="bg-black-primary text-white-primary"
+                    [value]="category.category_id"
+                  >
+                    {{ category.category_name }}
+                  </option>
+                </select>
+                <!-- adv -->
+              </div>
+              <div class="mb-3 mt-3">
+                <label for="releaseDate" class="text-white-primary mb-3"
+                  >Ngày phát hành:</label
+                >
+                <input
+                  required
+                  type="date"
+                  formControlName="releaseDate"
+                  class="form-control text-white-primary bg-black-primary no-outline shadow-none"
+                  id="releaseDate"
+                  placeholder=""
+                  name="releaseDate"
+                  [max]="maxDate"
+                  value=""
+                />
+                <!-- adv -->
+              </div>
+              <div class="mb-3 mt-3">
+                <label for="duration" class="text-white-primary mb-3"
+                  >Thời lượng(s):</label
+                >
+                <input
+                  formControlName="duration"
+                  required
+                  type="number"
+                  class="form-control text-white-primary bg-black-primary no-outline shadow-none"
+                  id="duration"
+                  name="duration"
+                  value=""
+                  min="0"
+                />
+                <!-- adv -->
+              </div>
+              <input
+                formControlName="song_id"
+                type="text"
+                hidden
+                name="song_id"
+                [value]="song.song_id"
+              />
+              <input
+                formControlName="song_img"
+                type="text"
+                hidden
+                name="song_img"
+                [value]="song.song_img"
+              />
+              <input
+                formControlName="lyric"
+                type="text"
+                hidden
+                name="lyric"
+                [value]="song.lyric"
+              />
+              <input
+                formControlName="lrc"
+                type="text"
+                hidden
+                name="lrc"
+                [value]="song.lrc"
+              />
+
+              <input type="text" value="" name="CSRFToken" hidden readonly />
+              <button
+                type="submit"
+                id="btn-submit"
+                class="btn text-white-primary bg-orange-primary fw-bolder"
+                (click)="onSubmitUpdate()"
+              >
+                Lưu
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,56 @@
+<!-- humming-search.component.html -->
+<div class="humming-search-container">
+  <div class="d-flex" style="justify-content: flex-end">
+    <i
+      class="fa-solid fa-xmark p-2 rounded-1"
+      (click)="closeSearch()"
+      style="background-color: var(--grey-color); height: 30px"
+    ></i>
+  </div>
+  <h2 class="title text-center">HÃY NGÂN NGA MỘT GIAI ĐIỆU</h2>
+  <!-- Phần ghi âm -->
+  <div class="recording-section">
+    <h2>Ghi Âm Giọng Ngân Nga</h2>
+
+    <div class="recording-controls">
+      <button
+        class="record-btn"
+        [ngClass]="{ recording: isRecording }"
+        (click)="isRecording ? stopRecording() : startRecording()"
+        [disabled]="isSearching"
+      >
+        {{ isRecording ? "Dừng Ghi" : "Bắt Đầu Ghi" }}
+      </button>
+
+      <span class="timer">{{ formatTime(recordingTime) }}</span>
+    </div>
+
+    <!-- Hiển thị audio đã ghi hoặc đã upload -->
+    <div *ngIf="audioUrl" class="audio-preview">
+      <audio controls [src]="audioUrl"></audio>
+    </div>
+  </div>
+
+  <!-- Phần upload file -->
+  <div class="upload-section">
+    <h2>Hoặc Tải Lên File Âm Thanh</h2>
+    <input
+      type="file"
+      accept="audio/*"
+      (change)="onFileSelected($event)"
+      [disabled]="isSearching"
+    />
+  </div>
+
+  <!-- Nút tìm kiếm -->
+  <button
+    class="search-btn"
+    (click)="search()"
+    [disabled]="isSearching || (!recordedAudio && !selectedFile)"
+  >
+    {{ isSearching ? "Đang Tìm Kiếm..." : "Tìm Kiếm Bài Hát" }}
+  </button>
+
+  <!-- Hiển thị lỗi -->
+  <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
+</div>

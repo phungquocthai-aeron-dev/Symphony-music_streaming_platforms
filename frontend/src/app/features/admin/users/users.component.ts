@@ -106,18 +106,37 @@ export class UsersComponent implements OnInit {
   }
   
   deleteUser(user: UserDTO): void {
-    if (confirm('Bạn có chắc chắn muốn xóa người dùng ' + user.fullName + '. Id:' + user.userId +  ' không?')) {
+    if (confirm('Bạn có chắc chắn muốn vô hiệu hóa người dùng ' + user.fullName + '. Id:' + user.userId +  ' không?')) {
       this.authService.deleteUser(user.userId).subscribe({
         next: () => {
-        this.notifyTitle = "Xóa tài khoản người dùng";
-        this.notifyContent = "Đã xóa tài khoản người dùng " + user.fullName + ", id: " + user.userId + "!";
+        this.notifyTitle = "Vo hiệu hóa tài khoản người dùng";
+        this.notifyContent = "Đã vô hiệu hóa tài khoản người dùng " + user.fullName + ", id: " + user.userId + "!";
         this.isSuccess = true;
           this.loadData();
 
         },
         error: (err) => {
-          this.notifyTitle = "Xóa người dùng";
-          this.notifyContent = "Xóa tài khoản người dùng thất bại!";
+          this.notifyTitle = "Vô hiệu hóa người dùng";
+          this.notifyContent = "Vô hiệu hóa tài khoản người dùng thất bại!";
+          this.isSuccess = false;
+        }
+      });
+    }
+  }
+
+  enableUser(user: UserDTO): void {
+    if (confirm('Bạn có chắc chắn muốn khôi phục người dùng ' + user.fullName + '. Id:' + user.userId +  ' không?')) {
+      this.authService.enable(user.userId).subscribe({
+        next: () => {
+        this.notifyTitle = "Khôi phục tài khoản người dùng";
+        this.notifyContent = "Đã khôi phục tài khoản người dùng " + user.fullName + ", id: " + user.userId + "!";
+        this.isSuccess = true;
+          this.loadData();
+
+        },
+        error: (err) => {
+          this.notifyTitle = "Khôi phục người dùng";
+          this.notifyContent = "Khôi phục tài khoản người dùng thất bại!";
           this.isSuccess = false;
         }
       });
@@ -125,18 +144,37 @@ export class UsersComponent implements OnInit {
   }
 
   deleteSinger(singer: SingerDTO): void {
-    if (confirm('Bạn có chắc chắn muốn xóa ca sĩ ' + singer.stageName + '. Id:' + singer.singer_id +  ' không?')) {
+    if (confirm('Bạn có chắc chắn muốn vô hiệu hóa ca sĩ ' + singer.stageName + '. Id:' + singer.singer_id +  ' không?')) {
       this.singerService.deleteSinger(singer.singer_id).subscribe({
         next: () => {
-          this.notifyTitle = "Xóa ca sĩ";
-          this.notifyContent = "Đã xóa ca sĩ " + singer.stageName + ", id: " + singer.singer_id + "!";
+          this.notifyTitle = "Vô hiệu hóa ca sĩ";
+          this.notifyContent = "Đã vô hiệu hóa ca sĩ " + singer.stageName + ", id: " + singer.singer_id + "!";
           this.isSuccess = true;
 
           this.loadData();
         },
         error: (err) => {
-          this.notifyTitle = "Xóa ca sĩ";
-          this.notifyContent = "Xóa ca sĩ thất bại!";
+          this.notifyTitle = "Vô hiệu hóa ca sĩ";
+          this.notifyContent = "Vô hiệu hóa ca sĩ thất bại!";
+          this.isSuccess = false;
+        }
+      });
+    }
+  }
+
+  enableSinger(singer: SingerDTO): void {
+    if (confirm('Bạn có chắc chắn muốn khôi phục hóa ca sĩ ' + singer.stageName + '. Id:' + singer.singer_id +  ' không?')) {
+      this.singerService.enable(singer.singer_id).subscribe({
+        next: () => {
+          this.notifyTitle = "Khôi phục ca sĩ";
+          this.notifyContent = "Đã khôi phục ca sĩ " + singer.stageName + ", id: " + singer.singer_id + "!";
+          this.isSuccess = true;
+
+          this.loadData();
+        },
+        error: (err) => {
+          this.notifyTitle = "Khôi phục ca sĩ";
+          this.notifyContent = "Khôi phục ca sĩ thất bại!";
           this.isSuccess = false;
         }
       });

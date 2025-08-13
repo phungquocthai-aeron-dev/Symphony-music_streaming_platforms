@@ -51,6 +51,18 @@ export class SongService {
   
     return this.http.post<ResponseData<SongDTO>>(`${this.apiUrl}/delete`, {}, { params });
   }
+
+  enable(songId: string): Observable<ResponseData<SongDTO>> {
+    const params = new HttpParams()
+      .set('songId', songId)
+    return this.http.post<ResponseData<SongDTO>>(`${this.apiUrl}/enable`, {}, { params });
+  }
+
+  disable(songId: string): Observable<ResponseData<SongDTO>> {
+    const params = new HttpParams()
+      .set('songId', songId)
+    return this.http.post<ResponseData<SongDTO>>(`${this.apiUrl}/disable`, {}, { params });
+  }
   
 
   songUpdate(formData: FormData): Observable<ResponseData<SongDTO>> {  
@@ -69,6 +81,11 @@ export class SongService {
 
   getCategories(): Observable<ResponseData<CategoryDTO[]>> {
     return this.http.get<ResponseData<CategoryDTO[]>>(`${this.apiUrl}/categories`);
+  }
+
+  findBySongName(songName: string): Observable<ResponseData<SongDTO[]>> {
+    const params = new HttpParams().set('songName', songName);
+    return this.http.get<ResponseData<SongDTO[]>>(`${this.apiUrl}/songName`, { params });
   }
 
   favoriteSong(songId: number): Observable<void> {
@@ -194,5 +211,17 @@ getSongsByPlaylistId(playlistId: number): Observable<ResponseData<SongDTO[]>> {
 getSongsByAlbumId(playlistId: number): Observable<ResponseData<SongDTO[]>> {
   const params = new HttpParams().set('id', playlistId);
   return this.http.get<ResponseData<SongDTO[]>>(`${this.apiUrl}/album`, { params });
+}
+
+exportSongs(): Observable<Blob> {
+  const headers = new HttpHeaders().set(
+    "Authorization",
+    "Bearer " + this.token
+  );
+
+  return this.http.post(`${environment.apiUrl}song/export`, null, {
+    headers,
+    responseType: 'blob'
+  });
 }
 }

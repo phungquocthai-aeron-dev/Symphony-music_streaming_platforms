@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
@@ -63,6 +64,8 @@ public class SongDTO {
     private List<SingerDTO> singers;
     
     private boolean isFavorite;
+    
+    private boolean active;
     
     @JsonIgnore
     public List<Integer> getCategoryIds() { 

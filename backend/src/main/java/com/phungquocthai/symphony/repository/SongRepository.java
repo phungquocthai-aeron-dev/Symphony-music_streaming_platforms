@@ -41,14 +41,14 @@ public interface SongRepository extends JpaRepository<Song, Integer> {
 	           nativeQuery = true)
 	List<Song> findSongsFromLastYear(@Param("limit") Integer limit);
 	
-	@Query(value = "SELECT * FROM song ORDER BY release_date DESC, song_id DESC LIMIT 1", nativeQuery = true)	
+	@Query(value = "SELECT * FROM song WHERE is_active = true ORDER BY release_date DESC, song_id DESC LIMIT 1", nativeQuery = true)	
 	Optional<Song> getNewSong();
 
 	@Query(value = "SELECT DISTINCT s.* " +
             "FROM song s " +
             "NATURAL JOIN category_song p " +
             "NATURAL JOIN category c " +
-            "WHERE s.song_name LIKE :key OR c.category_name LIKE :key " +
+            "WHERE s.active = true AND (s.song_name LIKE :key OR c.category_name) LIKE :key " +
             "COLLATE utf8mb4_unicode_ci", nativeQuery = true)
 	List<Song> searchSong(@Param("key") String key);
 	
@@ -56,7 +56,7 @@ public interface SongRepository extends JpaRepository<Song, Integer> {
 			"FROM song s " +
             "NATURAL JOIN present p " +
             "NATURAL JOIN category c " +
-			"WHERE c.category_id = :categoryId", nativeQuery = true)
+			"WHERE is_active = true AND c.category_id = :categoryId", nativeQuery = true)
 	List<Song> getSongsByCategory(@Param("categoryId") Integer categoryId);
 	
 	@Query(value = "SELECT DISTINCT s.* " +
@@ -64,56 +64,56 @@ public interface SongRepository extends JpaRepository<Song, Integer> {
             "NATURAL JOIN present p " +
 			"NATURAL JOIN category_song cs " +
             "NATURAL JOIN category c " +
-			"WHERE c.category_name = :categoryName " +
+			"WHERE c.category_name = :categoryName AND is_active = true " +
 			"LIMIT :limit", nativeQuery = true)
 	List<Song> getSongsByCategory(@Param("categoryName") String categoryName,
 			@Param("limit") Integer limit);
 	
 	@Query(value = "SELECT s.* FROM song s " +
             "INNER JOIN present p ON s.song_id = p.song_id " +
-            "WHERE p.singer_id = :singerId", 
+            "WHERE p.singer_id = :singerId AND is_active = true", 
     nativeQuery = true)
 	List<Song> findBySingerId(@Param("singerId") Integer singerId);
 	
 	@Query(value = "SELECT s.* FROM song s " +
             "INNER JOIN playlist_song p ON s.song_id = p.song_id " +
-            "WHERE p.playlist_id = :playlistId", 
+            "WHERE p.playlist_id = :playlistId AND is_active = true", 
     nativeQuery = true)
 	List<Song> findByPlaylistId(@Param("playlistId") Integer playlistId);
 	
 	@Query(value = "SELECT s.* FROM song s " +
             "INNER JOIN album_song a ON s.song_id = a.song_id " +
-            "WHERE a.album_id = :albumId", 
+            "WHERE a.album_id = :albumId AND is_active = true", 
     nativeQuery = true)
 	List<Song> findByAlbumId(@Param("albumId") Integer albumId);
 	
 	@Query(value = "SELECT s.* FROM song s " +
             "INNER JOIN present p ON s.song_id = p.song_id " +
-            "WHERE p.singer_id IN (:ids)", 
+            "WHERE p.singer_id IN (:ids) AND is_active = true", 
     nativeQuery = true)
 	List<Song> findAllBySingerId(@Param("ids") Iterable<Integer> ids);
 	
 	@Query(value = "SELECT s.* FROM song s " +
             "INNER JOIN category_song cs ON s.song_id = cs.song_id " +
-            "WHERE cs.category_id IN (:ids)", 
+            "WHERE cs.category_id IN (:ids) AND is_active = true", 
     nativeQuery = true)
 	List<Song> findAllByCategoryId(@Param("ids") List<Integer> ids);
 	
 	@Query(value = "SELECT s.* FROM song s " +
             "INNER JOIN category_song cs ON s.song_id = cs.song_id " +
-            "WHERE cs.category_id IN (:ids) AND s.song_id NOT IN (:notInSongIds)", 
+            "WHERE cs.category_id IN (:ids) AND s.song_id NOT IN (:notInSongIds) AND is_active = true", 
     nativeQuery = true)
 	List<Song> findAllByCategoryIdNotIn(
 			@Param("ids") Iterable<Integer> ids,
 			@Param("notInSongIds") Iterable<Integer> notInSongIds);
 	
 	@Query(value = "SELECT s.* FROM song s "
-			+ "WHERE listens >= 100000000 "
+			+ "WHERE listens >= 100000000  AND is_active = true "
 			+ "ORDER BY listens DESC "
 			+ "LIMIT :limit", nativeQuery = true)
 	List<Song> findHotHit(@Param("limit") Integer limit);
 	
-	@Query(value = "SELECT p.singer_id FROM present p WHERE song_id = :songId LIMIT 1", nativeQuery = true)
+	@Query(value = "SELECT p.singer_id FROM present p WHERE song_id = :songId AND is_active = true LIMIT 1", nativeQuery = true)
 	Optional<Integer> findFirstBySongId(@Param("songId") Integer songId);
 	
 //	@Query(value = """
@@ -144,7 +144,7 @@ public interface SongRepository extends JpaRepository<Song, Integer> {
 			    FROM listen l 
 			    INNER JOIN song s ON l.song_id = s.song_id
 			    WHERE l.listen_at < DATE_FORMAT(NOW(), "%Y-%m-%d %H:00:00")  
-			          AND l.listen_at >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 HOUR), "%Y-%m-%d %H:00:00")
+			          AND l.listen_at >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 HOUR), "%Y-%m-%d %H:00:00") AND is_active = true
 			    GROUP BY 
 			        s.song_id
 			    ORDER BY total_listens_per_hour DESC, s.release_date DESC, s.duration DESC 
@@ -167,7 +167,7 @@ public interface SongRepository extends JpaRepository<Song, Integer> {
 	        SELECT s.* 
 	        FROM listen l 
 	        NATURAL JOIN song s
-	        WHERE l.user_id = :userId
+	        WHERE l.user_id = :userId AND is_active = true
 	        GROUP BY s.song_id
 			ORDER BY MAX(l.listen_at) DESC
 			LIMIT :limit
@@ -179,4 +179,15 @@ public interface SongRepository extends JpaRepository<Song, Integer> {
 	@Query(value = "INSERT INTO listen (user_id, listen_at, song_id) VALUES (:userId, NOW(), :songId)", nativeQuery = true)
 	int addListened(@Param("userId") Integer userId, @Param("songId") Integer songId);
 
+	@Query("SELECT s FROM Song s WHERE " +
+	           "LOWER(s.path) LIKE %:filename% AND s.active = true")
+	    Optional<Song> findByPathEndWithNoExtension(@Param("filename") String filename);
+	
+	@Modifying
+    @Transactional
+    @Query("UPDATE Song s SET s.active = :status WHERE s.song_id = :songId")
+    int updateIsActive(@Param("songId") Integer songId, @Param("status") boolean status);
+	
+	List<Song> findBySongNameContainingIgnoreCase(String songName);
+	
 }

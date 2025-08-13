@@ -17,6 +17,9 @@ public interface SingerRepository extends JpaRepository<Singer, Integer> {
 	@Query("SELECT s FROM Singer s WHERE s.stageName LIKE %:stageName%")
 	List<Singer> getByStageName(@Param("stageName") String stageName);
 	
+	@Query(value = "SELECT * FROM singer WHERE singer_id = :singerId", nativeQuery = true)
+	Optional<Singer> findSingerActive(@Param("singerId") Integer singerId);
+	
 	@Modifying
 	@Transactional
 	@Query(value =  "DELETE FROM present p WHERE p.singer_id = :singerId AND p.song_id = :songId"
@@ -88,4 +91,8 @@ public interface SingerRepository extends JpaRepository<Singer, Integer> {
 	@Query(value = "DELETE FROM singer WHERE user_id = :userId", nativeQuery = true)
 	void deleteSingersByUserId(@Param("userId") Integer userId);
 
+	@Modifying
+    @Transactional
+    @Query("UPDATE Singer s SET s.active = :status WHERE s.singer_id = :singerId")
+    int updateIsActive(@Param("singerId") Integer singerId, @Param("status") boolean status);
 }

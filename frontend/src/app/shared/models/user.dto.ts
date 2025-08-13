@@ -6,5 +6,6 @@ export interface UserDTO {
     avatar: string;
     role: string;
     phone: string;
+    active: boolean;
   }
   

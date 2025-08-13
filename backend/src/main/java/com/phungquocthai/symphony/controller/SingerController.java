@@ -74,6 +74,12 @@ public class SingerController {
 		return ResponseEntity.noContent().build();
 	}
 	
+	@PostMapping("/enable")
+	public ResponseEntity<Void> enable(@RequestParam(value = "id", required = true) Integer singerId) {
+		singerService.enable(singerId);
+		return ResponseEntity.noContent().build();
+	}
+	
 	@PostMapping("/update")
 	public ResponseEntity<ApiResponse<SingerDTO>> update(SingerUpdateDTO dto) {
 		SingerDTO singer = singerService.update(dto);

@@ -16,4 +16,5 @@ export interface SongDTO {
     categories: CategoryDTO[];
     singers: SingerDTO[];
     favorite: boolean;
+    active: boolean;
 }

@@ -89,6 +89,17 @@ export class AuthService {
     return this.http.post<void>(`${environment.apiUrl}user/delete`, null, { headers, params });
   }
 
+  enable(userId: number): Observable<void> {
+    const headers = new HttpHeaders().set(
+      "Authorization",
+      "Bearer " + this.getToken()
+    );
+  
+    const params = new HttpParams().set('id', userId.toString());
+  
+    return this.http.post<void>(`${environment.apiUrl}user/enable`, null, { headers, params });
+  }
+
   getUser(): Observable<ResponseData<UserDTO>> {
     const userInfo = this.getUserInfo();
     if(userInfo) {
@@ -275,7 +286,7 @@ exportUsers(): Observable<Blob> {
 
   return this.http.post(`${environment.apiUrl}user/export`, null, {
     headers,
-    responseType: 'blob' // rất quan trọng để nhận file nhị phân
+    responseType: 'blob'
   });
 }
 

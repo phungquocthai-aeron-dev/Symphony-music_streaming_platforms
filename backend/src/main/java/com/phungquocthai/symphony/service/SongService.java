@@ -1,5 +1,6 @@
 package com.phungquocthai.symphony.service;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashSet;
@@ -84,6 +85,9 @@ public class SongService {
 	
 	@Autowired
 	AlbumRepository albumRepository;
+	
+	@Autowired
+	ExcelExportUtil excelExportUtil;
 		
 	public List<SongDTO> getFavoriteSongsOfUser(Integer userId) {
 		List<Song> songEntities = songRepository.getFavoriteSongsOfUser(userId); 
@@ -120,6 +124,15 @@ public class SongService {
 	public void listenedSong(Integer userId, Integer songId) {
 		this.songRepository.addListened(userId, songId);
 	}
+	
+	public List<SongDTO> findBySongName(String songName) {
+		return this.songMapper.toListDTO(this.songRepository.findBySongNameContainingIgnoreCase(songName));
+	}
+	
+	@PreAuthorize("hasRole('ADMIN')")
+	public byte[] exportToExcel() throws IOException {
+        return excelExportUtil.exportToExcel(songMapper.toListDTO(songRepository.findAll()), null, "Danh sách bài hát");
+    }
 	
 //	@PreAuthorize("hasRole('SINGER')")
 	public SongDTO create(SongCreateDTO dto, MultipartFile pathFile, MultipartFile lyricFile,
@@ -167,16 +180,25 @@ public class SongService {
 			categoryRepository.deleteAllBySongId(songId);
 			albumRepository.deleteAllBySongId(songId);
 			
-			songRepository.deleteById(songId);
+//			songRepository.deleteById(songId);
+			songRepository.updateIsActive(songId, false);
 			
-			String pathStorage = "D:\\nienluan\\Symphony-music-streaming-platforms\\backend\\uploads";
-
-			fileStorageService.deleteFile(pathStorage + song.getSong_img());
-			fileStorageService.deleteFile(pathStorage + song.getLyric());
-			fileStorageService.deleteFile(pathStorage + song.getLrc());
-			fileStorageService.deleteFile(pathStorage + song.getPath());
+//			String pathStorage = "D:\\nienluan\\Symphony-music-streaming-platforms\\backend\\uploads";
+//
+//			fileStorageService.deleteFile(pathStorage + song.getSong_img());
+//			fileStorageService.deleteFile(pathStorage + song.getLyric());
+//			fileStorageService.deleteFile(pathStorage + song.getLrc());
+//			fileStorageService.deleteFile(pathStorage + song.getPath());
 		}
 
+	}
+	
+	public void disable(Integer songId) {
+		songRepository.updateIsActive(songId, false);
+	}
+	
+	public void enable(Integer songId) {
+		songRepository.updateIsActive(songId, true);
 	}
 	
 //	@PreAuthorize("hasRole('SINGER')")

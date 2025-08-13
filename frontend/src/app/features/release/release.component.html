@@ -1,25 +1,44 @@
 <main id="content-new-songs" class="container-fluid bg-black-primary">
-    <div class="row">
-        <div class="col-2 bg-black-primary">
+  <div class="row">
+    <div class="col-2 bg-black-primary"></div>
+    <div class="col-10 content p-4 pt-0">
+      <!-- NEW SONGS -->
+
+      <h2 class="text-white-primary text-center mb-5">MỚI PHÁT HÀNH</h2>
+      <div class="ranking-option mb-3 mt-5 d-flex flex-wrap">
+        <h3 class="text-white-primary h-100 m-0 lh-base me-3">Phát nhạc</h3>
+        <div
+          class="active-song-status rounded-circle bg-orange-primary me-4 d-flex flex-column justify-content-center"
+          style="width: 50px; height: 50px"
+        >
+          <i
+            class="fa-solid fa-play d-block mx-auto text-white-primary fs-3"
+          ></i>
+          <!-- <i class="fa-solid fa-pause d-block mx-auto text-white-primary fs-3"></i> -->
         </div>
-        <div class="col-10 content p-4 pt-0">
+      </div>
 
-            <!-- NEW SONGS -->
+      <div *ngIf="songs" class="row">
+        <app-new-card
+          class="col-12 col-md-6 col-lg-4 p-0 new-song d-flex p-2"
+          *ngFor="let song of songs"
+          [song]="song"
+          >>
+        </app-new-card>
+      </div>
 
-            <h2 class="text-white-primary text-center mb-5">MỚI PHÁT HÀNH</h2>
-
-            <div *ngIf="songs" class="row">
-                <app-new-card class="col-12 col-md-6 col-lg-4 p-0 new-song d-flex p-2"
-                    *ngFor="let song of songs"
-                    [song]="song">> 
-                </app-new-card>
-            </div>
-
-
-            <div *ngIf="songs.length==0" id="no-list-songs-favorite">
-                <img id="empty-list-songs-img" src="assets/images/other/Empty-songs.png" alt="" class="mx-auto d-block" style="width: 350px;">
-                <h3 class="text-white-primary text-center mb-5">Chưa có bài hát nào được phát hành gần đây!</h3>
-            </div>
-        </div>
+      <div *ngIf="songs.length == 0" id="no-list-songs-favorite">
+        <img
+          id="empty-list-songs-img"
+          src="assets/images/other/Empty-songs.png"
+          alt=""
+          class="mx-auto d-block"
+          style="width: 350px"
+        />
+        <h3 class="text-white-primary text-center mb-5">
+          Chưa có bài hát nào được phát hành gần đây!
+        </h3>
+      </div>
     </div>
+  </div>
 </main>

@@ -32,13 +32,20 @@ export class SearchComponent implements OnInit, OnDestroy {
     this.dataShareService.changeTitle("Tìm kiếm");
 
     this.route.queryParams.subscribe(params => {
+    if (params['type'] === 'humming') {
+      this.dataShareService.searchHummingResults.subscribe(results => {
+        if (results && results.length > 0) {
+          this.songs = results; 
+          this.singers = [];
+        }
+      });
+    } else {
       this.searchQuery = params['s'] || '';
-      console.log(this.searchQuery)
       if (this.searchQuery) {
-        console.log(this.searchQuery)
         this.performSearch();
       }
-    });
+    }
+  });
   }
 
   performSearch() {
