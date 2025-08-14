@@ -88,6 +88,12 @@ public class SongService {
 	
 	@Autowired
 	ExcelExportUtil excelExportUtil;
+	
+	@Autowired
+	NotificationService notificationService;
+	
+	@Autowired
+	AISearchService aiSearchService;
 		
 	public List<SongDTO> getFavoriteSongsOfUser(Integer userId) {
 		List<Song> songEntities = songRepository.getFavoriteSongsOfUser(userId); 
@@ -148,6 +154,7 @@ public class SongService {
 		song.setLyric(lyric);
 		song.setLrc(lrc);
 		song.setSong_img(songImg);
+		song.setActive(true);
 		
 		
 		SongDTO songDTO = songMapper.toDTO(songRepository.save(song));		
@@ -163,6 +170,10 @@ public class SongService {
 			songRepository.addSongToCategory(dto.getCategoryIds().get(i), songDTO.getSong_id());
 		}
 		
+		String message = "Bài hát " + song.getSongName() + " vừa mới phát hành. Trải nghiệm ngay!";
+		
+		notificationService.sendNotificationToAllUsers(1, message , "Bài hát mới");
+		aiSearchService.updateAiData(song.getPath());
 		return songDTO;
 	}
 
@@ -182,6 +193,7 @@ public class SongService {
 			
 //			songRepository.deleteById(songId);
 			songRepository.updateIsActive(songId, false);
+			aiSearchService.removeAiData(song.getPath());
 			
 //			String pathStorage = "D:\\nienluan\\Symphony-music-streaming-platforms\\backend\\uploads";
 //
@@ -194,10 +206,14 @@ public class SongService {
 	}
 	
 	public void disable(Integer songId) {
+		Song song = songRepository.findById(songId).orElseThrow();
+		aiSearchService.removeAiData(song.getPath());
 		songRepository.updateIsActive(songId, false);
 	}
 	
 	public void enable(Integer songId) {
+		Song song = songRepository.findById(songId).orElseThrow();
+		aiSearchService.updateAiData(song.getPath());
 		songRepository.updateIsActive(songId, true);
 	}
 	

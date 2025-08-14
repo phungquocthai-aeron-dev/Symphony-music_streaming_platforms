@@ -15,6 +15,8 @@ import { DataShareService } from '../../core/services/dataShare.service';
 import { Subscription } from 'rxjs';
 import { ResponseData } from '../../shared/models/ResponseData';
 import { LyricComponent } from "../../shared/components/lyric/lyric.component";
+import { PlaylistService } from '../../core/services/playlist.service';
+import { PlaylistDTO } from '../../shared/models/Playlist.dto';
 
 @Component({
   selector: 'app-main-layout',
@@ -27,12 +29,14 @@ export class MainLayoutComponent implements OnInit {
     private authService: AuthService,
     private songService: SongService,
     private singerService: SingerService,
-    private dataShareService: DataShareService
+    private dataShareService: DataShareService,
+    private playlistService: PlaylistService
   ) {}
 
   currentSong!: SongDTO;
   recentSong!: SongDTO[];
   playlistSong!: SongDTO[];
+  playlists: PlaylistDTO[] = [];
   turnRightSide: boolean = false;
   turnLyric: boolean = false;
   user!: UserDTO;
@@ -121,7 +125,21 @@ export class MainLayoutComponent implements OnInit {
             if (response.code === 1000) {
               this.user = response.result;
               console.log('Người dùng đang đăng nhập:', this.user);
-              if(this.user.role === "SINGER") {
+              const user = this.authService.getUserInfo()
+
+    if(user) {
+      this.playlistService.getPlaylistByUserId(user.userId).subscribe({
+        next: (res) => {
+          this.playlists = res.result;
+          console.log(this.playlists)
+        },
+        error: (err) => {
+          console.error('Lỗi load playlist:', err);
+        }
+      });
+    }
+
+              if(this.user.role === "SINGER" || this.user.role === "ADMIN") {
                 this.singerService.getSingerByUserId(this.user.userId).subscribe({
                   next: (response) => {
                     if (response.code === 1000) {

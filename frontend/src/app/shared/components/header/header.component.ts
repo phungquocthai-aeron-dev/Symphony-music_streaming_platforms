@@ -202,7 +202,6 @@ handleSearch() {
 }
 
 loadNotifications(): void {
-        console.log("VVVVVVVVVVV")
 
     this.notificationService.getUserNotifications(this.user.userId).subscribe({
       next: (data) => {
@@ -226,4 +225,19 @@ loadNotifications(): void {
   getNotificationSender(noti: NotificationDTO): string {
    return noti.type;
   }
+
+  markNotificationAsRead(noti: NotificationDTO): void {
+  if (!noti.isRead) {
+    this.notificationService.markAsRead(noti.notificationId, this.user.userId).subscribe({
+      next: () => {
+        noti.isRead = true;
+        this.unreadCount = Math.max(this.unreadCount - 1, 0);
+      },
+      error: (err) => {
+        console.error('Lỗi khi cập nhật thông báo:', err);
+      }
+    });
+  }
+}
+
 }

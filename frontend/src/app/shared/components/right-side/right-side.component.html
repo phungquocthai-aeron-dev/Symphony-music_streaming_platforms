@@ -1,33 +1,46 @@
 <section>
-    <div class="right-side mt-1" [class.right-side-appear]="isTurnOn">
-        <div class="option rounded-5 option-list d-flex justify-content-between mt-3 mb-3"
-            style="width: 240px; margin: auto;">
-            <div class="rounded-4 option-waiting" (click)="toggleOption()" [class.active]="isOptionPlaylist">Danh sách phát</div>
-            <div *ngIf="isLoggedIn()" (click)="toggleOption()" class="rounded-4 option-recent" [class.active]="!isOptionPlaylist">Nghe gần đây</div>
-        </div>
-        <ul *ngIf="isOptionPlaylist" class="playlist ps-2 pe-2">
-
-            <app-side-item 
-            *ngFor="let song of playlistSongs"
-            [song]="song"
-            [isActive]="activeSongId == song.song_id"
-            (playSongEvent)="playSong($event)"
-            (toggleFavoriteEvent)="toggleFavorite($event)"
-            
-            >
-          </app-side-item>
-
-
-        </ul>
-        <ul *ngIf="isLoggedIn() && !isOptionPlaylist" class="recentSongs ps-2 pe-2">
-
-            <app-side-item
-            *ngFor="let song of recentSongs"
-            [song]="song"
-            [isActive]="activeSongId == song.song_id"
-            (playSongEvent)="playSong($event)"
-            (toggleFavoriteEvent)="toggleFavorite($event)">
-          </app-side-item>
-        </ul>
+  <div class="right-side mt-1" [class.right-side-appear]="isTurnOn">
+    <div
+      class="option rounded-5 option-list d-flex justify-content-between mt-3 mb-3"
+      style="width: 240px; margin: auto"
+    >
+      <div
+        class="rounded-4 option-waiting"
+        (click)="toggleOption()"
+        [class.active]="isOptionPlaylist"
+      >
+        Danh sách phát
+      </div>
+      <div
+        *ngIf="isLoggedIn()"
+        (click)="toggleOption()"
+        class="rounded-4 option-recent"
+        [class.active]="!isOptionPlaylist"
+      >
+        Nghe gần đây
+      </div>
     </div>
+    <ul *ngIf="isOptionPlaylist" class="playlist ps-2 pe-2">
+      <app-side-item
+        *ngFor="let song of playlistSongs"
+        [song]="song"
+        [isActive]="activeSongId == song.song_id"
+        (playSongEvent)="playSong($event)"
+        (toggleFavoriteEvent)="toggleFavorite($event)"
+        [userPlaylists]="playlists"
+      >
+      </app-side-item>
+    </ul>
+    <ul *ngIf="isLoggedIn() && !isOptionPlaylist" class="recentSongs ps-2 pe-2">
+      <app-side-item
+        *ngFor="let song of recentSongs"
+        [song]="song"
+        [isActive]="activeSongId == song.song_id"
+        (playSongEvent)="playSong($event)"
+        (toggleFavoriteEvent)="toggleFavorite($event)"
+        [userPlaylists]="playlists"
+      >
+      </app-side-item>
+    </ul>
+  </div>
 </section>

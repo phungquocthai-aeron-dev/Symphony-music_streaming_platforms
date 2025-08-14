@@ -18,6 +18,8 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 	Optional<User> findByPhone(String phone);
 	List<User> findByRole(String role);
 	
+	List<User> findByFullNameContainingIgnoreCaseOrPhoneContaining(String fullName, String phone);	
+	
 	@Query(value = "SELECT * FROM user NATURAL JOIN singer WHERE singer_id = :singerId", nativeQuery = true)
 	Optional<User> findBySingerId(@Param("singerId") Integer singerId);
 	

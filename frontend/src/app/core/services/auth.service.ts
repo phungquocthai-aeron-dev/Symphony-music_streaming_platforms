@@ -117,7 +117,7 @@ export class AuthService {
     return this.http.get<ResponseData<UserDTO[]>>(environment.apiUrl + 'user/users', { headers });
   }
 
-  findUserByPhone(phone: string): Observable<ResponseData<UserDTO>> {
+  findUserByPhone(phone: string): Observable<ResponseData<UserDTO[]>> {
     const headers = new HttpHeaders().set(
       "Authorization",
       "Bearer " + this.getToken()
@@ -125,7 +125,7 @@ export class AuthService {
   
     const params = new HttpParams().set('phone', phone);
   
-    return this.http.get<ResponseData<UserDTO>>(
+    return this.http.get<ResponseData<UserDTO[]>>(
       environment.apiUrl + 'user/phone',
       { headers, params }
     );
@@ -147,6 +147,14 @@ export class AuthService {
       "Bearer " + this.getToken()
     );
     return this.http.post<ResponseData<UserDTO>>(environment.apiUrl + 'user/update', formData, { headers });
+  }
+
+  updateUserByAdmin(formData: FormData): Observable<ResponseData<UserDTO>> {
+    const headers = new HttpHeaders().set(
+      "Authorization",
+      "Bearer " + this.getToken()
+    );
+    return this.http.post<ResponseData<UserDTO>>(environment.apiUrl + 'user/update/admin', formData, { headers });
   }
 
   // Đăng ký

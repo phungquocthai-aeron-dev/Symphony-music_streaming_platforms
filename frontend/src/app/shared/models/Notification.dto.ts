@@ -5,5 +5,4 @@ export interface NotificationDTO {
   type: string;
   createdAt: string;
   senderId: number;
-  recipientIds: number[];
 }

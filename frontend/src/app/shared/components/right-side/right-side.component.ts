@@ -3,6 +3,8 @@ import { SongDTO } from '../../models/Song.dto';
 import { AuthService } from '../../../core/services/auth.service';
 import { NgFor, NgIf } from '@angular/common';
 import { SideItemComponent } from '../side-item/side-item.component';
+import { PlaylistDTO } from '../../models/Playlist.dto';
+import { PlaylistService } from '../../../core/services/playlist.service';
 
 @Component({
   selector: 'app-right-side',
@@ -17,13 +19,14 @@ export class RightSideComponent implements OnInit, OnChanges {
   @Input() recentSongs: SongDTO[] = [];
   @Input() isTurnOn: boolean = false;
   @Output() optionPlaylist = new EventEmitter<boolean>();
-  
+  @Input()playlists: PlaylistDTO[] = [];
   activeSongId: number | null = null;
   isOptionPlaylist = true;
   
 
   constructor(
-    private authService: AuthService) {}
+    private authService: AuthService
+  ) {}
 
   playSong(songId: number): void {
     this.activeSongId = songId;

@@ -131,6 +131,29 @@ public class UserService {
 
 	}
 	
+	public void updateByAdmin(UserUpdateDTO dto, MultipartFile avatarFile) {
+		
+		User user = userRepository.findById(dto.getId())
+				.orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISRED));
+		
+
+		if(avatarFile != null) {
+			String avatar = fileStorageService.storeFile(avatarFile, PathStorage.AVATAR);
+			user.setAvatar(avatar);
+		}
+		
+		user.setBirthday(dto.getBirthday());
+		user.setPhone(dto.getPhone());
+		user.setGender(dto.getGender());
+		user.setFullName(dto.getFullName());
+		
+		log.info(user.toString());
+		log.info("Info");
+		
+		userRepository.save(user);
+
+	}
+	
 	public void delete(Integer userId) {
 //		playlistRepository.deleteAllByUserId(userId);
 //		favoriteRepository.deleteAllByUserId(userId);
@@ -176,9 +199,9 @@ public class UserService {
         return excelExportUtil.exportToExcel(userMapper.toListDTO(userRepository.findAll()), null, "Danh sách người dùng");
     }
 	
-	public UserDTO findByPhone(String phone) {
-		User user = userRepository.findByPhone(phone).orElseThrow();
-		return userMapper.toDTO(user);
+	public List<UserDTO> findByPhone(String s) {
+		List<User> users = userRepository.findByFullNameContainingIgnoreCaseOrPhoneContaining(s, s);
+		return userMapper.toListDTO(users);
 	}
 	
     public Float thongKeTheoThang(int thang, int nam) {

@@ -9,7 +9,7 @@ def load_audio(file_path, sr=16000):
     """Load and preprocess audio with optimizations"""
     try:
         # Giảm thời gian xử lý để tăng tốc
-        y, sr = librosa.load(file_path, sr=sr, duration=8, offset=2)  # 8s từ giây thứ 2
+        y, sr = librosa.load(file_path, sr=sr, duration=12, offset=1) 
         
         y = librosa.util.normalize(y)
         y, _ = librosa.effects.trim(y, top_db=25)

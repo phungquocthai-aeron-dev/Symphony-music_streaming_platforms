@@ -190,7 +190,7 @@
 <div
   #editModel
   id="songModalEdit"
-  *ngIf="displayEditModal"
+  *ngIf="displayEditModal && song"
   class="p-4 rounded-3"
   style="position: fixed; top: 20px; left: 30%; z-index: 1300"
 >
@@ -206,6 +206,7 @@
           type="button"
           style="margin-left: 65%"
           class="btn-close bg-grey-color"
+          (click)="closeForm()"
         ></button>
       </div>
 

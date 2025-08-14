@@ -5,6 +5,8 @@ import { RouterModule } from '@angular/router';
 import { NgFor, NgIf } from '@angular/common';
 import { SongService } from '../../../core/services/song.service';
 import { DataShareService } from '../../../core/services/dataShare.service';
+import { PlaylistService } from '../../../core/services/playlist.service';
+import { PlaylistDTO } from '../../models/Playlist.dto';
 
 @Component({
   selector: 'app-side-item',
@@ -18,12 +20,15 @@ export class SideItemComponent implements OnChanges {
   @Output() playSongEvent = new EventEmitter<number>();
   @Output() toggleFavoriteEvent = new EventEmitter<number>();
   @ViewChild('item') itemElement!: ElementRef;
+  @Output() notify = new EventEmitter<{ title: string, content: string, isSuccess: boolean }>();
+  @Input()userPlaylists: PlaylistDTO[] = [];
   
 
   constructor(
     private authService: AuthService,
     private songService: SongService,
-    private eventSource: DataShareService
+    private eventSource: DataShareService,
+    private playlistService: PlaylistService
   ) {}
 
   playSong(): void {
@@ -72,5 +77,50 @@ export class SideItemComponent implements OnChanges {
 
   isLoggedin(): boolean {
     return this.authService.isLoggedIn();
+  }
+
+  loadUserPlaylists() {
+  const userId = this.authService.getUserInfo().userId;
+  if (!userId) {
+    alert('Vui lòng đăng nhập!');
+    return;
+  }
+}
+
+  openAddToPlaylist(song: SongDTO) {
+    this.eventSource.changeSongPlaylist(song);
+    this.loadUserPlaylists();
+  }
+  
+  addSongToPlaylist(playlistId: number) {
+    let song: any = null;
+    const subscription = this.eventSource.currentSongToPlaylist.subscribe(data => {
+      if (data) {
+        song = data;
+        this.playlistService.addSongToPlaylist(playlistId, song.song_id).subscribe({
+          next: (data) => {
+            this.notify.emit({
+              title: 'Thêm bài hát vào playlist',
+              content: 'Bài hát đã được thêm vào playlist!',
+              isSuccess: true
+            });
+            subscription.unsubscribe();
+          },
+          error: (err) => {
+            this.notify.emit({
+              title: 'Thêm bài hát vào playlist',
+              content: 'Thêm bài hát vào playlist thất bại!',
+              isSuccess: true
+            });
+            subscription.unsubscribe(); 
+          }
+        });
+      } else {
+        subscription.unsubscribe();
+      }
+    });  
+    this.eventSource.changeSongPlaylist(null);
+  
+  
   }
 }

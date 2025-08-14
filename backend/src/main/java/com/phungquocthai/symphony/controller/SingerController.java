@@ -81,13 +81,27 @@ public class SingerController {
 	}
 	
 	@PostMapping("/update")
-	public ResponseEntity<ApiResponse<SingerDTO>> update(SingerUpdateDTO dto) {
-		SingerDTO singer = singerService.update(dto);
-		ApiResponse<SingerDTO> apiResponse = ApiResponse.<SingerDTO>builder()
-				.result(singer)
-				.build();
-		return ResponseEntity.ok(apiResponse);
+	public ResponseEntity<ApiResponse<SingerDTO>> update(
+	        @RequestParam("singer_id") Integer singerId,
+	        @RequestParam("stageName") String stageName) {
+
+	    log.info("ID: " + singerId);
+	    log.info("Stage Name: " + stageName);
+
+	    SingerUpdateDTO dto = SingerUpdateDTO.builder()
+	            .singer_id(singerId)
+	            .stageName(stageName)
+	            .build();
+
+	    SingerDTO singer = singerService.update(dto);
+
+	    ApiResponse<SingerDTO> apiResponse = ApiResponse.<SingerDTO>builder()
+	            .result(singer)
+	            .build();
+
+	    return ResponseEntity.ok(apiResponse);
 	}
+
 	
 	@PostMapping("/unpresent")
 	public ResponseEntity<Void> deletePresent(

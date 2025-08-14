@@ -37,7 +37,7 @@ public interface SongRepository extends JpaRepository<Song, Integer> {
     int addSongToCategory(@Param("categoryId") Integer categoryId, @Param("songId") Integer songId);
 
 	
-	@Query(value = "SELECT * FROM song WHERE release_date >= date_sub(CURDATE(), INTERVAL 1 MONTH) ORDER BY release_date DESC LIMIT :limit", 
+	@Query(value = "SELECT * FROM song WHERE release_date >= date_sub(CURDATE(), INTERVAL 1 MONTH) AND is_active = true ORDER BY release_date DESC LIMIT :limit", 
 	           nativeQuery = true)
 	List<Song> findSongsFromLastYear(@Param("limit") Integer limit);
 	
@@ -48,7 +48,7 @@ public interface SongRepository extends JpaRepository<Song, Integer> {
             "FROM song s " +
             "NATURAL JOIN category_song p " +
             "NATURAL JOIN category c " +
-            "WHERE s.active = true AND (s.song_name LIKE :key OR c.category_name) LIKE :key " +
+            "WHERE s.song_name LIKE :key OR c.category_name LIKE :key " +
             "COLLATE utf8mb4_unicode_ci", nativeQuery = true)
 	List<Song> searchSong(@Param("key") String key);
 	

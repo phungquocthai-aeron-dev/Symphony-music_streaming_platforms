@@ -7,7 +7,8 @@ import { SongService } from '../../../core/services/song.service';
 import { TimeFormatPipe } from '../../pipes/time-format.pipe';
 import { DataShareService } from '../../../core/services/dataShare.service';
 import { UserDTO } from '../../models/User.dto';
-import { FormsModule } from '@angular/forms';
+import { PlaylistDTO } from '../../models/Playlist.dto';
+import { PlaylistService } from '../../../core/services/playlist.service';
 
 @Component({
   selector: 'app-audio-menu',
@@ -21,6 +22,7 @@ export class AudioMenuComponent implements AfterViewInit, OnChanges {
   @Input() user!: UserDTO;
   @Input() playlistSongs: SongDTO[] = [];
   @Input() isOptionPlaylist = true;
+  @Input()playlists: PlaylistDTO[] = [];
   @Input() recentSongs: SongDTO[] = [];  @ViewChild('audio') audioRef!: ElementRef<HTMLAudioElement>;
   @ViewChild('inputVolume') volumeRef!: ElementRef<HTMLInputElement>;
   @ViewChild('progressVolume') progressVolumeRef!: ElementRef<HTMLInputElement>;
@@ -32,6 +34,8 @@ export class AudioMenuComponent implements AfterViewInit, OnChanges {
   @Output() turnLyric = new EventEmitter<boolean>();
   @Output() playingSong = new EventEmitter<boolean>();
   @Output() songProgress = new EventEmitter<number>();
+  @Output() notify = new EventEmitter<{ title: string, content: string, isSuccess: boolean }>();
+
 
   currentTime: number = 0; // s
 
@@ -52,7 +56,8 @@ export class AudioMenuComponent implements AfterViewInit, OnChanges {
   constructor(
       private authService: AuthService,
       private songService: SongService,
-      private dataShareService: DataShareService
+      private dataShareService: DataShareService,
+      private playlistService: PlaylistService
     ) {}
 
     ngAfterViewInit(): void {
@@ -418,6 +423,51 @@ export class AudioMenuComponent implements AfterViewInit, OnChanges {
   toggleLyric() {
     this.isTurnLyric = !this.isTurnLyric;
     this.turnLyric.emit(this.isTurnLyric);
+  }
+
+    loadUserPlaylists() {
+  const userId = this.authService.getUserInfo().userId;
+  if (!userId) {
+    alert('Vui lòng đăng nhập!');
+    return;
+  }
+}
+
+  openAddToPlaylist(song: SongDTO) {
+    this.dataShareService.changeSongPlaylist(song);
+    this.loadUserPlaylists();
+  }
+  
+  addSongToPlaylist(playlistId: number) {
+    let song: any = null;
+    const subscription = this.dataShareService.currentSongToPlaylist.subscribe(data => {
+      if (data) {
+        song = data;
+        this.playlistService.addSongToPlaylist(playlistId, song.song_id).subscribe({
+          next: (data) => {
+            this.notify.emit({
+              title: 'Thêm bài hát vào playlist',
+              content: 'Bài hát đã được thêm vào playlist!',
+              isSuccess: true
+            });
+            subscription.unsubscribe();
+          },
+          error: (err) => {
+            this.notify.emit({
+              title: 'Thêm bài hát vào playlist',
+              content: 'Thêm bài hát vào playlist thất bại!',
+              isSuccess: true
+            });
+            subscription.unsubscribe(); 
+          }
+        });
+      } else {
+        subscription.unsubscribe();
+      }
+    });  
+    this.dataShareService.changeSongPlaylist(null);
+  
+  
   }
 
 }

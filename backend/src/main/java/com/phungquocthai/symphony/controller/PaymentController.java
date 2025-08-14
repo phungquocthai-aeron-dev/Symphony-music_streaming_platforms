@@ -6,6 +6,7 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -34,6 +35,7 @@ import com.phungquocthai.symphony.entity.Vip;
 import com.phungquocthai.symphony.repository.SubscriptionRepository;
 import com.phungquocthai.symphony.repository.UserRepository;
 import com.phungquocthai.symphony.repository.VipRepository;
+import com.phungquocthai.symphony.service.NotificationService;
 import com.phungquocthai.symphony.utils.VNPayUtils;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -51,6 +53,9 @@ public class PaymentController {
 	
 	@Autowired
 	SubscriptionRepository subscriptionRepository;
+	
+	@Autowired
+	NotificationService notificationService;
 	
 	@PostMapping("/create-payment")
 	public ResponseEntity<ApiResponse<String>> createPayment(@RequestParam(required = true) int amount,
@@ -128,7 +133,7 @@ public class PaymentController {
 	    response.put("message", "success");
 	    response.put("data", paymentUrl);
 	    
-	    
+	    System.out.println(paymentUrl);
 	    return ResponseEntity.ok(
 	    		ApiResponse.<String>builder()
 	    		.result(paymentUrl)
@@ -171,6 +176,10 @@ public class PaymentController {
 	    	user.setRole(Role.VIP.getValue());
 	    	userRepository.save(user);
 
+	    	DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+	    	String formattedEndDate = endDate.format(formatter);
+	    	String message = "Bạn đã có thể trải nghiệm các đặc quyền của gói VIP đến ngày " + formattedEndDate + "!";
+	    	notificationService.sendNotificationToUser(1, user.getUserId(), message, "Nâng cấp tài khoản");
 	        response.sendRedirect("http://localhost:4200/upgrade");
 	    } else {
 	    	response.sendRedirect("http://localhost:4200/error");

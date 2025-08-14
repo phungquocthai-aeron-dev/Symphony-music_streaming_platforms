@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.http.*;
+import org.springframework.scheduling.annotation.Async;
 
 import com.phungquocthai.symphony.dto.SearchResponseAI;
 import com.phungquocthai.symphony.dto.SongDTO;

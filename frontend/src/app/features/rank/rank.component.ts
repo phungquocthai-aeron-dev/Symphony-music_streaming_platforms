@@ -12,7 +12,6 @@ import { AuthService } from '../../core/services/auth.service';
 import { PlaylistDTO } from '../../shared/models/Playlist.dto';
 import { PlaylistService } from '../../core/services/playlist.service';
 import { SongDTO } from '../../shared/models/Song.dto';
-import { CategoryDTO } from '../../shared/models/Category.dto';
 
 @Component({
   selector: 'app-rank',
@@ -62,7 +61,6 @@ export class RankComponent implements OnInit {
         },
         error: (err) => {
           console.error('Lỗi load playlist:', err);
-          alert('Tải danh sách playlist thất bại!');
         }
       });
     }

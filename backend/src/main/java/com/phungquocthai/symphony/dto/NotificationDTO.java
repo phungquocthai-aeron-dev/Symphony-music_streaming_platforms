@@ -19,5 +19,4 @@ public class NotificationDTO {
     private String type;
     private LocalDateTime createdAt;
     private Integer senderId;
-    private List<Integer> recipientIds;
 }

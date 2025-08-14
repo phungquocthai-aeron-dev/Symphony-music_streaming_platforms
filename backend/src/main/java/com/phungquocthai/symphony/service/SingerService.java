@@ -63,7 +63,7 @@ public class SingerService {
 		Singer singer = singerRepository.findById(dto.getSinger_id())
 				.orElseThrow(() -> new AppException(ErrorCode.SINGER_NOT_EXISTED));
 		singer.setStageName(dto.getStageName());
-		log.info("AAAAAAAAAAAAAAAAAAAaa");
+		log.info(dto.getSinger_id()+ "");
 		singerRepository.save(singer);
 		log.info(dto.getStageName());
 		log.info(singer.getStageName());

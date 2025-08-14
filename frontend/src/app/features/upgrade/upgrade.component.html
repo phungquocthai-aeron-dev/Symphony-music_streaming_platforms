@@ -1,118 +1,182 @@
-<!-- ALERT -->
-<div class="alert alert-success alert-dismissible fade show" role="alert" id="fixedAlert">
-    <strong>Holy guacamole!</strong> You should check in on some of those fields below.
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-  </div>
 <main id="upgrade-content" class="container">
-    <div class="row">
-
-        <div class="col-sm-12 super-banner">
-            <div class="banner-container">
-                <div class="banner p-0">
-                    <img src="assets/images/introduce-4.jpg" alt="" class="w-100 h-100 rounded-4">
-                </div>
-                <div class="modal-banner rounded-4">
-                    <div class="container content-banner">
-                        <h1 class="mt-4">Âm nhạc không giới hạn</h1>
-                        <p class="fs-4">Nâng cấp tài khoản để trải nghiệm các tính năng và nội dung cao cấp</p>
-                    </div>
-                </div>
-            </div>
+  <div class="row">
+    <div class="col-sm-12 super-banner">
+      <div class="banner-container">
+        <div class="banner p-0">
+          <img
+            src="assets/images/introduce-4.jpg"
+            alt=""
+            class="w-100 h-100 rounded-4"
+          />
         </div>
-
-        <div class="col-sm-12 package-container mt-3 mb-3">
-            <h3 class="text-center text-white-primary">CÁC GÓI CỦA CHÚNG TÔI</h3>
-            <div class="row">
-                <div class="row">
-                    <div class="col-6 col-sm-6 mt-3" *ngFor="let vip of vips">
-                      <div class="upgrade-package bg-dark_grey-color h-100 px-5 py-4 rounded-4">
-                        <br>
-                        <h4 class="fw-bolder" [ngClass]="textColor()">{{ vip.vip_title }}</h4>
-                        <p class="text-white-primary">Chỉ từ {{ vip.price| number:'1.0-0' }}₫ trong {{ vip.duration_days }} ngày</p>
-                        <hr class="text-white-primary">
-                  
-                        <ul class="vip-role">
-                          <li class="text-white-primary" *ngFor="let line of parseDescription(vip.description)">
-                            {{ line }}
-                          </li>
-                        </ul>
-                  
-                        <div class="btn fw-bolder rounded-3" [ngClass]="bgColor()" (click)="selectVipPackage(vip)">Đăng ký ngay</div>
-                      </div>
-                    </div>
-                  </div>
-                  
-            </div>
+        <div class="modal-banner rounded-4">
+          <div class="container content-banner">
+            <h1 class="mt-4">Âm nhạc không giới hạn</h1>
+            <p class="fs-4">
+              Nâng cấp tài khoản để trải nghiệm các tính năng và nội dung cao
+              cấp
+            </p>
+          </div>
         </div>
-
-        <div class="qa-container col-sm-12">
-            <h3 class="text-center text-white-primary mt-3 mb-3">CÂU HỎI THƯỜNG GẶP</h3>
-
-            <div class="card border-0 rounded-3">
-                <div class="card-header bg-dark_grey-color">
-                    <a class="collapsed card-title d-block bg-dark_grey-color text-decoration-none text-white-primary fw-bolder" data-bs-toggle="collapse" href="#QA1">
-                        Các gói nâng cấp trên dùng như thế nào?
-                        <i class="fa-solid fa-angle-down float-end lh-base"></i>
-                    </a>
-                </div>
-                <div id="QA1" class="collapse bg-dark_grey-color" data-bs-parent="#accordion">
-                    <div class="card-body text-white-primary">
-                        <p>Khi đã đăng ký thành công bạn có khả năng dùng các tính năng mới tùy thuộc vào từng gói mà bạn đăng ký</p>
-                        <p>Chúng tôi sẽ nhắc bạn 7 ngày trước khi hết thời gian dùng thử. Có áp dụng Điều khoản</p>
-                    </div>
-                </div>
-            </div>
-            <hr class="m-0 text-white-primary">
-
-            <div class="card border-0 rounded-3">
-                <div class="card-header bg-dark_grey-color">
-                    <a class="collapsed card-title d-block bg-dark_grey-color text-decoration-none text-white-primary fw-bolder" data-bs-toggle="collapse" href="#QA2">
-                        Làm thế nào để hủy gói nâng cấp tài khoản?
-                        <i class="fa-solid fa-angle-down float-end lh-base"></i>
-                    </a>
-                </div>
-                <div id="QA2" class="collapse bg-dark_grey-color" data-bs-parent="#accordion">
-                    <div class="card-body text-white-primary">
-                        Bạn có thể dễ dàng hủy gói đã đăng ký bất cứ lúc nào trên trang tài khoản của mình. Gói nâng cấp mà bạn đang dùng vẫn sẽ duy trì cho đến ngày thanh toán tiếp theo. Sau đó, tài khoản của bạn sẽ chuyển sang gói miễn phí.
-                    </div>
-                </div>
-            </div>
-            <hr class="m-0 text-white-primary">
-
-            <div class="card border-0 rounded-3">
-                <div class="card-header bg-dark_grey-color">
-                    <a class="collapsed card-title d-block bg-dark_grey-color text-decoration-none text-white-primary fw-bolder" data-bs-toggle="collapse" href="#QA3">
-                        Làm thế nào để hủy "tự động gia hạn" cho các gói dịch vụ đã mua?
-                        <i class="fa-solid fa-angle-down float-end lh-base"></i>
-                    </a>
-                </div>
-                <div id="QA3" class="collapse bg-dark_grey-color" data-bs-parent="#accordion">
-                    <div class="card-body text-white-primary">
-                        Bạn có thể hủy tự động gia hạn bằng cách hủy gói dịch vụ đã mua. Khi hủy gói nâng cấp mà bạn đang dùng, những đặc quyền của gói vẫn sẽ được duy trì cho đến ngày hết hạn.
-                    </div>
-                </div>
-            </div>
-            <hr class="m-0 text-white-primary">
-
-            <div class="card border-0 rounded-3">
-                <div class="card-header bg-dark_grey-color">
-                    <a class="collapsed card-title d-block bg-dark_grey-color text-decoration-none text-white-primary fw-bolder" data-bs-toggle="collapse" href="#QA4">
-                        Tôi có thể sử dụng Symphony trên thiết bị nào ?
-                        <i class="fa-solid fa-angle-down float-end lh-base"></i>
-                    </a>
-                </div>
-                <div id="QA4" class="collapse bg-dark_grey-color" data-bs-parent="#accordion">
-                    <div class="card-body text-white-primary">
-                        <p>Bạn có thể sử dụng trên</p>
-                        <ul>
-                            <li>Các thiết bị Android/iOS: điện thoại, máy tính bảng</li>
-                            <li>Máy tính (hệ điều hành Windows và MacOS) thông qua website hoặc ứng dụng dành riêng cho Windows</li>
-                            <li>Smart TV: Samsung, Sony, LG, TCL...</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-            <hr class="m-0 text-white-primary">
-        </div>
+      </div>
     </div>
+
+    <div class="col-sm-12 package-container mt-3 mb-3">
+      <h3 class="text-center text-white-primary">CÁC GÓI CỦA CHÚNG TÔI</h3>
+      <div class="row">
+        <div class="row">
+          <div class="col-6 col-sm-6 mt-3" *ngFor="let vip of vips">
+            <div
+              class="upgrade-package bg-dark_grey-color h-100 px-5 py-4 rounded-4"
+            >
+              <br />
+              <h4 class="fw-bolder" [ngClass]="textColor()">
+                {{ vip.vip_title }}
+              </h4>
+              <p class="text-white-primary">
+                Chỉ từ {{ vip.price | number : "1.0-0" }}₫ trong
+                {{ vip.duration_days }} ngày
+              </p>
+              <hr class="text-white-primary" />
+
+              <ul class="vip-role">
+                <li
+                  class="text-white-primary"
+                  *ngFor="let line of parseDescription(vip.description)"
+                >
+                  {{ line }}
+                </li>
+              </ul>
+
+              <div
+                class="btn fw-bolder rounded-3"
+                [ngClass]="bgColor()"
+                (click)="selectVipPackage(vip)"
+              >
+                Đăng ký ngay
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="qa-container col-sm-12">
+      <h3 class="text-center text-white-primary mt-3 mb-3">
+        CÂU HỎI THƯỜNG GẶP
+      </h3>
+
+      <div class="card border-0 rounded-3">
+        <div class="card-header bg-dark_grey-color">
+          <a
+            class="collapsed card-title d-block bg-dark_grey-color text-decoration-none text-white-primary fw-bolder"
+            data-bs-toggle="collapse"
+            href="#QA1"
+          >
+            Các gói nâng cấp trên dùng như thế nào?
+            <i class="fa-solid fa-angle-down float-end lh-base"></i>
+          </a>
+        </div>
+        <div
+          id="QA1"
+          class="collapse bg-dark_grey-color"
+          data-bs-parent="#accordion"
+        >
+          <div class="card-body text-white-primary">
+            <p>
+              Khi đã đăng ký thành công bạn có khả năng dùng các tính năng mới
+              tùy thuộc vào từng gói mà bạn đăng ký
+            </p>
+            <p>
+              Chúng tôi sẽ nhắc bạn 7 ngày trước khi hết thời gian dùng thử. Có
+              áp dụng Điều khoản
+            </p>
+          </div>
+        </div>
+      </div>
+      <hr class="m-0 text-white-primary" />
+
+      <div class="card border-0 rounded-3">
+        <div class="card-header bg-dark_grey-color">
+          <a
+            class="collapsed card-title d-block bg-dark_grey-color text-decoration-none text-white-primary fw-bolder"
+            data-bs-toggle="collapse"
+            href="#QA2"
+          >
+            Làm thế nào để hủy gói nâng cấp tài khoản?
+            <i class="fa-solid fa-angle-down float-end lh-base"></i>
+          </a>
+        </div>
+        <div
+          id="QA2"
+          class="collapse bg-dark_grey-color"
+          data-bs-parent="#accordion"
+        >
+          <div class="card-body text-white-primary">
+            Bạn có thể dễ dàng hủy gói đã đăng ký bất cứ lúc nào trên trang tài
+            khoản của mình. Gói nâng cấp mà bạn đang dùng vẫn sẽ duy trì cho đến
+            ngày thanh toán tiếp theo. Sau đó, tài khoản của bạn sẽ chuyển sang
+            gói miễn phí.
+          </div>
+        </div>
+      </div>
+      <hr class="m-0 text-white-primary" />
+
+      <div class="card border-0 rounded-3">
+        <div class="card-header bg-dark_grey-color">
+          <a
+            class="collapsed card-title d-block bg-dark_grey-color text-decoration-none text-white-primary fw-bolder"
+            data-bs-toggle="collapse"
+            href="#QA3"
+          >
+            Làm thế nào để hủy "tự động gia hạn" cho các gói dịch vụ đã mua?
+            <i class="fa-solid fa-angle-down float-end lh-base"></i>
+          </a>
+        </div>
+        <div
+          id="QA3"
+          class="collapse bg-dark_grey-color"
+          data-bs-parent="#accordion"
+        >
+          <div class="card-body text-white-primary">
+            Bạn có thể hủy tự động gia hạn bằng cách hủy gói dịch vụ đã mua. Khi
+            hủy gói nâng cấp mà bạn đang dùng, những đặc quyền của gói vẫn sẽ
+            được duy trì cho đến ngày hết hạn.
+          </div>
+        </div>
+      </div>
+      <hr class="m-0 text-white-primary" />
+
+      <div class="card border-0 rounded-3">
+        <div class="card-header bg-dark_grey-color">
+          <a
+            class="collapsed card-title d-block bg-dark_grey-color text-decoration-none text-white-primary fw-bolder"
+            data-bs-toggle="collapse"
+            href="#QA4"
+          >
+            Tôi có thể sử dụng Symphony trên thiết bị nào ?
+            <i class="fa-solid fa-angle-down float-end lh-base"></i>
+          </a>
+        </div>
+        <div
+          id="QA4"
+          class="collapse bg-dark_grey-color"
+          data-bs-parent="#accordion"
+        >
+          <div class="card-body text-white-primary">
+            <p>Bạn có thể sử dụng trên</p>
+            <ul>
+              <li>Các thiết bị Android/iOS: điện thoại, máy tính bảng</li>
+              <li>
+                Máy tính (hệ điều hành Windows và MacOS) thông qua website hoặc
+                ứng dụng dành riêng cho Windows
+              </li>
+              <li>Smart TV: Samsung, Sony, LG, TCL...</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <hr class="m-0 text-white-primary" />
+    </div>
+  </div>
 </main>

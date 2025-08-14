@@ -83,4 +83,22 @@ export class SingerService {
       );
     } 
     
+updateSinger(singer_id: number, stageName: string) {
+  const headers = new HttpHeaders({
+    "Authorization": "Bearer " + this.token
+  });
+
+  const params = new HttpParams()
+    .set("singer_id", singer_id.toString())
+    .set("stageName", stageName);
+
+  return this.http.post<ResponseData<SingerDTO>>(
+    `${this.apiUrl}/update`,
+    null,
+    { headers, params }
+  );
+}
+
+
+
 }

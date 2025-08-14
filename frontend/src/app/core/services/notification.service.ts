@@ -9,7 +9,7 @@ import { NotificationDTO } from '../../shared/models/Notification.dto';
   providedIn: 'root'
 })
 export class NotificationService {
-  private apiUrl = environment.apiUrl + 'notifications';
+  private apiUrl = environment.apiUrl + 'notification';
 
   constructor(private http: HttpClient) {}
 
@@ -22,6 +22,7 @@ export class NotificationService {
       .set('message', message)
       .set('sendId', sendId)
       .set('type', type);
+
     return this.http.post<ResponseData<NotificationDTO>>(
       `${this.apiUrl}/send-to-user/${userId}`,
       null,
@@ -34,10 +35,16 @@ export class NotificationService {
       .set('message', message)
       .set('sendId', sendId)
       .set('type', type);
+
     return this.http.post<ResponseData<NotificationDTO>>(
       `${this.apiUrl}/send-to-all`,
       null,
       { params }
     );
+  }
+
+  markAsRead(notificationId: number, userId: number): Observable<any> {
+    const params = new HttpParams().set('userId', userId);
+    return this.http.put(`${this.apiUrl}/${notificationId}/read`, null, { params });
   }
 }

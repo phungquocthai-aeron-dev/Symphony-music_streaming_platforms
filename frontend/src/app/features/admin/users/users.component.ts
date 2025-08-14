@@ -1,22 +1,23 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
 import { SingerService } from '../../../core/services/singer.service';
 import { CommonModule, DatePipe, DecimalPipe, NgFor, NgIf } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { UserDTO } from '../../../shared/models/User.dto';
 import { SingerDTO } from '../../../shared/models/Singer.dto';
 import { DataShareService } from '../../../core/services/dataShare.service';
-import { error } from 'console';
-
 
 @Component({
   selector: 'app-users',
-  imports: [NgFor, NgIf, FormsModule, DatePipe, DecimalPipe, CommonModule],
+  imports: [NgFor, NgIf, FormsModule, DatePipe, CommonModule, ReactiveFormsModule ],
   templateUrl: './users.component.html',
   styleUrl: './users.component.css'
 })
 export class UsersComponent implements OnInit {
+  @ViewChild('inputAvatar', { static: false }) inputAvatar!: ElementRef<HTMLInputElement>;
+  @ViewChild('close_form',  { static: false }) closeForm!: ElementRef;
+
   users: UserDTO[] = [];
   singers: SingerDTO[] = [];
 
@@ -26,6 +27,26 @@ export class UsersComponent implements OnInit {
   notifyContent = "";
   notifyTitle = "";
   isSuccess = true;
+
+  user!: UserDTO | null;
+  singer!: SingerDTO | null;
+  isLoaded = false;
+  avatarFile?: File | null;
+  defaultUserImg:string = "http://localhost:8080/symphony/uploads/images/other/no-img.png";
+
+    userForm = new FormGroup({
+      fullName: new FormControl('', Validators.required),
+      phone: new FormControl('', Validators.required),
+      birthday: new FormControl('', Validators.required),
+      gender: new FormControl('', Validators.required),
+      avatar: new FormControl(''),             
+      id: new FormControl('', Validators.required),
+    });
+
+    singerForm = new FormGroup({
+      singer_id: new FormControl('', Validators.required),
+      stageName: new FormControl('', Validators.required)
+    });
 
   constructor(
     private authService: AuthService,
@@ -78,7 +99,7 @@ export class UsersComponent implements OnInit {
       this.authService.findUserByPhone(this.userPhone).subscribe({
         next: (data) => {
           this.users = [];
-          this.users[0] = data.result;
+          this.users = data.result;
         }, 
         error: () => {
           this.users = [];
@@ -289,4 +310,142 @@ export class UsersComponent implements OnInit {
     })
   }
 }
+
+CloseForm() {
+  this.user = null;
+}
+
+SelectUserEdit(user: UserDTO) {
+  this.user = user
+  this.defaultUserImg = "http://localhost:8080/symphony/uploads" + user.avatar;
+  this.fillFormData();
+}
+
+fillFormData(): void {
+  if(this.user)
+    this.userForm.patchValue({
+      fullName: this.user.fullName,
+      id: this.user.userId.toString(),
+      avatar: this.user.avatar,
+      gender: this.user.gender.toString(),
+      birthday: this.user.birthday,
+      phone: this.user.phone
+    })
+  }
+
+  onSubmit(): void {
+    if (this.userForm.invalid) {
+      Object.keys(this.userForm.controls).forEach(field => {
+        const control = this.userForm.get(field);
+        control?.markAsTouched({ onlySelf: true });
+      });
+      return;
+    }
+  
+    const formData = new FormData();
+    formData.append('fullName', this.userForm.value.fullName || '');
+    formData.append('phone', this.userForm.value.phone || '');
+    formData.append('birthday', this.userForm.value.birthday || '');
+    formData.append('gender', this.userForm.value.gender || '');
+    formData.append('id', this.userForm.value.id || '');
+  
+  
+    if (this.avatarFile) {
+      formData.append('avatarFile', this.avatarFile);
+    }
+  
+    this.isLoaded = false;
+  
+    this.authService.updateUserByAdmin(formData).subscribe({
+      next: (response) => {        
+
+          this.isLoaded = true;
+          this.closeForm.nativeElement.click();
+          this.userForm.reset();
+          this.avatarFile = null;
+          this.loadData();
+
+        this.notifyTitle = "Cập nhật thông tin";
+        this.notifyContent = "Thông tin đã được cập nhật!";
+        this.isSuccess = true;
+
+
+      },
+      error: (error) => {
+        this.isLoaded = true;
+        this.notifyTitle = "Cập nhật thông tin";
+        this.notifyContent = "Cập nhật thông tin thất bại!";
+        this.isSuccess = false;
+        console.log(error)
+      }
+    });
+  }
+
+  onFileChange(event: any) {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    this.avatarFile = file;
+    
+    if (!file) {
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = (e: any) => {
+      this.defaultUserImg = e.target.result;
+    };
+    
+    reader.readAsDataURL(file);
+  }
+
+  triggerFileInput(): void {
+    this.inputAvatar.nativeElement.click();
+  }
+
+  loading = false;
+
+  fillFormDatasinger(singer: SingerDTO): void {
+    this.singer = singer;
+  if(this.singer)
+    this.singerForm.patchValue({
+      singer_id: this.singer.singer_id + "",
+      stageName: singer.stageName
+    })
+  }
+
+  closeFormSinger() {
+    this.singer = null;
+  }
+
+onSubmitSinger() {
+  if (this.singerForm.invalid) {
+    this.singerForm.markAllAsTouched();
+    return;
+  }
+
+
+  this.loading = true;
+  const payload = {
+    singer_id: Number(this.singerForm.value.singer_id), // ép sang number
+    stageName: this.singerForm.value.stageName ?? '' // đảm bảo không null
+  };
+
+  this.singerService.updateSinger(payload.singer_id, payload.stageName).subscribe({
+    next: () => {
+      this.loading = false;
+      this.notifyTitle = "Cập nhật nghệ danh";
+      this.notifyContent = "Đã cập nhật nghệ danh thành công!";
+      this.isSuccess = true;
+      this.loadSinger();
+      this.singer = null;
+    },
+    error: () => {
+      this.loading = false;
+      this.notifyTitle = "Cập nhật nghệ danh";
+      this.notifyContent = "Cập nhật thất bại!";
+      this.isSuccess = false;
+    }
+  });
+}
+
+
 }

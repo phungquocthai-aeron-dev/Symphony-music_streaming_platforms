@@ -10,6 +10,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -81,12 +82,8 @@ public class User {
 	@JsonManagedReference
 	private List<Subscription> subscriptions;
     
-    @OneToMany(mappedBy = "user")
-    private List<Notification> notifications;
-    
-    @ManyToMany(mappedBy = "users")
-    @JsonManagedReference
-    private Set<Notification> notificationsRecieved;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<NotificationUser> notificationUsers;
 
 	@Override
 	public String toString() {

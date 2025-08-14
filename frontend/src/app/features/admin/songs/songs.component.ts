@@ -26,7 +26,7 @@ export class SongsComponent implements OnInit {
   categories!: CategoryDTO[];
 
   maxDate?: string;
-  song!: SongDTO;
+  song!: SongDTO | null;
   displayEditModal = false;
   
 
@@ -138,6 +138,11 @@ export class SongsComponent implements OnInit {
         }
       });
     }
+  }
+
+  closeForm() {
+    this.song = null;
+    this.displayEditModal = false;
   }
 
   enableSong(song: SongDTO): void {

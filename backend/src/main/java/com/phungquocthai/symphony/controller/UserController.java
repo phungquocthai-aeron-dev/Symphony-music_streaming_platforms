@@ -82,10 +82,10 @@ public class UserController {
 	}
 	
 	@GetMapping("/phone")
-	public ResponseEntity<ApiResponse<UserDTO>> findByPhone(@RequestParam(value = "phone", required = true) String phone) {
-		ApiResponse<UserDTO> apiResponse = new ApiResponse<UserDTO>();
-		UserDTO user = userService.findByPhone(phone);
-		apiResponse.setResult(user);
+	public ResponseEntity<ApiResponse<List<UserDTO>>> findByPhone(@RequestParam(value = "phone", required = true) String phone) {
+		ApiResponse<List<UserDTO>> apiResponse = new ApiResponse<List<UserDTO>>();
+		List<UserDTO> users = userService.findByPhone(phone);
+		apiResponse.setResult(users);
 		return ResponseEntity.ok(apiResponse);
 	}
 	
@@ -133,6 +133,29 @@ public class UserController {
 			log.info(dto.getId().toString());
 			if(user.getRole().equals("SINGER")) singerService.update(singerdto);
 		}
+
+		return ResponseEntity.ok(
+				ApiResponse.<UserDTO>builder()
+				.result(user)
+				.build()
+				);
+	}
+	
+	@PostMapping(value =  "/update/admin", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+	public ResponseEntity<ApiResponse<UserDTO>> updateByAdmin(
+			@ModelAttribute UserUpdateDTO dto,
+			@ModelAttribute SingerUpdateDTO singerdto,
+//			@ValidFile(maxSize = 1024 * 1024, // 1MB
+//	            allowedContentTypes = {"jpeg", "jpg", "png"},
+//	            message = "File không hợp lệ",
+//	            required = false)
+			@RequestPart(required = false, value = "avatarFile") MultipartFile avatarFile) {
+		
+		userService.updateByAdmin(dto, avatarFile);
+		log.info("STOP");
+	
+		UserDTO user = userService.getUserById(dto.getId());
+		log.info(dto.getId().toString());
 
 		return ResponseEntity.ok(
 				ApiResponse.<UserDTO>builder()
