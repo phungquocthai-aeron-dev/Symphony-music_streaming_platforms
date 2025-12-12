@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Trang Chủ - Thư Viện</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: #f8f9fa;
+        min-height: 100vh;
+      }
+
+      .container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 0 20px;
+      }
+
+      /* ================= NAVBAR ================= */
+      .navbar {
+        width: 100%;
+        padding: 12px 100px;
+        background: white;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+        margin-bottom: 25px;
+        position: sticky;
+        top: 0px;
+        z-index: 999;
+      }
+
+      .nav-left,
+      .nav-right {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+      }
+
+      .nav-logo {
+        font-size: 20px;
+        font-weight: 700;
+        color: #667eea;
+        margin-right: 20px;
+        cursor: pointer;
+      }
+
+      .nav-search input {
+        width: 350px;
+        padding: 10px 15px;
+        border-radius: 25px;
+        border: 1px solid #ddd;
+        outline: none;
+        transition: 0.3s;
+      }
+
+      .nav-search input:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 8px rgba(102, 126, 234, 0.4);
+      }
+
+      .dropdown {
+        position: relative;
+      }
+
+      .dropdown-btn {
+        background: none;
+        border: none;
+        font-size: 15px;
+        cursor: pointer;
+        color: #444;
+        padding: 8px 6px;
+        border-radius: 6px;
+        transition: 0.3s;
+      }
+
+      .dropdown-btn:hover {
+        color: #667eea;
+      }
+
+      .dropdown-menu {
+        position: absolute;
+        top: 42px;
+        left: 0;
+        background: white;
+        min-width: 180px;
+        border-radius: 10px;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        padding: 10px 0;
+        display: none;
+        animation: fadeIn 0.2s ease-in-out;
+        z-index: 1000;
+      }
+
+      .dropdown-menu a {
+        display: block;
+        padding: 10px 18px;
+        text-decoration: none;
+        font-size: 14px;
+        color: #444;
+        transition: 0.25s;
+      }
+
+      .dropdown-menu a:hover {
+        background: #f0f3ff;
+        color: #667eea;
+      }
+
+      .dropdown-menu .view-more {
+        border-top: 1px solid #eee;
+        font-weight: 600;
+        color: #667eea;
+      }
+
+      .avatar-img {
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        cursor: pointer;
+        border: 2px solid #667eea;
+        object-fit: cover;
+      }
+
+      .user-menu {
+        right: 0;
+        left: auto;
+        min-width: 220px;
+      }
+
+      .user-info {
+        padding: 12px 18px;
+        border-bottom: 1px solid #eee;
+      }
+
+      .rating {
+        font-size: 14px;
+        color: #f59e0b;
+        margin-top: 4px;
+      }
+
+      .logout {
+        color: #e11d48 !important;
+      }
+
+      .dropdown.open .dropdown-menu {
+        display: block;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(-5px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* ================= CAROUSEL ================= */
+      .carousel-container {
+        position: relative;
+        width: 100%;
+        height: 450px;
+        overflow: hidden;
+        border-radius: 16px;
+        margin-bottom: 50px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+      }
+
+      .carousel-wrapper {
+        display: flex;
+        transition: transform 0.5s ease-in-out;
+        height: 100%;
+      }
+
+      .carousel-slide {
+        min-width: 100%;
+        height: 100%;
+        position: relative;
+      }
+
+      .carousel-slide img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .carousel-overlay {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+        color: white;
+        padding: 40px;
+      }
+
+      .carousel-overlay h2 {
+        font-size: 32px;
+        margin-bottom: 10px;
+      }
+
+      .carousel-overlay p {
+        font-size: 16px;
+        opacity: 0.9;
+      }
+
+      .carousel-btn {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        background: rgba(255, 255, 255, 0.9);
+        border: none;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        font-size: 20px;
+        cursor: pointer;
+        transition: 0.3s;
+        z-index: 10;
+      }
+
+      .carousel-btn:hover {
+        background: white;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      }
+
+      .carousel-btn.prev {
+        left: 20px;
+      }
+
+      .carousel-btn.next {
+        right: 20px;
+      }
+
+      .carousel-indicators {
+        position: absolute;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        gap: 10px;
+        z-index: 10;
+      }
+
+      .indicator {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.5);
+        cursor: pointer;
+        transition: 0.3s;
+      }
+
+      .indicator.active {
+        background: white;
+        width: 30px;
+        border-radius: 6px;
+      }
+
+      /* ================= SECTION ================= */
+      .section {
+        margin-bottom: 50px;
+      }
+
+      .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px;
+      }
+
+      .section-title {
+        font-size: 28px;
+        font-weight: 700;
+        color: #1f2937;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .section-title::before {
+        content: "";
+        width: 5px;
+        height: 30px;
+        background: #667eea;
+        border-radius: 3px;
+      }
+
+      .view-more-btn {
+        padding: 10px 24px;
+        background: white;
+        border: 2px solid #667eea;
+        color: #667eea;
+        border-radius: 25px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: 0.3s;
+      }
+
+      .view-more-btn:hover {
+        background: #667eea;
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+      }
+
+      /* ================= BOOK GRID ================= */
+      .books-grid {
+        display: grid;
+        grid-template-columns: repeat(6, 1fr);
+        gap: 25px;
+      }
+
+      .book-card {
+        background: white;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        transition: 0.3s;
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .book-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+      }
+
+      .book-card-image {
+        width: 100%;
+        height: 280px;
+        overflow: hidden;
+        position: relative;
+      }
+
+      .book-card-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: 0.3s;
+      }
+
+      .book-card:hover .book-card-image img {
+        transform: scale(1.05);
+      }
+
+      .book-badge {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: #ef4444;
+        color: white;
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 600;
+      }
+
+      .book-badge.new {
+        background: #10b981;
+      }
+
+      .book-card-content {
+        padding: 15px;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .book-card-title {
+        font-size: 15px;
+        font-weight: 600;
+        color: #1f2937;
+        margin-bottom: 8px;
+        line-height: 1.4;
+        min-height: 42px;
+
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+
+        display: box;
+        box-orient: vertical;
+        line-clamp: 2;
+
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .book-card-author {
+        font-size: 13px;
+        color: #667eea;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+      }
+
+      /* ================= FOOTER ================= */
+      .footer {
+        background: white;
+        color: #1f1f1f;
+        padding: 40px 20px;
+        margin-top: 60px;
+        box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.08);
+      }
+
+      .footer-container {
+        max-width: 1400px;
+        margin: auto;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 40px;
+      }
+
+      .footer-col h3,
+      .footer-col h4 {
+        color: #667eea;
+        margin-bottom: 15px;
+        font-weight: 600;
+      }
+
+      .footer-col ul {
+        list-style: none;
+        padding: 0;
+      }
+
+      .footer-col ul li {
+        margin-bottom: 8px;
+        font-size: 14px;
+        color: #666;
+      }
+
+      .footer-col a {
+        color: #666;
+        text-decoration: none;
+        transition: 0.3s;
+      }
+
+      .footer-col a:hover {
+        color: #667eea;
+      }
+
+      .footer-bottom {
+        text-align: center;
+        color: #999;
+        margin-top: 30px;
+        font-size: 14px;
+        border-top: 1px solid #eee;
+        padding-top: 20px;
+      }
+
+      /* ================= RESPONSIVE ================= */
+      @media (max-width: 1200px) {
+        .books-grid {
+          grid-template-columns: repeat(4, 1fr);
+        }
+        .navbar {
+          padding: 12px 40px;
+        }
+      }
+
+      @media (max-width: 992px) {
+        .books-grid {
+          grid-template-columns: repeat(3, 1fr);
+        }
+        .nav-search input {
+          width: 250px;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .books-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+        .navbar {
+          padding: 12px 20px;
+          flex-wrap: wrap;
+        }
+        .nav-search {
+          order: 3;
+          width: 100%;
+          margin-top: 10px;
+        }
+        .nav-search input {
+          width: 100%;
+        }
+        .carousel-container {
+          height: 300px;
+        }
+        .carousel-overlay h2 {
+          font-size: 24px;
+        }
+        .section-title {
+          font-size: 22px;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .books-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- ======= NAVBAR ======= -->
+    <header class="navbar">
+      <div class="nav-left">
+        <div class="nav-logo" onclick="window.location.reload()">
+          📚 Library System
+        </div>
+
+        <div class="nav-item dropdown">
+          <button class="dropdown-btn">Danh mục ▾</button>
+          <div class="dropdown-menu">
+            <a href="#">Công nghệ thông tin</a>
+            <a href="#">Khoa học</a>
+            <a href="#">Thiếu nhi</a>
+            <a href="#" class="view-more">Xem chi tiết</a>
+          </div>
+        </div>
+
+        <div class="nav-item dropdown">
+          <button class="dropdown-btn">Nhà xuất bản ▾</button>
+          <div class="dropdown-menu">
+            <a href="#">NXB Trẻ</a>
+            <a href="#">Alpha Books</a>
+            <a href="#">Kim Đồng</a>
+            <a href="#" class="view-more">Xem chi tiết</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="nav-search">
+        <input type="text" placeholder="Tìm kiếm sách..." />
+      </div>
+
+      <div class="nav-right">
+        <div class="avatar dropdown">
+          <img src="https://i.pravatar.cc/40" alt="avatar" class="avatar-img" />
+          <div class="dropdown-menu user-menu">
+            <div class="user-info">
+              <strong>Phùng Quốc Thái</strong>
+              <div class="rating">⭐ 4.8</div>
+            </div>
+            <a href="#">📘 Quản lý mượn trả</a>
+            <a href="#">⚙️ Tài khoản</a>
+            <a href="#" class="logout">🚪 Đăng xuất</a>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <div class="container">
+      <!-- ======= CAROUSEL ======= -->
+      <div class="carousel-container">
+        <div class="carousel-wrapper" id="carouselWrapper">
+          <div class="carousel-slide">
+            <img
+              src="https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?w=1400&h=450&fit=crop"
+              alt="Slide 1"
+            />
+            <div class="carousel-overlay">
+              <h2>Khám phá thế giới tri thức</h2>
+              <p>Hàng ngàn đầu sách chất lượng đang chờ bạn khám phá</p>
+            </div>
+          </div>
+
+          <div class="carousel-slide">
+            <img
+              src="https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=1400&h=450&fit=crop"
+              alt="Slide 2"
+            />
+            <div class="carousel-overlay">
+              <h2>Đọc sách mỗi ngày</h2>
+              <p>Nâng cao kiến thức, mở rộng tầm nhìn</p>
+            </div>
+          </div>
+
+          <div class="carousel-slide">
+            <img
+              src="https://images.unsplash.com/photo-1507842217343-583bb7270b66?w=1400&h=450&fit=crop"
+              alt="Slide 3"
+            />
+            <div class="carousel-overlay">
+              <h2>Mượn sách dễ dàng</h2>
+              <p>Hệ thống quản lý hiện đại, tiện lợi</p>
+            </div>
+          </div>
+        </div>
+
+        <button class="carousel-btn prev" onclick="moveCarousel(-1)">❮</button>
+        <button class="carousel-btn next" onclick="moveCarousel(1)">❯</button>
+
+        <div class="carousel-indicators" id="indicators"></div>
+      </div>
+
+      <!-- ======= MỚI PHÁT HÀNH ======= -->
+      <section class="section">
+        <div class="section-header">
+          <h2 class="section-title">🆕 Mới phát hành</h2>
+          <button class="view-more-btn">Xem thêm →</button>
+        </div>
+
+        <div class="books-grid" id="newBooksGrid"></div>
+      </section>
+
+      <!-- ======= PHỔ BIẾN ======= -->
+      <section class="section">
+        <div class="section-header">
+          <h2 class="section-title">🔥 Phổ biến</h2>
+          <button class="view-more-btn">Xem thêm →</button>
+        </div>
+
+        <div class="books-grid" id="popularBooksGrid"></div>
+      </section>
+    </div>
+
+    <!-- ======= FOOTER ======= -->
+    <footer class="footer">
+      <div class="footer-container">
+        <div class="footer-col">
+          <h3>Thư viện Online</h3>
+          <p>
+            Hệ thống quản lý mượn trả, tìm kiếm và lưu trữ sách chuyên nghiệp.
+          </p>
+        </div>
+
+        <div class="footer-col">
+          <h4>Liên hệ</h4>
+          <ul>
+            <li>📞 0123 456 789</li>
+            <li>📧 support@library.vn</li>
+            <li>📍 Hà Nội, Việt Nam</li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>Chính sách</h4>
+          <ul>
+            <li><a href="#">Điều khoản sử dụng</a></li>
+            <li><a href="#">Chính sách bảo mật</a></li>
+            <li><a href="#">Hướng dẫn sử dụng</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <p class="footer-bottom">© 2025 Library System. All rights reserved.</p>
+    </footer>
+
+    <script>
+      // ============= DROPDOWN MENU =============
+      document.querySelectorAll(".dropdown").forEach((drop) => {
+        const btn = drop.querySelector(".dropdown-btn, .avatar-img");
+
+        btn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          document.querySelectorAll(".dropdown").forEach((d) => {
+            if (d !== drop) d.classList.remove("open");
+          });
+          drop.classList.toggle("open");
+        });
+      });
+
+      document.addEventListener("click", () => {
+        document
+          .querySelectorAll(".dropdown")
+          .forEach((d) => d.classList.remove("open"));
+      });
+
+      // ============= CAROUSEL =============
+      let currentSlide = 0;
+      const totalSlides = 3;
+
+      function updateCarousel() {
+        const wrapper = document.getElementById("carouselWrapper");
+        wrapper.style.transform = `translateX(-${currentSlide * 100}%)`;
+        updateIndicators();
+      }
+
+      function moveCarousel(direction) {
+        currentSlide = (currentSlide + direction + totalSlides) % totalSlides;
+        updateCarousel();
+      }
+
+      function goToSlide(index) {
+        currentSlide = index;
+        updateCarousel();
+      }
+
+      function createIndicators() {
+        const container = document.getElementById("indicators");
+        for (let i = 0; i < totalSlides; i++) {
+          const indicator = document.createElement("div");
+          indicator.className = `indicator ${i === 0 ? "active" : ""}`;
+          indicator.onclick = () => goToSlide(i);
+          container.appendChild(indicator);
+        }
+      }
+
+      function updateIndicators() {
+        document.querySelectorAll(".indicator").forEach((ind, index) => {
+          ind.classList.toggle("active", index === currentSlide);
+        });
+      }
+
+      // Auto play carousel
+      setInterval(() => moveCarousel(1), 5000);
+
+      createIndicators();
+
+      // ============= SAMPLE DATA =============
+      const newBooks = [
+        {
+          title: "Clean Code: A Handbook of Agile Software Craftsmanship",
+          author: "Robert C. Martin",
+          image:
+            "https://images.unsplash.com/photo-1543002588-bfa74002ed7e?w=300&h=400&fit=crop",
+          badge: "new",
+        },
+        {
+          title: "The Pragmatic Programmer",
+          author: "David Thomas",
+          image:
+            "https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=300&h=400&fit=crop",
+          badge: "new",
+        },
+        {
+          title: "Design Patterns",
+          author: "Gang of Four",
+          image:
+            "https://images.unsplash.com/photo-1532012197267-da84d127e765?w=300&h=400&fit=crop",
+          badge: "new",
+        },
+        {
+          title: "Introduction to Algorithms",
+          author: "Thomas H. Cormen",
+          image:
+            "https://images.unsplash.com/photo-1550399105-c4db5fb85c18?w=300&h=400&fit=crop",
+          badge: "new",
+        },
+        {
+          title: "Artificial Intelligence: A Modern Approach",
+          author: "Stuart Russell",
+          image:
+            "https://images.unsplash.com/photo-1589998059171-988d887df646?w=300&h=400&fit=crop",
+          badge: "new",
+        },
+        {
+          title: "Deep Learning",
+          author: "Ian Goodfellow",
+          image:
+            "https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=300&h=400&fit=crop",
+          badge: "new",
+        },
+      ];
+
+      const popularBooks = [
+        {
+          title: "Harry Potter và Hòn Đá Phù Thủy",
+          author: "J.K. Rowling",
+          image:
+            "https://images.unsplash.com/photo-1621351183012-e2f9972dd9bf?w=300&h=400&fit=crop",
+          badge: "hot",
+        },
+        {
+          title: "Nhà Giả Kim",
+          author: "Paulo Coelho",
+          image:
+            "https://images.unsplash.com/photo-1512820790803-83ca734da794?w=300&h=400&fit=crop",
+          badge: "hot",
+        },
+        {
+          title: "Đắc Nhân Tâm",
+          author: "Dale Carnegie",
+          image:
+            "https://images.unsplash.com/photo-1474932430478-367dbb6832c1?w=300&h=400&fit=crop",
+          badge: "hot",
+        },
+        {
+          title: "Sapiens: Lược Sử Loài Người",
+          author: "Yuval Noah Harari",
+          image:
+            "https://images.unsplash.com/photo-1519682337058-a94d519337bc?w=300&h=400&fit=crop",
+          badge: "hot",
+        },
+        {
+          title: "Tôi Thấy Hoa Vàng Trên Cỏ Xanh",
+          author: "Nguyễn Nhật Ánh",
+          image:
+            "https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=300&h=400&fit=crop",
+          badge: "hot",
+        },
+        {
+          title: "Cà Phê Cùng Tony",
+          author: "Tony Buổi Sáng",
+          image:
+            "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=300&h=400&fit=crop",
+          badge: "hot",
+        },
+      ];
+
+      // ============= RENDER BOOKS =============
+      function createBookCard(book) {
+        return `
+          <div class="book-card">
+            <div class="book-card-image">
+              <img src="${book.image}" alt="${book.title}" />
+
+            </div>
+            <div class="book-card-content">
+              <h3 class="book-card-title">${book.title}</h3>
+              <p class="book-card-author">👤 ${book.author}</p>
+            </div>
+          </div>
+        `;
+      }
+
+      function renderBooks() {
+        const newBooksGrid = document.getElementById("newBooksGrid");
+        const popularBooksGrid = document.getElementById("popularBooksGrid");
+
+        newBooksGrid.innerHTML = newBooks.map(createBookCard).join("");
+        popularBooksGrid.innerHTML = popularBooks.map(createBookCard).join("");
+      }
+
+      renderBooks();
+    </script>
+  </body>
+</html>

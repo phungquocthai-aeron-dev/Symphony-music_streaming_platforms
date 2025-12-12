@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Thông Tin Mượn Trả - Thư Viện</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        background: #f8f9fa;
+        min-height: 100vh;
+      }
+      .navbar-brand {
+        font-weight: 700;
+        color: #667eea;
+      }
+      .page-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 40px 0;
+        margin-bottom: 40px;
+        border-radius: 0 0 30px 30px;
+      }
+      .stats-card {
+        background: white;
+        border-radius: 15px;
+        padding: 20px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+        text-align: center;
+        transition: transform 0.3s;
+      }
+      .stats-card:hover {
+        transform: translateY(-5px);
+      }
+      .stats-card .number {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin: 10px 0;
+      }
+      .stats-card.pending .number {
+        color: #f59e0b;
+      }
+      .stats-card.borrowed .number {
+        color: #3b82f6;
+      }
+      .stats-card.returned .number {
+        color: #10b981;
+      }
+      .stats-card.overdue .number {
+        color: #ef4444;
+      }
+
+      .circulation-card {
+        background: white;
+        border-radius: 15px;
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+        transition: all 0.3s;
+      }
+      .circulation-card:hover {
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+      }
+      .circulation-card .book-img {
+        width: 100px;
+        height: 140px;
+        object-fit: cover;
+        border-radius: 10px;
+      }
+      .status-badge {
+        padding: 6px 16px;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 600;
+      }
+      .status-badge.pending {
+        background: #fef3c7;
+        color: #92400e;
+      }
+      .status-badge.borrowed {
+        background: #dbeafe;
+        color: #1e40af;
+      }
+      .status-badge.returned {
+        background: #d1fae5;
+        color: #065f46;
+      }
+      .status-badge.overdue {
+        background: #fee2e2;
+        color: #991b1b;
+      }
+      .btn-confirm {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        border: none;
+        color: white;
+        padding: 8px 20px;
+        border-radius: 20px;
+        font-weight: 600;
+      }
+      .btn-confirm:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(16, 185, 129, 0.4);
+      }
+      .filter-tabs {
+        background: white;
+        border-radius: 15px;
+        padding: 10px;
+        margin-bottom: 30px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+      }
+      .filter-tabs .btn {
+        border-radius: 10px;
+        margin: 0 5px;
+        font-weight: 600;
+      }
+      .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+      }
+      .empty-state img {
+        width: 200px;
+        opacity: 0.5;
+        margin-bottom: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Navbar -->
+    <nav
+      class="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top"
+    >
+      <div class="container">
+        <a class="navbar-brand" href="index.html">📚 Library System</a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarContent"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarContent">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="index.html">Trang chủ</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="borrow-form.html">Mượn sách</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link active fw-bold" href="circulation-history.html"
+                >Lịch sử mượn trả</a
+              >
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Header -->
+    <div class="page-header">
+      <div class="container">
+        <div class="row align-items-center">
+          <div class="col-md-8">
+            <h1 class="mb-2">📖 Thông Tin Mượn Trả Sách</h1>
+            <p class="mb-0">Quản lý và theo dõi lịch sử mượn trả của bạn</p>
+          </div>
+          <div class="col-md-4 text-end"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <!-- Thống kê -->
+      <div class="row mb-4">
+        <div class="col-md-3 mb-3">
+          <div class="stats-card pending">
+            <div>📝 Chờ nhận</div>
+            <div class="number" id="statsPending">0</div>
+          </div>
+        </div>
+        <div class="col-md-3 mb-3">
+          <div class="stats-card borrowed">
+            <div>📚 Đang mượn</div>
+            <div class="number" id="statsBorrowed">0</div>
+          </div>
+        </div>
+        <div class="col-md-3 mb-3">
+          <div class="stats-card returned">
+            <div>✅ Đã trả</div>
+            <div class="number" id="statsReturned">0</div>
+          </div>
+        </div>
+        <div class="col-md-3 mb-3">
+          <div class="stats-card overdue">
+            <div>⚠️ Quá hạn</div>
+            <div class="number" id="statsOverdue">0</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bộ lọc -->
+      <div class="filter-tabs">
+        <div class="text-center">
+          <button class="btn btn-primary active" data-filter="all">
+            Tất cả
+          </button>
+          <button class="btn btn-outline-warning" data-filter="pending">
+            Chờ nhận
+          </button>
+          <button class="btn btn-outline-primary" data-filter="borrowed">
+            Đang mượn
+          </button>
+          <button class="btn btn-outline-success" data-filter="returned">
+            Đã trả
+          </button>
+          <button class="btn btn-outline-danger" data-filter="overdue">
+            Quá hạn
+          </button>
+        </div>
+      </div>
+
+      <!-- Danh sách phiếu mượn -->
+      <div id="circulationList"></div>
+
+      <!-- Empty state -->
+      <div id="emptyState" class="empty-state" style="display: none">
+        <img
+          src="https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?w=300&h=300&fit=crop"
+          alt="Empty"
+        />
+        <h4>Chưa có lịch sử mượn trả</h4>
+        <p class="text-muted">Hãy bắt đầu mượn sách để xem lịch sử tại đây</p>
+        <a href="borrow-form.html" class="btn btn-primary">🎯 Mượn sách ngay</a>
+      </div>
+    </div>
+
+    <!-- Modal xác nhận -->
+    <div class="modal fade" id="confirmModal" tabindex="-1">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">✅ Xác nhận đã nhận sách</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <p>
+              Bạn xác nhận đã nhận sách <strong id="confirmBookTitle"></strong>?
+            </p>
+            <p class="text-muted small">
+              Sau khi xác nhận, trạng thái sẽ chuyển sang "Đang mượn"
+            </p>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Hủy
+            </button>
+            <button
+              type="button"
+              class="btn btn-success"
+              id="confirmReceiveBtn"
+            >
+              Xác nhận
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+      // Dữ liệu mẫu sách
+      const booksData = {
+        book001: {
+          title: "Clean Code: A Handbook of Agile Software Craftsmanship",
+          author: "Robert C. Martin",
+          img: "https://images.unsplash.com/photo-1543002588-bfa74002ed7e?w=300&h=400&fit=crop",
+        },
+        book002: {
+          title: "The Pragmatic Programmer",
+          author: "David Thomas",
+          img: "https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=300&h=400&fit=crop",
+        },
+        book003: {
+          title: "Design Patterns",
+          author: "Gang of Four",
+          img: "https://images.unsplash.com/photo-1532012197267-da84d127e765?w=300&h=400&fit=crop",
+        },
+        book004: {
+          title: "Harry Potter và Hòn Đá Phù Thủy",
+          author: "J.K. Rowling",
+          img: "https://images.unsplash.com/photo-1621351183012-e2f9972dd9bf?w=300&h=400&fit=crop",
+        },
+        book005: {
+          title: "Sapiens: Lược Sử Loài Người",
+          author: "Yuval Noah Harari",
+          img: "https://images.unsplash.com/photo-1519682337058-a94d519337bc?w=300&h=400&fit=crop",
+        },
+      };
+
+      // Tạo dữ liệu mẫu nếu chưa có
+      function initSampleData() {
+        let circulations = JSON.parse(
+          localStorage.getItem("circulations") || "[]"
+        );
+
+        if (circulations.length === 0) {
+          circulations = [
+            {
+              id: "circ001",
+              readerId: "reader001",
+              bookId: "book001",
+              borrowDate: "2025-11-25",
+              dueDate: "2025-12-09",
+              returnDate: null,
+              status: "pending",
+              createdAt: "2025-11-25T10:30:00",
+            },
+            {
+              id: "circ002",
+              readerId: "reader001",
+              bookId: "book004",
+              borrowDate: "2025-11-20",
+              dueDate: "2025-12-04",
+              returnDate: null,
+              status: "borrowed",
+              createdAt: "2025-11-20T14:20:00",
+            },
+            {
+              id: "circ003",
+              readerId: "reader001",
+              bookId: "book005",
+              borrowDate: "2025-11-01",
+              dueDate: "2025-11-15",
+              returnDate: "2025-11-14",
+              status: "returned",
+              createdAt: "2025-11-01T09:15:00",
+            },
+            {
+              id: "circ004",
+              readerId: "reader001",
+              bookId: "book002",
+              borrowDate: "2025-10-20",
+              dueDate: "2025-11-03",
+              returnDate: null,
+              status: "overdue",
+              createdAt: "2025-10-20T11:45:00",
+            },
+          ];
+          localStorage.setItem("circulations", JSON.stringify(circulations));
+        }
+      }
+
+      // Lấy trạng thái với logic quá hạn
+      function getStatus(circulation) {
+        if (circulation.status === "returned") return "returned";
+        if (circulation.status === "pending") return "pending";
+
+        const today = new Date();
+        const dueDate = new Date(circulation.dueDate);
+
+        if (circulation.status === "borrowed" && today > dueDate) {
+          return "overdue";
+        }
+
+        return circulation.status;
+      }
+
+      // Hiển thị danh sách
+      function renderCirculations(filter = "all") {
+        const circulations = JSON.parse(
+          localStorage.getItem("circulations") || "[]"
+        );
+        const list = document.getElementById("circulationList");
+        const emptyState = document.getElementById("emptyState");
+
+        // Lọc theo người dùng hiện tại
+        const userCirculations = circulations.filter(
+          (c) => c.readerId === "reader001"
+        );
+
+        // Tính thống kê
+        let stats = {
+          pending: 0,
+          borrowed: 0,
+          returned: 0,
+          overdue: 0,
+        };
+
+        userCirculations.forEach((c) => {
+          const status = getStatus(c);
+          stats[status]++;
+        });
+
+        document.getElementById("statsPending").textContent = stats.pending;
+        document.getElementById("statsBorrowed").textContent = stats.borrowed;
+        document.getElementById("statsReturned").textContent = stats.returned;
+        document.getElementById("statsOverdue").textContent = stats.overdue;
+
+        // Lọc và sắp xếp
+        let filtered = userCirculations;
+        if (filter !== "all") {
+          filtered = userCirculations.filter((c) => getStatus(c) === filter);
+        }
+
+        filtered.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+        if (filtered.length === 0) {
+          list.innerHTML = "";
+          emptyState.style.display = "block";
+          return;
+        }
+
+        emptyState.style.display = "none";
+        list.innerHTML = filtered.map(createCirculationCard).join("");
+      }
+
+      // Tạo card
+      function createCirculationCard(circulation) {
+        const book = booksData[circulation.bookId];
+        const status = getStatus(circulation);
+
+        const statusLabels = {
+          pending: { text: "Chờ nhận sách", class: "pending" },
+          borrowed: { text: "Đang mượn", class: "borrowed" },
+          returned: { text: "Đã trả", class: "returned" },
+          overdue: { text: "Quá hạn", class: "overdue" },
+        };
+
+        const statusInfo = statusLabels[status];
+
+        const borrowDate = new Date(circulation.borrowDate).toLocaleDateString(
+          "vi-VN"
+        );
+        const dueDate = new Date(circulation.dueDate).toLocaleDateString(
+          "vi-VN"
+        );
+        const returnDate = circulation.returnDate
+          ? new Date(circulation.returnDate).toLocaleDateString("vi-VN")
+          : "-";
+
+        // Tính số ngày còn lại
+        const today = new Date();
+        const due = new Date(circulation.dueDate);
+        const daysLeft = Math.ceil((due - today) / (1000 * 60 * 60 * 24));
+
+        let daysLeftHTML = "";
+        if (status === "borrowed") {
+          if (daysLeft > 0) {
+            daysLeftHTML = `<small class="text-success">⏰ Còn ${daysLeft} ngày</small>`;
+          }
+        } else if (status === "overdue") {
+          daysLeftHTML = `<small class="text-danger">⚠️ Trễ ${Math.abs(
+            daysLeft
+          )} ngày</small>`;
+        }
+
+        const confirmButton =
+          status === "pending"
+            ? `<button class="btn btn-confirm btn-sm me-2" onclick="showConfirmModal('${circulation.id}', '${book.title}')">
+        ✅ Xác nhận đã nhận
+      </button>
+      <button class="btn btn-danger btn-sm" onclick="cancelBorrow('${circulation.id}')">
+        ❌ Hủy mượn
+      </button>`
+            : "";
+
+        return `
+          <div class="circulation-card">
+            <div class="row align-items-center">
+              <div class="col-auto">
+                <img src="${book.img}" alt="${book.title}" class="book-img">
+              </div>
+              <div class="col">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                  <div>
+                    <h5 class="mb-1">${book.title}</h5>
+                    <p class="text-muted mb-0">👤 ${book.author}</p>
+                  </div>
+                  <span class="status-badge ${statusInfo.class}">${statusInfo.text}</span>
+                </div>
+                <div class="row mt-3">
+                  <div class="col-md-3">
+                    <small class="text-muted">Ngày mượn:</small><br>
+                    <strong>${borrowDate}</strong>
+                  </div>
+                  <div class="col-md-3">
+                    <small class="text-muted">Hạn trả:</small><br>
+                    <strong>${dueDate}</strong> ${daysLeftHTML}
+                  </div>
+                  <div class="col-md-3">
+                    <small class="text-muted">Ngày trả:</small><br>
+                    <strong>${returnDate}</strong>
+                  </div>
+                  <div class="col-md-3 text-end">
+                    ${confirmButton}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      // Modal xác nhận
+      let currentCirculationId = null;
+
+      function showConfirmModal(circulationId, bookTitle) {
+        currentCirculationId = circulationId;
+        document.getElementById("confirmBookTitle").textContent = bookTitle;
+        const modal = new bootstrap.Modal(
+          document.getElementById("confirmModal")
+        );
+        modal.show();
+      }
+
+      function cancelBorrow(circulationId) {
+        if (confirm("Bạn có chắc muốn hủy mượn sách này không?")) {
+          const circulations = JSON.parse(
+            localStorage.getItem("circulations") || "[]"
+          );
+          const index = circulations.findIndex((c) => c.id === circulationId);
+
+          if (index !== -1) {
+            // Xóa phiếu mượn
+            circulations.splice(index, 1);
+            localStorage.setItem("circulations", JSON.stringify(circulations));
+            renderCirculations(currentFilter);
+
+            alert("✅ Đã hủy mượn sách thành công!");
+          }
+        }
+      }
+
+      document
+        .getElementById("confirmReceiveBtn")
+        .addEventListener("click", function () {
+          if (currentCirculationId) {
+            const circulations = JSON.parse(
+              localStorage.getItem("circulations") || "[]"
+            );
+            const index = circulations.findIndex(
+              (c) => c.id === currentCirculationId
+            );
+
+            if (index !== -1) {
+              circulations[index].status = "borrowed";
+              localStorage.setItem(
+                "circulations",
+                JSON.stringify(circulations)
+              );
+
+              // Đóng modal và refresh
+              bootstrap.Modal.getInstance(
+                document.getElementById("confirmModal")
+              ).hide();
+              renderCirculations(currentFilter);
+
+              // Hiển thị thông báo
+              alert("✅ Đã xác nhận nhận sách thành công!");
+            }
+          }
+        });
+
+      // Bộ lọc
+      let currentFilter = "all";
+
+      document.querySelectorAll("[data-filter]").forEach((btn) => {
+        btn.addEventListener("click", function () {
+          document.querySelectorAll("[data-filter]").forEach((b) => {
+            b.classList.remove("btn-primary", "active");
+            b.classList.add(
+              "btn-outline-" +
+                (b.dataset.filter === "all"
+                  ? "primary"
+                  : b.dataset.filter === "pending"
+                  ? "warning"
+                  : b.dataset.filter === "borrowed"
+                  ? "primary"
+                  : b.dataset.filter === "returned"
+                  ? "success"
+                  : "danger")
+            );
+          });
+
+          this.classList.remove(
+            "btn-outline-warning",
+            "btn-outline-primary",
+            "btn-outline-success",
+            "btn-outline-danger"
+          );
+          this.classList.add("btn-primary", "active");
+
+          currentFilter = this.dataset.filter;
+          renderCirculations(currentFilter);
+        });
+      });
+
+      // Khởi tạo
+      initSampleData();
+      renderCirculations();
+    </script>
+  </body>
+</html>

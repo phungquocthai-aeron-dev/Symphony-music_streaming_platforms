@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="utf-8" />
+    <title>Import Songs into PocketBase</title>
+    <style>
+      body {
+        font-family: Arial, Helvetica, sans-serif;
+        padding: 18px;
+      }
+      input[type="password"] {
+        font-family: monospace;
+      }
+      button {
+        padding: 8px 12px;
+        margin-top: 8px;
+      }
+      pre {
+        background: #f5f5f5;
+        padding: 12px;
+        max-height: 400px;
+        overflow: auto;
+      }
+      label {
+        display: block;
+        margin-bottom: 8px;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>Import songs → PocketBase (fields file & relation left empty)</h2>
+
+    <label>
+      Nhập Admin Token (ví dụ: <code>Bearer eyJ...</code>):
+      <input
+        type="password"
+        id="token"
+        style="width: 560px"
+        placeholder="Bearer ..."
+      />
+    </label>
+
+    <label>
+      PocketBase URL:
+      <input id="pbUrl" value="http://127.0.0.1:8090" style="width: 300px" />
+      Collection:
+      <input id="collection" value="songs" style="width: 140px" />
+    </label>
+
+    <button id="start">Bắt đầu import</button>
+    <button id="stop">Dừng</button>
+    <pre id="log">Nhấn "Bắt đầu import" để chạy...</pre>
+
+    <script>
+      /*
+  Import script (browser JS) for songs.
+  - Relations (singer_ids, category_ids) are sent as empty arrays.
+  - File fields are left empty ('').
+  - created_at is computed relative to now to mimic original subtract(Duration(...)).
+  - Provide admin token (Bearer ...) before running.
+*/
+
+      const logEl = document.getElementById("log");
+      const startBtn = document.getElementById("start");
+      const stopBtn = document.getElementById("stop");
+      let stopRequested = false;
+
+      function daysAgoISO(days) {
+        return new Date(Date.now() - days * 24 * 60 * 60 * 1000).toISOString();
+      }
+      function hoursAgoISO(hours) {
+        return new Date(Date.now() - hours * 60 * 60 * 1000).toISOString();
+      }
+
+      // === DATA: 56 songs converted from your Dart list.
+      // singer_ids and category_ids intentionally empty (you will fill later).
+      const songs = [
+        {
+          song_name: "Người Âm Phủ",
+          author: "OSAD, VRT",
+          total_listens: 9700,
+          is_active: true,
+          created_at: daysAgoISO(30),
+        },
+        {
+          song_name: "Thằng Điên",
+          author: "JustaTee",
+          total_listens: 12500,
+          is_active: true,
+          created_at: daysAgoISO(15),
+        },
+        {
+          song_name: "Thịnh Vượng Việt Nam Sáng Ngời",
+          author: "Bùi Trường Linh",
+          total_listens: 6800,
+          is_active: true,
+          created_at: daysAgoISO(7),
+        },
+        {
+          song_name: "Hoa Cỏ Lau",
+          author: "Phong Max",
+          total_listens: 8200,
+          is_active: true,
+          created_at: daysAgoISO(7),
+        },
+        {
+          song_name: "Thanh Xuân",
+          author: "DALAB",
+          total_listens: 12100,
+          is_active: true,
+          created_at: daysAgoISO(7),
+        },
+        {
+          song_name: "Pháo Hồng",
+          author: "Đạt Long Vinh",
+          total_listens: 9200,
+          is_active: true,
+          created_at: daysAgoISO(5),
+        },
+        {
+          song_name: "Lối Nhỏ",
+          author: "Đen Vâu",
+          total_listens: 9000,
+          is_active: true,
+          created_at: daysAgoISO(4),
+        },
+        {
+          song_name: "Tinh Vệ",
+          author: "MIKC",
+          total_listens: 1500,
+          is_active: true,
+          created_at: daysAgoISO(3),
+        },
+        {
+          song_name: "Nevada",
+          author: "Vicetone",
+          total_listens: 9000,
+          is_active: true,
+          created_at: daysAgoISO(2),
+        },
+        {
+          song_name: "Đã Lỡ Yêu Em Nhiều",
+          author: "JustaTee",
+          total_listens: 11200,
+          is_active: true,
+          created_at: daysAgoISO(1),
+        },
+        {
+          song_name: "Một Triệu Like",
+          author: "Đen Vâu",
+          total_listens: 3500,
+          is_active: true,
+          created_at: daysAgoISO(1),
+        },
+        {
+          song_name: "Bài Này Chill Phết",
+          author: "Đen vâu",
+          total_listens: 7200,
+          is_active: true,
+          created_at: daysAgoISO(1),
+        },
+        {
+          song_name: "Hai Triệu Năm",
+          author: "Đen Vâu",
+          total_listens: 10500,
+          is_active: true,
+          created_at: daysAgoISO(1),
+        },
+        {
+          song_name: "Mặt Trời Của Em",
+          author: "Kai Đinh",
+          total_listens: 9700,
+          is_active: true,
+          created_at: daysAgoISO(1),
+        },
+        {
+          song_name: "Bên Trên Tầng Lầu",
+          author: "Tăng Duy Tân",
+          total_listens: 10900,
+          is_active: true,
+          created_at: daysAgoISO(1),
+        },
+        {
+          song_name: "Gác Lại Âu Lo",
+          author: "DABLAB",
+          total_listens: 10200,
+          is_active: true,
+          created_at: daysAgoISO(1),
+        },
+        {
+          song_name: "Túy Âm",
+          author: "Xesi",
+          total_listens: 15300,
+          is_active: true,
+          created_at: daysAgoISO(1),
+        },
+        {
+          song_name: "Vở Kịch Của Em",
+          author: "Hồ Phong An",
+          total_listens: 3900,
+          is_active: true,
+          created_at: daysAgoISO(1),
+        },
+        {
+          song_name: "Câu Hứa Chưa Vẹn Tròn",
+          author: "Phát Huy T4",
+          total_listens: 4300,
+          is_active: true,
+          created_at: daysAgoISO(1),
+        },
+        {
+          song_name: "Sơn Thủy Trùng Mây",
+          author: "Anh Rồng",
+          total_listens: 3500,
+          is_active: true,
+          created_at: daysAgoISO(1),
+        },
+        {
+          song_name: "Cao Ốc 20",
+          author: "B Ray",
+          total_listens: 11500,
+          is_active: true,
+          created_at: daysAgoISO(1),
+        },
+        {
+          song_name: "Phải Lòng Con Gái Bến Tre",
+          author: "Phan Ni Tấn",
+          total_listens: 6324,
+          is_active: true,
+          created_at: daysAgoISO(2),
+        },
+        {
+          song_name: "Chuyện Ba Mùa Mưa",
+          author: "Minh Kỳ, Dạ Cầm",
+          total_listens: 4419,
+          is_active: true,
+          created_at: daysAgoISO(2),
+        },
+        {
+          song_name: "Em Đi Trên Cỏ Non",
+          author: "Bắc Sơn",
+          total_listens: 4130,
+          is_active: true,
+          created_at: daysAgoISO(2),
+        },
+        {
+          song_name: "Nối Lại Tình Xưa",
+          author: "Ngân Giang, Vinh Sử",
+          total_listens: 12081,
+          is_active: true,
+          created_at: daysAgoISO(2),
+        },
+        {
+          song_name: "Xuân Này Con Không Về",
+          author: "Trịnh Lâm Ngân",
+          total_listens: 5347,
+          is_active: true,
+          created_at: daysAgoISO(2),
+        },
+        {
+          song_name: "Mood",
+          author: "24kGoldn, Iann Dior",
+          total_listens: 2433,
+          is_active: true,
+          created_at: daysAgoISO(2),
+        },
+        {
+          song_name: "Somebody That I Used To Know",
+          author: "Gotye",
+          total_listens: 3829,
+          is_active: true,
+          created_at: daysAgoISO(2),
+        },
+        {
+          song_name: "Cupid UIA",
+          author: "Uiia Cat",
+          total_listens: 4955,
+          is_active: true,
+          created_at: daysAgoISO(2),
+        },
+        {
+          song_name: "Summertime Sadness",
+          author: "Lana Del Rey",
+          total_listens: 4385,
+          is_active: true,
+          created_at: hoursAgoISO(6),
+        },
+        {
+          song_name: "Ngây Thơ",
+          author: "Tăng Duy Tân, Phong Max",
+          total_listens: 9064,
+          is_active: true,
+          created_at: daysAgoISO(1),
+        },
+        {
+          song_name: "Đế Vương",
+          author: "Đình Dũng",
+          total_listens: 6183,
+          is_active: true,
+          created_at: daysAgoISO(1),
+        },
+        {
+          song_name: "Tướng Quân",
+          author: "Nhật Phong",
+          total_listens: 6738,
+          is_active: true,
+          created_at: daysAgoISO(1),
+        },
+        {
+          song_name: "Lạc Trôi",
+          author: "Sơn Tùng M-TP",
+          total_listens: 12642,
+          is_active: true,
+          created_at: daysAgoISO(1),
+        },
+        {
+          song_name: "Khuôn Mặt Đáng Thương",
+          author: "Sơn Tùng M-TP",
+          total_listens: 7078,
+          is_active: true,
+          created_at: daysAgoISO(1),
+        },
+        {
+          song_name: "Nơi Này Có Anh",
+          author: "Sơn Tùng M-TP",
+          total_listens: 13066,
+          is_active: true,
+          created_at: daysAgoISO(1),
+        },
+        {
+          song_name: "Rồi Ta Sẽ Ngắm Pháo Hoa Cùng Nhau",
+          author: "O.lew",
+          total_listens: 10427,
+          is_active: true,
+          created_at: daysAgoISO(1),
+        },
+        {
+          song_name: "Sài Gòn Đau Lòng Quá",
+          author: "Hứa Kim Tuyền",
+          total_listens: 11902,
+          is_active: true,
+          created_at: daysAgoISO(1),
+        },
+        {
+          song_name: "Nước Mắt Em Lau Bằng Tình Yêu Mới",
+          author: "Da LAB",
+          total_listens: 10598,
+          is_active: true,
+          created_at: daysAgoISO(1),
+        },
+        {
+          song_name: "Phận Duyên Lỡ Làng",
+          author: "Phát Huy T4",
+          total_listens: 8115,
+          is_active: true,
+          created_at: daysAgoISO(1),
+        },
+        {
+          song_name: "À Lôi",
+          author: "Double2T, Masew",
+          total_listens: 6130,
+          is_active: true,
+          created_at: daysAgoISO(1),
+        },
+        {
+          song_name: "Kém Duyên",
+          author: "Rum",
+          total_listens: 9988,
+          is_active: true,
+          created_at: daysAgoISO(1),
+        },
+        {
+          song_name: "Xin Đừng Nhấc Máy",
+          author: "B Ray, Trang Yue",
+          total_listens: 7145,
+          is_active: true,
+          created_at: daysAgoISO(1),
+        },
+        {
+          song_name: "Tát Nhật Lãng Rực Rỡ",
+          author: "Lưu Tân Khuyên",
+          total_listens: 3775,
+          is_active: true,
+          created_at: daysAgoISO(1),
+        },
+        {
+          song_name: "Ái Nộ",
+          author: "Masew",
+          total_listens: 9227,
+          is_active: true,
+          created_at: daysAgoISO(1),
+        },
+        {
+          song_name: "Quan Sơn Tửu",
+          author: "Nhạc Kim Chấn",
+          total_listens: 3315,
+          is_active: true,
+          created_at: daysAgoISO(1),
+        },
+        {
+          song_name: "Ngu Hề Thán",
+          author: "Chúc Hà",
+          total_listens: 3481,
+          is_active: true,
+          created_at: daysAgoISO(1),
+        },
+        {
+          song_name: "Bồ Công Anh",
+          author: "Phong Max",
+          total_listens: 8481,
+          is_active: true,
+          created_at: daysAgoISO(1),
+        },
+        {
+          song_name: "Dạ Vũ",
+          author: "Tăng Duy Tân",
+          total_listens: 11481,
+          is_active: true,
+          created_at: daysAgoISO(1),
+        },
+        {
+          song_name: "An",
+          author: "Lil Wuyn",
+          total_listens: 8481,
+          is_active: true,
+          created_at: daysAgoISO(1),
+        },
+        {
+          song_name: "Young And Beautiful",
+          author: "Lana Del Rey",
+          total_listens: 12081,
+          is_active: true,
+          created_at: daysAgoISO(1),
+        },
+        {
+          song_name: "Walk Thru Fire",
+          author: "Vicetone",
+          total_listens: 11481,
+          is_active: true,
+          created_at: daysAgoISO(1),
+        },
+        {
+          song_name: "Vì Mẹ Anh Bắt Chia Tay",
+          author: "Châu Đăng Khoa",
+          total_listens: 9481,
+          is_active: true,
+          created_at: daysAgoISO(1),
+        },
+        {
+          song_name: "Sầu Tím Thiệp Hồng",
+          author: "Hoài Linh",
+          total_listens: 6481,
+          is_active: true,
+          created_at: daysAgoISO(1),
+        },
+        {
+          song_name: "Waiting For Love",
+          author: "Avicii",
+          total_listens: 9481,
+          is_active: true,
+          created_at: daysAgoISO(1),
+        },
+        {
+          song_name: "Shape Of You",
+          author: "Ed Sheeran",
+          total_listens: 10481,
+          is_active: true,
+          created_at: daysAgoISO(1),
+        },
+      ];
+
+      // helper to pause between requests
+      function sleep(ms) {
+        return new Promise((resolve) => setTimeout(resolve, ms));
+      }
+
+      async function createRecord(pbUrl, collection, token, body) {
+        const res = await fetch(
+          `${pbUrl}/api/collections/${collection}/records`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: token,
+            },
+            body: JSON.stringify(body),
+          }
+        );
+        const text = await res.text();
+        let data;
+        try {
+          data = JSON.parse(text);
+        } catch (e) {
+          data = text;
+        }
+        return { ok: res.ok, status: res.status, data };
+      }
+
+      async function importAll() {
+        stopRequested = false;
+        const pbUrl = document.getElementById("pbUrl").value.trim();
+        const collection = document.getElementById("collection").value.trim();
+        const token = document.getElementById("token").value.trim();
+
+        if (!pbUrl || !collection || !token) {
+          alert(
+            "Vui lòng điền đầy đủ: PB URL, collection và token (Bearer ...)."
+          );
+          return;
+        }
+
+        logEl.textContent = `🚀 Bắt đầu import ${songs.length} songs...\n`;
+        for (let i = 0; i < songs.length; i++) {
+          if (stopRequested) {
+            logEl.textContent += "\n⛔ Import đã bị dừng bởi người dùng.\n";
+            break;
+          }
+          const s = songs[i];
+
+          // Build body — leave relation & file fields empty
+          const body = {
+            song_name: s.song_name,
+            author: s.author,
+            total_listens: s.total_listens,
+            is_active: s.is_active,
+            // relations left empty: send empty arrays so you can fill later
+            singer_ids: [],
+            category_ids: [],
+            // file fields left empty
+            song_img: "",
+            lrc_file: "",
+            lyric_file: "",
+            song_file: "",
+            // created_at set to mimic original offsets
+            created_at: s.created_at,
+          };
+
+          try {
+            const result = await createRecord(pbUrl, collection, token, body);
+            if (result.ok) {
+              logEl.textContent += `✅ [${i + 1}/${songs.length}] ${
+                s.song_name
+              } — created (id: ${result.data?.id || "unknown"})\n`;
+            } else {
+              logEl.textContent += `❌ [${i + 1}/${songs.length}] ${
+                s.song_name
+              } — status ${result.status}: ${JSON.stringify(result.data)}\n`;
+            }
+          } catch (err) {
+            logEl.textContent += `⚠️ [${i + 1}/${songs.length}] ${
+              s.song_name
+            } — error: ${err.message}\n`;
+          }
+
+          // small delay to avoid rate limits
+          await sleep(180);
+        }
+
+        if (!stopRequested) logEl.textContent += "\n🎉 Hoàn tất import!";
+      }
+
+      startBtn.addEventListener("click", () => {
+        if (startBtn.disabled) return;
+        startBtn.disabled = true;
+        importAll().finally(() => (startBtn.disabled = false));
+      });
+
+      stopBtn.addEventListener("click", () => {
+        stopRequested = true;
+      });
+    </script>
+  </body>
+</html>

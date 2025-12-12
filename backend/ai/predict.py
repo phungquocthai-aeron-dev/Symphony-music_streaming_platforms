@@ -12,7 +12,6 @@ logger = logging.getLogger(__name__)
 MODEL_PATH = "models/embeddings.pkl"
 
 def compute_shape_similarity(input_seq, song_seq):
-    """Improved similarity computation with better discrimination"""
     try:
         input_flat = input_seq.flatten()
         song_flat = song_seq.flatten()

@@ -26,15 +26,14 @@ def load_audio(file_path, sr=16000):
 def extract_melody_line(y, sr):
     """Extract F0 with speed and accuracy optimizations"""
     try:
-        # Tăng hop_length để xử lý nhanh hơn
         hop_length = 512
         
         # Sử dụng piptrack thay pyin cho tốc độ
         pitches, magnitudes = librosa.piptrack(
             y=y, sr=sr, 
             hop_length=hop_length,
-            fmin=75,   # Mở rộng range thấp
-            fmax=800,  # Tập trung vào giọng người
+            fmin=75,   
+            fmax=800, 
             threshold=0.08
         )
         

@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hệ thống Quản lý Thư viện</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+      }
+
+      .container {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        overflow: hidden;
+        width: 100%;
+        max-width: 900px;
+        display: flex;
+        min-height: 600px;
+      }
+
+      .sidebar {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        padding: 40px;
+        width: 35%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        color: white;
+      }
+
+      .sidebar h1 {
+        font-size: 28px;
+        margin-bottom: 20px;
+      }
+
+      .sidebar p {
+        font-size: 16px;
+        line-height: 1.6;
+        opacity: 0.9;
+      }
+
+      .main-content {
+        padding: 50px 40px;
+        width: 65%;
+        overflow-y: auto;
+      }
+
+      .tab-buttons {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 30px;
+        border-bottom: 2px solid #e0e0e0;
+      }
+
+      .tab-btn {
+        padding: 12px 24px;
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: 600;
+        color: #999;
+        transition: all 0.3s;
+        position: relative;
+      }
+
+      .tab-btn.active {
+        color: #667eea;
+      }
+
+      .tab-btn.active::after {
+        content: "";
+        position: absolute;
+        bottom: -2px;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: #667eea;
+      }
+
+      .form-section {
+        display: none;
+      }
+
+      .form-section.active {
+        display: block;
+        animation: fadeIn 0.3s;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      h2 {
+        color: #333;
+        margin-bottom: 30px;
+        font-size: 24px;
+      }
+
+      .form-group {
+        margin-bottom: 20px;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 8px;
+        color: #555;
+        font-weight: 500;
+        font-size: 14px;
+      }
+
+      input,
+      select {
+        width: 100%;
+        padding: 12px 15px;
+        border: 2px solid #e0e0e0;
+        border-radius: 8px;
+        font-size: 14px;
+        transition: all 0.3s;
+        font-family: inherit;
+      }
+
+      input:focus,
+      select:focus {
+        outline: none;
+        border-color: #667eea;
+      }
+
+      .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+      }
+
+      .btn {
+        width: 100%;
+        padding: 14px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: transform 0.2s;
+        margin-top: 10px;
+      }
+
+      .btn:hover {
+        transform: translateY(-2px);
+      }
+
+      .btn:active {
+        transform: translateY(0);
+      }
+
+      .switch-text {
+        text-align: center;
+        margin-top: 20px;
+        color: #666;
+        font-size: 14px;
+      }
+
+      .switch-text a {
+        color: #667eea;
+        text-decoration: none;
+        font-weight: 600;
+      }
+
+      .switch-text a:hover {
+        text-decoration: underline;
+      }
+
+      .account-type-selector {
+        display: flex;
+        gap: 15px;
+        margin-bottom: 30px;
+      }
+
+      .account-type-btn {
+        flex: 1;
+        padding: 15px;
+        border: 2px solid #e0e0e0;
+        border-radius: 10px;
+        background: white;
+        cursor: pointer;
+        transition: all 0.3s;
+        text-align: center;
+      }
+
+      .account-type-btn:hover {
+        border-color: #667eea;
+      }
+
+      .account-type-btn.selected {
+        border-color: #667eea;
+        background: #f0f4ff;
+      }
+
+      .account-type-btn h3 {
+        font-size: 16px;
+        margin-bottom: 5px;
+        color: #333;
+      }
+
+      .account-type-btn p {
+        font-size: 12px;
+        color: #666;
+      }
+
+      @media (max-width: 768px) {
+        .container {
+          flex-direction: column;
+        }
+
+        .sidebar,
+        .main-content {
+          width: 100%;
+        }
+
+        .sidebar {
+          padding: 30px;
+        }
+
+        .main-content {
+          padding: 30px 20px;
+        }
+
+        .form-row {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="sidebar">
+        <h1>📚 Thư viện Số</h1>
+        <p>
+          Hệ thống quản lý thư viện hiện đại, giúp bạn dễ dàng mượn sách, quản
+          lý tài liệu và kết nối với tri thức.
+        </p>
+      </div>
+
+      <div class="main-content">
+        <div class="tab-buttons">
+          <button class="tab-btn active" onclick="switchTab('login')">
+            Đăng nhập
+          </button>
+          <button class="tab-btn" onclick="switchTab('register')">
+            Đăng ký
+          </button>
+        </div>
+
+        <!-- LOGIN SECTION -->
+        <div id="login" class="form-section active">
+          <h2>Đăng nhập</h2>
+
+          <div class="account-type-selector">
+            <div
+              class="account-type-btn selected"
+              onclick="selectLoginType('reader')"
+            >
+              <h3>👤 Độc giả</h3>
+              <p>Mượn và đọc sách</p>
+            </div>
+            <div class="account-type-btn" onclick="selectLoginType('staff')">
+              <h3>👨‍💼 Nhân viên</h3>
+              <p>Quản lý thư viện</p>
+            </div>
+          </div>
+
+          <form onsubmit="handleLogin(event)">
+            <div class="form-group">
+              <label for="login-phone">Số điện thoại</label>
+              <input
+                type="tel"
+                id="login-phone"
+                placeholder="0912345678"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="login-password">Mật khẩu</label>
+              <input
+                type="password"
+                id="login-password"
+                placeholder="••••••••"
+                required
+              />
+            </div>
+
+            <button type="submit" class="btn">Đăng nhập</button>
+          </form>
+
+          <div class="switch-text">
+            Chưa có tài khoản?
+            <a href="#" onclick="switchTab('register'); return false;"
+              >Đăng ký ngay</a
+            >
+          </div>
+        </div>
+
+        <!-- REGISTER SECTION -->
+        <div id="register" class="form-section">
+          <h2>Đăng ký tài khoản</h2>
+
+          <div class="account-type-selector">
+            <div
+              class="account-type-btn selected"
+              onclick="selectRegisterType('reader')"
+            >
+              <h3>👤 Độc giả</h3>
+              <p>Đăng ký để mượn sách</p>
+            </div>
+            <div class="account-type-btn" onclick="selectRegisterType('staff')">
+              <h3>👨‍💼 Nhân viên</h3>
+              <p>Tài khoản quản lý</p>
+            </div>
+          </div>
+
+          <!-- READER REGISTRATION FORM -->
+          <form
+            id="reader-register-form"
+            onsubmit="handleReaderRegister(event)"
+          >
+            <div class="form-group">
+              <label for="reader-fullname">Họ và tên *</label>
+              <input
+                type="text"
+                id="reader-fullname"
+                placeholder="Nguyễn Văn A"
+                required
+              />
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="reader-birthdate">Ngày sinh *</label>
+                <input type="date" id="reader-birthdate" required />
+              </div>
+
+              <div class="form-group">
+                <label for="reader-gender">Giới tính *</label>
+                <select id="reader-gender" required>
+                  <option value="">Chọn giới tính</option>
+                  <option value="male">Nam</option>
+                  <option value="female">Nữ</option>
+                  <option value="other">Khác</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="reader-address">Địa chỉ *</label>
+              <input
+                type="text"
+                id="reader-address"
+                placeholder="123 Đường ABC, Quận XYZ"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="reader-phone">Số điện thoại *</label>
+              <input
+                type="tel"
+                id="reader-phone"
+                placeholder="0912345678"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="reader-password">Mật khẩu *</label>
+              <input
+                type="password"
+                id="reader-password"
+                placeholder="Tối thiểu 6 ký tự"
+                required
+                minlength="6"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="reader-confirm-password">Xác nhận mật khẩu *</label>
+              <input
+                type="password"
+                id="reader-confirm-password"
+                placeholder="Nhập lại mật khẩu"
+                required
+              />
+            </div>
+
+            <button type="submit" class="btn">Đăng ký độc giả</button>
+          </form>
+
+          <!-- STAFF REGISTRATION FORM -->
+          <form
+            id="staff-register-form"
+            style="display: none"
+            onsubmit="handleStaffRegister(event)"
+          >
+            <div class="form-group">
+              <label for="staff-fullname">Họ và tên *</label>
+              <input
+                type="text"
+                id="staff-fullname"
+                placeholder="Nguyễn Văn B"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="staff-role">Chức vụ *</label>
+              <select id="staff-role" required>
+                <option value="">Chọn chức vụ</option>
+                <option value="librarian">Thủ thư</option>
+                <option value="manager">Quản lý</option>
+                <option value="admin">Quản trị viên</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="staff-address">Địa chỉ *</label>
+              <input
+                type="text"
+                id="staff-address"
+                placeholder="123 Đường ABC, Quận XYZ"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="staff-phone">Số điện thoại *</label>
+              <input
+                type="tel"
+                id="staff-phone"
+                placeholder="0912345678"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="staff-password">Mật khẩu *</label>
+              <input
+                type="password"
+                id="staff-password"
+                placeholder="Tối thiểu 6 ký tự"
+                required
+                minlength="6"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="staff-confirm-password">Xác nhận mật khẩu *</label>
+              <input
+                type="password"
+                id="staff-confirm-password"
+                placeholder="Nhập lại mật khẩu"
+                required
+              />
+            </div>
+
+            <button type="submit" class="btn">Đăng ký nhân viên</button>
+          </form>
+
+          <div class="switch-text">
+            Đã có tài khoản?
+            <a href="#" onclick="switchTab('login'); return false;"
+              >Đăng nhập</a
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      let currentLoginType = "reader";
+      let currentRegisterType = "reader";
+
+      function switchTab(tab) {
+        // Update tab buttons
+        document
+          .querySelectorAll(".tab-btn")
+          .forEach((btn) => btn.classList.remove("active"));
+        event.target.classList.add("active");
+
+        // Update form sections
+        document
+          .querySelectorAll(".form-section")
+          .forEach((section) => section.classList.remove("active"));
+        document.getElementById(tab).classList.add("active");
+      }
+
+      function selectLoginType(type) {
+        currentLoginType = type;
+        const buttons = document.querySelectorAll("#login .account-type-btn");
+        buttons.forEach((btn, index) => {
+          btn.classList.remove("selected");
+          if (
+            (type === "reader" && index === 0) ||
+            (type === "staff" && index === 1)
+          ) {
+            btn.classList.add("selected");
+          }
+        });
+      }
+
+      function selectRegisterType(type) {
+        currentRegisterType = type;
+        const buttons = document.querySelectorAll(
+          "#register .account-type-btn"
+        );
+        buttons.forEach((btn, index) => {
+          btn.classList.remove("selected");
+          if (
+            (type === "reader" && index === 0) ||
+            (type === "staff" && index === 1)
+          ) {
+            btn.classList.add("selected");
+          }
+        });
+
+        // Show/hide appropriate form
+        document.getElementById("reader-register-form").style.display =
+          type === "reader" ? "block" : "none";
+        document.getElementById("staff-register-form").style.display =
+          type === "staff" ? "block" : "none";
+      }
+
+      function handleLogin(e) {
+        e.preventDefault();
+        const phone = document.getElementById("login-phone").value;
+        const password = document.getElementById("login-password").value;
+
+        console.log("Đăng nhập:", {
+          accountType: currentLoginType,
+          phone: phone,
+          password: password,
+        });
+
+        alert(
+          `Đăng nhập ${
+            currentLoginType === "reader" ? "Độc giả" : "Nhân viên"
+          }\nSĐT: ${phone}`
+        );
+      }
+
+      function handleReaderRegister(e) {
+        e.preventDefault();
+        const password = document.getElementById("reader-password").value;
+        const confirmPassword = document.getElementById(
+          "reader-confirm-password"
+        ).value;
+
+        if (password !== confirmPassword) {
+          alert("Mật khẩu xác nhận không khớp!");
+          return;
+        }
+
+        const readerData = {
+          fullName: document.getElementById("reader-fullname").value,
+          birthDate: document.getElementById("reader-birthdate").value,
+          gender: document.getElementById("reader-gender").value,
+          address: document.getElementById("reader-address").value,
+          phone: document.getElementById("reader-phone").value,
+          password: password,
+        };
+
+        console.log("Đăng ký độc giả:", readerData);
+        alert("Đăng ký độc giả thành công!");
+      }
+
+      function handleStaffRegister(e) {
+        e.preventDefault();
+        const password = document.getElementById("staff-password").value;
+        const confirmPassword = document.getElementById(
+          "staff-confirm-password"
+        ).value;
+
+        if (password !== confirmPassword) {
+          alert("Mật khẩu xác nhận không khớp!");
+          return;
+        }
+
+        const staffData = {
+          fullName: document.getElementById("staff-fullname").value,
+          role: document.getElementById("staff-role").value,
+          address: document.getElementById("staff-address").value,
+          phone: document.getElementById("staff-phone").value,
+          password: password,
+        };
+
+        console.log("Đăng ký nhân viên:", staffData);
+        alert("Đăng ký nhân viên thành công!");
+      }
+    </script>
+  </body>
+</html>

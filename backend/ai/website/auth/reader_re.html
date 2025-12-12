@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Đăng ký Độc giả</title>
+
+    <!-- Bootstrap 5 -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+
+    <style>
+      body {
+        min-height: 100vh;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      .register-container {
+        max-width: 950px;
+        width: 100%;
+        background: #fff;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+      }
+
+      .sidebar {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        padding: 40px 30px;
+        color: white;
+      }
+
+      .sidebar h1 {
+        font-size: 28px;
+        font-weight: bold;
+        margin-bottom: 15px;
+      }
+
+      .sidebar p {
+        opacity: 0.9;
+        line-height: 1.6;
+      }
+
+      .form-section {
+        padding: 40px 30px;
+        background: #fff;
+      }
+
+      .btn-custom {
+        width: 100%;
+        padding: 12px;
+        font-size: 16px;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        transition: 0.2s;
+        font-weight: 600;
+      }
+
+      .btn-custom:hover {
+        transform: translateY(-2px);
+        opacity: 0.95;
+      }
+
+      .switch-text a {
+        text-decoration: none;
+        font-weight: 600;
+        color: #667eea;
+      }
+
+      .switch-text a:hover {
+        text-decoration: underline;
+      }
+
+      @media (max-width: 768px) {
+        .sidebar {
+          text-align: center;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="register-container row g-0">
+      <!-- Sidebar -->
+      <div class="sidebar col-md-4 d-flex flex-column justify-content-center">
+        <h1>📚 Thư viện Số</h1>
+        <p>Tạo tài khoản để có thể mượn sách và quản lý tài liệu.</p>
+      </div>
+
+      <!-- Form -->
+      <div class="form-section col-md-8">
+        <h2 class="mb-4">Đăng ký Độc giả</h2>
+
+        <form
+          onsubmit="handleReaderRegister(event)"
+          class="needs-validation"
+          novalidate
+        >
+          <!-- Họ tên -->
+          <div class="mb-3">
+            <label class="form-label">Họ và tên *</label>
+            <input
+              type="text"
+              id="reader-fullname"
+              class="form-control"
+              required
+            />
+            <div class="invalid-feedback">Vui lòng nhập họ tên.</div>
+          </div>
+
+          <!-- Ngày sinh + Giới tính -->
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <label class="form-label">Ngày sinh *</label>
+              <input
+                type="date"
+                id="reader-birthdate"
+                class="form-control"
+                required
+              />
+              <div class="invalid-feedback">Vui lòng chọn ngày sinh.</div>
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label">Giới tính *</label>
+              <select id="reader-gender" class="form-select" required>
+                <option value="">Chọn giới tính</option>
+                <option value="male">Nam</option>
+                <option value="female">Nữ</option>
+                <option value="other">Khác</option>
+              </select>
+              <div class="invalid-feedback">Vui lòng chọn giới tính.</div>
+            </div>
+          </div>
+
+          <!-- Địa chỉ -->
+          <div class="mb-3">
+            <label class="form-label">Địa chỉ *</label>
+            <input
+              type="text"
+              id="reader-address"
+              class="form-control"
+              required
+            />
+            <div class="invalid-feedback">Vui lòng nhập địa chỉ.</div>
+          </div>
+
+          <!-- Số điện thoại -->
+          <div class="mb-3">
+            <label class="form-label">Số điện thoại *</label>
+            <input type="tel" id="reader-phone" class="form-control" required />
+            <div class="invalid-feedback">Vui lòng nhập số điện thoại.</div>
+          </div>
+
+          <!-- Mật khẩu + xác nhận -->
+          <div class="mb-3">
+            <label class="form-label">Mật khẩu *</label>
+            <input
+              type="password"
+              id="reader-password"
+              class="form-control"
+              minlength="6"
+              required
+            />
+            <div class="invalid-feedback">Mật khẩu phải ít nhất 6 ký tự.</div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Xác nhận mật khẩu *</label>
+            <input
+              type="password"
+              id="reader-confirm-password"
+              class="form-control"
+              required
+            />
+            <div class="invalid-feedback">Vui lòng xác nhận mật khẩu.</div>
+          </div>
+
+          <!-- Button -->
+          <button type="submit" class="btn-custom mt-2">Đăng ký</button>
+
+          <div class="text-center mt-3 switch-text">
+            Đã có tài khoản?
+            <a href="login-reader.html">Đăng nhập</a>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+      function handleReaderRegister(e) {
+        e.preventDefault();
+
+        // Validation check
+        const form = e.target;
+        if (!form.checkValidity()) {
+          form.classList.add("was-validated");
+          return;
+        }
+
+        const pass = document.getElementById("reader-password").value;
+        const confirm = document.getElementById(
+          "reader-confirm-password"
+        ).value;
+
+        if (pass !== confirm) {
+          alert("Mật khẩu xác nhận không khớp!");
+          return;
+        }
+
+        alert("Đăng ký Độc giả thành công!");
+      }
+    </script>
+  </body>
+</html>

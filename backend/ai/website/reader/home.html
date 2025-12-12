@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Trang Chủ - Thư Viện</title>
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        background: #f8f9fa;
+        min-height: 100vh;
+      }
+      .navbar-brand {
+        font-weight: 700;
+        color: #667eea;
+        cursor: pointer;
+      }
+      .book-card img {
+        object-fit: cover;
+        height: 280px;
+      }
+      .book-badge {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 600;
+        color: white;
+      }
+      .book-badge.new {
+        background: #10b981;
+      }
+      .book-badge.hot {
+        background: #ef4444;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- ======= NAVBAR ======= -->
+    <nav
+      class="navbar navbar-expand-lg navbar-light bg-white shadow-sm rounded sticky-top mb-4"
+    >
+      <div class="container">
+        <a class="navbar-brand" href="#">📚 Library System</a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarContent"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarContent">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle"
+                href="#"
+                role="button"
+                data-bs-toggle="dropdown"
+                >Danh mục</a
+              >
+              <ul class="dropdown-menu">
+                <li>
+                  <a class="dropdown-item" href="#">Công nghệ thông tin</a>
+                </li>
+                <li><a class="dropdown-item" href="#">Khoa học</a></li>
+                <li><a class="dropdown-item" href="#">Thiếu nhi</a></li>
+                <li><hr class="dropdown-divider" /></li>
+                <li><a class="dropdown-item" href="#">Xem chi tiết</a></li>
+              </ul>
+            </li>
+            <li class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle"
+                href="#"
+                role="button"
+                data-bs-toggle="dropdown"
+                >Nhà xuất bản</a
+              >
+              <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="#">NXB Trẻ</a></li>
+                <li><a class="dropdown-item" href="#">Alpha Books</a></li>
+                <li><a class="dropdown-item" href="#">Kim Đồng</a></li>
+                <li><hr class="dropdown-divider" /></li>
+                <li><a class="dropdown-item" href="#">Xem chi tiết</a></li>
+              </ul>
+            </li>
+          </ul>
+          <form class="d-flex me-3">
+            <input
+              class="form-control rounded-pill"
+              type="search"
+              placeholder="Tìm kiếm sách..."
+            />
+          </form>
+          <div class="dropdown">
+            <img
+              src="https://i.pravatar.cc/40"
+              class="rounded-circle border border-2 border-primary"
+              alt="avatar"
+              data-bs-toggle="dropdown"
+              style="cursor: pointer"
+            />
+            <ul class="dropdown-menu dropdown-menu-end">
+              <li class="px-3 py-2 border-bottom">
+                <strong>Phùng Quốc Thái</strong><br />
+                <small class="text-warning">⭐ 4.8</small>
+              </li>
+              <li><a class="dropdown-item" href="#">📘 Quản lý mượn trả</a></li>
+              <li><a class="dropdown-item" href="#">⚙️ Tài khoản</a></li>
+              <li>
+                <a class="dropdown-item text-danger" href="#">🚪 Đăng xuất</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container">
+      <!-- ======= CAROUSEL ======= -->
+      <div
+        id="libraryCarousel"
+        class="carousel slide mb-5 rounded shadow"
+        data-bs-ride="carousel"
+      >
+        <div class="carousel-inner">
+          <div class="carousel-item active">
+            <img
+              src="https://images.unsplash.com/photo-1507842217343-583bb7270b66?w=1400&h=450&fit=crop"
+              class="d-block w-100"
+              alt="Slide 3"
+            />
+            <div
+              class="carousel-caption text-start bg-dark bg-opacity-50 rounded p-3"
+            >
+              <h2>Mượn sách dễ dàng</h2>
+              <p>Hệ thống quản lý hiện đại, tiện lợi</p>
+            </div>
+          </div>
+          <div class="carousel-item">
+            <img
+              src="https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?w=1400&h=450&fit=crop"
+              class="d-block w-100"
+              alt="Slide 1"
+            />
+            <div
+              class="carousel-caption text-start bg-dark bg-opacity-50 rounded p-3"
+            >
+              <h2>Khám phá thế giới tri thức</h2>
+              <p>Hàng ngàn đầu sách chất lượng đang chờ bạn khám phá</p>
+            </div>
+          </div>
+          <div class="carousel-item">
+            <img
+              src="https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=1400&h=450&fit=crop"
+              class="d-block w-100"
+              alt="Slide 2"
+            />
+            <div
+              class="carousel-caption text-start bg-dark bg-opacity-50 rounded p-3"
+            >
+              <h2>Đọc sách mỗi ngày</h2>
+              <p>Nâng cao kiến thức, mở rộng tầm nhìn</p>
+            </div>
+          </div>
+        </div>
+        <button
+          class="carousel-control-prev"
+          type="button"
+          data-bs-target="#libraryCarousel"
+          data-bs-slide="prev"
+        >
+          <span class="carousel-control-prev-icon"></span>
+        </button>
+        <button
+          class="carousel-control-next"
+          type="button"
+          data-bs-target="#libraryCarousel"
+          data-bs-slide="next"
+        >
+          <span class="carousel-control-next-icon"></span>
+        </button>
+      </div>
+
+      <!-- ======= MỚI PHÁT HÀNH ======= -->
+      <section class="mb-5">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h2>🆕 Mới phát hành</h2>
+          <button class="btn btn-outline-primary rounded-pill">
+            Xem thêm →
+          </button>
+        </div>
+        <div
+          class="row row-cols-1 row-cols-md-3 row-cols-lg-6 g-4"
+          id="newBooksGrid"
+        ></div>
+      </section>
+
+      <!-- ======= PHỔ BIẾN ======= -->
+      <section class="mb-5">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h2>🔥 Phổ biến</h2>
+          <button class="btn btn-outline-primary rounded-pill">
+            Xem thêm →
+          </button>
+        </div>
+        <div
+          class="row row-cols-1 row-cols-md-3 row-cols-lg-6 g-4"
+          id="popularBooksGrid"
+        ></div>
+      </section>
+    </div>
+
+    <!-- ======= FOOTER ======= -->
+    <footer class="bg-white text-dark shadow-sm pt-5 pb-3 mt-5">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-4 mb-3">
+            <h5 class="text-primary">Thư viện Online</h5>
+            <p>
+              Hệ thống quản lý mượn trả, tìm kiếm và lưu trữ sách chuyên nghiệp.
+            </p>
+          </div>
+          <div class="col-md-4 mb-3">
+            <h6 class="text-primary">Liên hệ</h6>
+            <ul class="list-unstyled">
+              <li>📞 0123 456 789</li>
+              <li>📧 support@library.vn</li>
+              <li>📍 Hà Nội, Việt Nam</li>
+            </ul>
+          </div>
+          <div class="col-md-4 mb-3">
+            <h6 class="text-primary">Chính sách</h6>
+            <ul class="list-unstyled">
+              <li>
+                <a href="#" class="text-decoration-none text-dark"
+                  >Điều khoản sử dụng</a
+                >
+              </li>
+              <li>
+                <a href="#" class="text-decoration-none text-dark"
+                  >Chính sách bảo mật</a
+                >
+              </li>
+              <li>
+                <a href="#" class="text-decoration-none text-dark"
+                  >Hướng dẫn sử dụng</a
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+        <p class="text-center text-muted mt-3 border-top pt-3">
+          © 2025 Library System. All rights reserved.
+        </p>
+      </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+      // ============= SAMPLE DATA =============
+      const newBooks = [
+        {
+          title: "Clean Code: A Handbook of Agile Software Craftsmanship",
+          author: "Robert C. Martin",
+          image:
+            "https://images.unsplash.com/photo-1543002588-bfa74002ed7e?w=300&h=400&fit=crop",
+        },
+        {
+          title: "The Pragmatic Programmer",
+          author: "David Thomas",
+          image:
+            "https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=300&h=400&fit=crop",
+        },
+        {
+          title: "Design Patterns",
+          author: "Gang of Four",
+          image:
+            "https://images.unsplash.com/photo-1532012197267-da84d127e765?w=300&h=400&fit=crop",
+        },
+        {
+          title: "Introduction to Algorithms",
+          author: "Thomas H. Cormen",
+          image:
+            "https://images.unsplash.com/photo-1550399105-c4db5fb85c18?w=300&h=400&fit=crop",
+        },
+        {
+          title: "Artificial Intelligence: A Modern Approach",
+          author: "Stuart Russell",
+          image:
+            "https://images.unsplash.com/photo-1589998059171-988d887df646?w=300&h=400&fit=crop",
+        },
+        {
+          title: "Deep Learning",
+          author: "Ian Goodfellow",
+          image:
+            "https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=300&h=400&fit=crop",
+        },
+      ];
+
+      const popularBooks = [
+        {
+          title: "Harry Potter và Hòn Đá Phù Thủy",
+          author: "J.K. Rowling",
+          image:
+            "https://images.unsplash.com/photo-1621351183012-e2f9972dd9bf?w=300&h=400&fit=crop",
+        },
+        {
+          title: "Nhà Giả Kim",
+          author: "Paulo Coelho",
+          image:
+            "https://images.unsplash.com/photo-1512820790803-83ca734da794?w=300&h=400&fit=crop",
+        },
+        {
+          title: "Đắc Nhân Tâm",
+          author: "Dale Carnegie",
+          image:
+            "https://images.unsplash.com/photo-1474932430478-367dbb6832c1?w=300&h=400&fit=crop",
+        },
+        {
+          title: "Sapiens: Lược Sử Loài Người",
+          author: "Yuval Noah Harari",
+          image:
+            "https://images.unsplash.com/photo-1519682337058-a94d519337bc?w=300&h=400&fit=crop",
+        },
+        {
+          title: "Tôi Thấy Hoa Vàng Trên Cỏ Xanh",
+          author: "Nguyễn Nhật Ánh",
+          image:
+            "https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=300&h=400&fit=crop",
+        },
+        {
+          title: "Cà Phê Cùng Tony",
+          author: "Tony Buổi Sáng",
+          image:
+            "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=300&h=400&fit=crop",
+        },
+      ];
+
+      function createBookCard(book) {
+        return `
+        <div class="col">
+          <div class="card h-100 book-card position-relative">
+            <img src="${book.image}" class="card-img-top" alt="${book.title}">
+            <div class="card-body">
+              <h6 class="card-title">${book.title}</h6>
+              <p class="card-text">👤 ${book.author}</p>
+            </div>
+          </div>
+        </div>
+      `;
+      }
+
+      function renderBooks() {
+        document.getElementById("newBooksGrid").innerHTML = newBooks
+          .map(createBookCard)
+          .join("");
+        document.getElementById("popularBooksGrid").innerHTML = popularBooks
+          .map(createBookCard)
+          .join("");
+      }
+
+      renderBooks();
+    </script>
+  </body>
+</html>
