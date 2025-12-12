@@ -130,6 +130,7 @@ jwt.refreshableDuration=2592000
 
 # AI Service URL (Python Backend)
 ai.service.url=http://localhost:8000
+```
 
 ---
 
@@ -138,37 +139,45 @@ ai.service.url=http://localhost:8000
 Hệ thống được kiểm thử trên các chức năng sau:
 
 ### Chức năng người dùng
+
 - Truy cập và sử dụng giao diện người dùng.
 - Quản lý playlist và danh sách yêu thích.
 - Phát nhạc trực tuyến.
 
 ### Chức năng ca sĩ
+
 - Quản lý thông tin ca sĩ và bài hát.
 - Cập nhật, thêm, xóa bài hát.
 
 ### Chức năng quản trị
+
 - Quản lý người dùng, ca sĩ, bài hát.
 - Phân quyền và quản lý hệ thống.
 
 ### Phát nhạc và streaming
+
 - Phát nhạc theo yêu cầu.
 - Hỗ trợ các thao tác dừng, tua, chuyển bài.
 
 ### Tìm kiếm giọng nói và tìm kiếm theo giai điệu
+
 - Nhận diện giọng nói để tìm kiếm bài hát.
 - Tìm bài hát dựa trên giai điệu (còn hạn chế chất lượng).
 
 ### Xác thực – phân quyền
+
 - Kiểm thử chức năng đăng nhập, đăng ký.
 - Phân quyền người dùng, ca sĩ, quản trị viên.
 
 ### Tính toàn vẹn dữ liệu
+
 - Kiểm tra dữ liệu bài hát, playlist, thông tin người dùng.
 - Đảm bảo dữ liệu không bị mất mát hoặc sai lệch.
 
 ---
 
 ## Kết quả đạt được
+
 - Xây dựng đầy đủ hệ thống nghe nhạc trực tuyến với giao diện hiện đại.
 - Tích hợp AI vào nhiều tính năng.
 - Hoàn thiện hệ thống quản trị mạnh mẽ.
@@ -178,6 +187,7 @@ Hệ thống được kiểm thử trên các chức năng sau:
 ---
 
 ## Hạn chế
+
 - Tìm kiếm theo giai điệu phụ thuộc chất lượng ghi âm.
 - Kho dữ liệu bài hát còn hạn chế.
 - Chưa hỗ trợ streaming chất lượng cao (HLS/DASH).
@@ -185,9 +195,13 @@ Hệ thống được kiểm thử trên các chức năng sau:
 ---
 
 ## Hướng phát triển
+
 - Ứng dụng mô hình học sâu để cá nhân hóa gợi ý nhạc.
 - Nâng cấp thuật toán tìm kiếm giai điệu.
 - Phát triển ứng dụng mobile.
 - Bổ sung tính năng tương tác cộng đồng.
 - Áp dụng phân tích dữ liệu nâng cao cho hành vi người dùng.
+
+```
+
 ```
