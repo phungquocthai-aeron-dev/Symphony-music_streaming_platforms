@@ -3,7 +3,6 @@ FROM node:22-alpine AS build
 WORKDIR /app
 
 COPY package*.json ./
-
 RUN npm install
 
 COPY . .
@@ -14,11 +13,10 @@ FROM node:22-alpine
 
 WORKDIR /app
 
-COPY --from=build /app/dist/frontend ./dist/frontend
-COPY --from=build /app/package*.json ./
+RUN npm install -g serve
 
-RUN npm install --omit=dev
+COPY --from=build /app/dist/frontend/browser ./browser
 
-EXPOSE 4000
+EXPOSE 80
 
-CMD ["node", "dist/frontend/server/server.mjs"]
+CMD ["serve", "-s", "browser", "-l", "80"]
