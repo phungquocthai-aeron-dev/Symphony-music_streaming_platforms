@@ -1,0 +1,79 @@
+name: symphony-dev
+
+services:
+
+  mysql:
+    image: mysql:8.0
+    container_name: symphony-mysql-dev
+    hostname: mysql
+    restart: always
+    ports:
+      - "3308:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: symphony_sa
+    volumes:
+      - mysql_data_dev:/var/lib/mysql
+      - ./mysql-init:/docker-entrypoint-initdb.d
+    networks:
+      - backend
+
+  frontend:
+    container_name: symphony-frontend-dev
+    build:
+      context: ../frontend
+      dockerfile: Dockerfile.dev
+    ports:
+      - "4200:4200"
+    volumes:
+      - ../frontend/src:/app/src
+      - ../frontend/public:/app/public
+      - ../frontend/package.json:/app/package.json
+      - ../frontend/package-lock.json:/app/package-lock.json
+      - ../frontend/angular.json:/app/angular.json
+      - ../frontend/tsconfig.json:/app/tsconfig.json
+      - ../frontend/tsconfig.app.json:/app/tsconfig.app.json
+      - ../frontend/tsconfig.spec.json:/app/tsconfig.spec.json
+      - /app/node_modules
+
+  backend:
+    container_name: symphony-backend-dev
+    build:
+      context: ../backend
+      dockerfile: Dockerfile.dev
+    ports:
+      - "8080:8080"
+    env_file:
+      - .env
+    volumes:
+      - ../backend/src:/app/src
+      - ../backend/pom.xml:/app/pom.xml
+      - ../backend/uploads:/app/uploads
+      - maven-cache:/root/.m2
+    depends_on:
+      - mysql
+      - ai-service
+    networks:
+      - backend
+
+  ai-service:
+    container_name: symphony-ai-dev
+    build:
+      context: ../ai
+      dockerfile: Dockerfile.dev
+    env_file:
+      - .env.dev
+    ports:
+      - "8000:8000"
+    volumes:
+     - ../ai:/app
+     - ../backend/uploads:/uploads
+    restart: "no"
+
+volumes:
+    mysql_data_dev:
+    maven-cache:
+
+networks:
+  backend:
+    driver: bridge  

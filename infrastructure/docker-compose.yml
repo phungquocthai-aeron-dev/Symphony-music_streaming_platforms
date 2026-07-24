@@ -2,24 +2,54 @@ name: symphony
 
 services:
 
+  mysql:
+    image: mysql:8.0
+    container_name: symphony-mysql
+    hostname: mysql
+    restart: always
+    ports:
+      - "3307:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: symphony_sa
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./mysql-init:/docker-entrypoint-initdb.d
+    networks:
+      - backend
+
+  # frontend:
+  #   build:
+  #     context: ../frontend
+  #     dockerfile: Dockerfile.dev
+  #   container_name: symphony-frontend
+  #   ports:
+  #     - "4200:4200"
+  #   volumes:
+  #     - ../frontend/src:/app/src
+  #     - ../frontend/angular.json:/app/angular.json
+  #     - ../frontend/package.json:/app/package.json
+  #     - ../frontend/tsconfig.json:/app/tsconfig.json
+  #     - /app/node_modules
+  #   networks:
+  #     - backend
   frontend:
     build:
       context: ../frontend
     container_name: symphony-frontend
-    env_file:
-      - .env
     ports:
-      - "4000:4000"
+      - "4200:80"
     depends_on:
       - backend
-    restart: "no"
+    networks:
+      - backend
 
   backend:
     build:
       context: ../backend
     container_name: symphony-backend
     env_file:
-      - .env
+      - .env.dev
     ports:
       - "8080:8080"
     depends_on:
@@ -27,6 +57,8 @@ services:
     restart: "no"
     volumes:
       - D:/nienluan/Symphony-music-streaming-platforms/backend/uploads:/app/uploads
+    networks:
+      - backend
 
   ai-service:
     build:
@@ -40,3 +72,12 @@ services:
     volumes:
       - ../backend/uploads:/uploads
       - ../ai/models:/app/models
+    networks:
+      - backend
+
+volumes:
+    mysql_data:
+
+networks:
+  backend:
+    driver: bridge
