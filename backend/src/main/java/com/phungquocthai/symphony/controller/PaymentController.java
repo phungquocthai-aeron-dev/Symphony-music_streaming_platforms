@@ -17,6 +17,7 @@ import java.util.TimeZone;
 import java.util.UUID;
 import java.util.List;
 
+import com.phungquocthai.symphony.configuration.VNPayProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -56,6 +57,9 @@ public class PaymentController {
 	
 	@Autowired
 	NotificationService notificationService;
+
+	@Autowired
+	VNPayProperties vnPayProperties;
 	
 	@PostMapping("/create-payment")
 	public ResponseEntity<ApiResponse<String>> createPayment(@RequestParam(required = true) int amount,
@@ -71,7 +75,7 @@ public class PaymentController {
 	    long vnp_Amount = amount * 100L;
 	    String vnp_TxnRef = VNPayConfig.getRandomNumber(8);
 	    String vnp_IpAddr = VNPayUtils.getIpAddress(request);
-	    String vnp_TmnCode = VNPayConfig.vnp_TmnCode;
+	    String vnp_TmnCode = vnPayProperties.getTmnCode();
 
 	    Map<String, String> vnp_Params = new HashMap<>();
 	    vnp_Params.put("vnp_Version", vnp_Version);
@@ -87,7 +91,7 @@ public class PaymentController {
 	    	    "|Thanh toan don hang: " + vnp_TxnRef);
 	    vnp_Params.put("vnp_OrderType", orderType);
 	    vnp_Params.put("vnp_Locale", language != null ? language : "vn");
-	    vnp_Params.put("vnp_ReturnUrl", VNPayConfig.vnp_ReturnUrl);
+	    vnp_Params.put("vnp_ReturnUrl", VNPayProperties.RETURN_URL);
 	    vnp_Params.put("vnp_IpAddr", vnp_IpAddr);
 	    System.out.println("us:" + userId + "vip" + vipId);
    
@@ -125,9 +129,9 @@ public class PaymentController {
             }
         }
         String queryUrl = query.toString();
-        String vnp_SecureHash = VNPayConfig.hmacSHA512(VNPayConfig.secretKey, hashData.toString());
+        String vnp_SecureHash = VNPayConfig.hmacSHA512(vnPayProperties.getSecretKey(), hashData.toString());
         queryUrl += "&vnp_SecureHash=" + vnp_SecureHash;
-        String paymentUrl = VNPayConfig.vnp_PayUrl + "?" + queryUrl;
+        String paymentUrl = VNPayProperties.RETURN_URL + "?" + queryUrl;
 	    Map<String, String> response = new HashMap<>();
 	    response.put("code", "00");
 	    response.put("message", "success");
@@ -148,7 +152,7 @@ public class PaymentController {
 	    String vnp_OrderInfo = allParams.get("vnp_OrderInfo");
 
 	    // Kiểm tra hash (bảo mật)
-	    boolean isValid = VNPayConfig.validateSignature(allParams);
+	    boolean isValid = VNPayConfig.validateSignature(allParams, vnPayProperties.getSecretKey());
 	    if (!isValid) {
 	    	response.sendRedirect("http://localhost:4200/error");
 	    }

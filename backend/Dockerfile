@@ -18,6 +18,8 @@
 FROM eclipse-temurin:21-jdk-alpine AS build
 WORKDIR /usr/src/project
 
+ENV TZ=Asia/Ho_Chi_Minh
+
 # Copy Maven files first because we're smart like that
 # (Docker cache is your best friend, treat it right)
 COPY pom.xml mvnw ./
@@ -80,6 +82,13 @@ COPY --from=build /usr/src/project/target/music-streaming-platform-0.0.1-SNAPSHO
 
 WORKDIR /app
 USER springuser
+EXPOSE 8080
+
+HEALTHCHECK --interval=30s \
+    --timeout=5s \
+    --start-period=40s \
+    --retries=3 \
+    CMD wget --no-verbose --tries=1 --spider http://localhost:8080/actuator/health || exit 1
 
 #
 # Launch sequence initiated! 🚀
