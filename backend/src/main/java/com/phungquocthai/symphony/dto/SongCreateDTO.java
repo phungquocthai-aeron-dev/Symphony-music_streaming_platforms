@@ -3,6 +3,8 @@ package com.phungquocthai.symphony.dto;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
+
+import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -24,6 +26,7 @@ public class SongCreateDTO {
     
     @NotNull(message = "Vui lòng chọn lượt nghe")
     @Min(value = 0, message = "Lượt nghe phải lớn hơn hoặc bằng 0")
+    @Max(value = 0, message = "Lượt nghe ban đầu không hợp lệ")
     @Builder.Default
     private Integer total_listens = 0;
     

@@ -3,6 +3,7 @@ package com.phungquocthai.symphony.configuration;
 import java.time.LocalDate;
 
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -22,6 +23,8 @@ import lombok.extern.slf4j.Slf4j;
 public class ApplicationInitConfig {
 
 	@Bean
+	@ConditionalOnProperty(prefix = "spring", value = "datasource.driver-class-name",
+			havingValue = "com.mysql.cj.jdbc.Driver")
 	ApplicationRunner applicationRunner(UserRepository userRepository) {
 		return ArgsAnnotationPointcut -> {
 			if (userRepository.findByRole(Role.ADMIN.getValue()).isEmpty()) {
