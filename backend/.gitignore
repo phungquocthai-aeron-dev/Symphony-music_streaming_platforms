@@ -33,3 +33,6 @@ application-secret.properties
 
 # Build folder
 build/
+
+# Store files
+uploads/
