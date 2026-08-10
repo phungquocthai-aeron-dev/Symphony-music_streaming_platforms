@@ -95,7 +95,10 @@ public class AuthenticationService {
 		
 		invalidatedTokenRepository.save(invalidatedToken);		
 		
-		String phone = signedJWT.getJWTClaimsSet().getSubject();
+		String phone = signedJWT
+				.getJWTClaimsSet()
+				.getStringClaim("phone");
+		log.info("SĐT: " + phone);
 		User user = userRepository.findByPhone(phone).orElseThrow(() -> new AppException(ErrorCode.UNAUTHENTICATED));
 		
 		String token = generateToken(user);

@@ -345,7 +345,7 @@ public class SongServiceCache {
 
         notificationService.sendNotificationToAllUsers(1,
                 "Bài hát " + song.getSongName() + " vừa mới phát hành. Trải nghiệm ngay!", "Bài hát mới");
-        aiSearchService.updateAiData(song.getPath());
+        aiSearchService.updateAiDataAsync(song.getPath());
         return songDTO;
     }
 

@@ -8,8 +8,10 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
@@ -28,6 +30,7 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
+@Log4j2
 public class AISearchService {
     private final SongRepository songRepository;
     private final SongMapper songMapper;
@@ -102,6 +105,15 @@ public class AISearchService {
                 entity,
                 String.class
         );
+    }
+
+    @Async
+    public void updateAiDataAsync(String songPath) {
+        try {
+            updateAiData(songPath);
+        } catch (Exception e) {
+            log.error("Failed to update AI data for song: {}", songPath, e);
+        }
     }
 
     public void removeAiData(String songFileName) {
